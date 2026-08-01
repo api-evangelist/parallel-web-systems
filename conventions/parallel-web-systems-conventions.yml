@@ -1,0 +1,57 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai
+auth:
+  style: api-key
+  scheme: apiKey
+  location: header
+  parameter: x-api-key
+  key_issuance: >-
+    Keys are minted at platform.parallel.ai; the parallel-cli obtains them via an
+    OAuth 2.0 device-code flow (RFC 8414 metadata at platform.parallel.ai/.well-known/oauth-authorization-server).
+  see: authentication/parallel-web-systems-authentication.yml
+versioning:
+  style: uri-path
+  stable_prefix: /v1
+  beta_prefix: /v1beta
+  beta_header: parallel-beta
+  detail: >-
+    Stable operations live under /v1 (Search, Extract, Tasks, Monitor). Newer or
+    experimental surfaces (FindAll, Chat Completions, legacy task events) live under
+    /v1beta and are opted into via the `parallel-beta` request header.
+idempotency:
+  supported: false
+  detail: The OpenAPI declares no idempotency key header; task/monitor creation is not idempotent by key.
+pagination:
+  style: cursor
+  detail: >-
+    Long-running collection and event endpoints (task-group runs, monitor events,
+    FindAll/monitor event streams) page via cursor/last_event_id parameters rather
+    than numeric offsets.
+  params:
+  - last_event_id
+async:
+  style: poll-or-webhook-or-sse
+  detail: >-
+    Tasks, FindAll runs, and Monitors are asynchronous - create returns a run/monitor id,
+    then poll the status/result endpoints, stream Server-Sent Events from the /events
+    endpoints, or subscribe to webhooks.
+  see: asyncapi/parallel-web-systems-webhooks.yml
+error_envelope:
+  format: custom-json
+  detail: >-
+    Non-2xx responses return {"type":"error","error":{"ref_id","message","detail"}}.
+    This is NOT RFC 9457 problem+json; content-type is application/json.
+  reference_id_field: error.ref_id
+  see: errors/parallel-web-systems-problem-types.yml
+rate_limiting:
+  detail: >-
+    Rate limits are tier/plan based (free tier ~5,000 searches/month; Search Turbo priced
+    per 1,000 requests). Higher limits on the Search MCP require a Bearer API key. The
+    published OpenAPI does not standardize RateLimit response headers.
+request_tracing:
+  field: error.ref_id
+  detail: Errors carry a ref_id for support correlation.
+notes: >-
+  Cross-cutting semantics derived from the OpenAPI 3.1 spec (v0.1.2) and the public docs.
+  See also errors/, lifecycle/, and authentication/ artifacts.

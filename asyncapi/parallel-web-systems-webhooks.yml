@@ -1,0 +1,37 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.parallel.ai/resources/webhook-setup
+type: Webhooks
+spec: standard-webhooks
+transport: https-post-json
+description: >-
+  Parallel delivers real-time webhook notifications when events occur in Task, FindAll,
+  and Monitor operations, removing the need to poll. Subscriptions select events via an
+  `event_types` array configured in Settings -> Webhooks.
+signing:
+  spec: Standard Webhooks
+  algorithm: HMAC-SHA256
+  encoding: base64-rfc4648-padded
+  signed_content: '<webhook-id>.<webhook-timestamp>.<payload>'
+  headers:
+  - name: webhook-id
+    purpose: Unique event identifier.
+  - name: webhook-timestamp
+    purpose: Unix timestamp in seconds.
+  - name: webhook-signature
+    purpose: Versioned signature(s), format 'v1,<base64 signature>'.
+  secret:
+    prefix: whsec_
+    detail: Base64-decode the secret after stripping the whsec_ prefix to obtain the HMAC key.
+event_families:
+- family: Task API
+  detail: Task run lifecycle/completion events.
+- family: FindAll
+  detail: Candidate and run events.
+- family: Monitor API
+  detail: Monitor events and completions.
+notes: >-
+  Provider documents webhooks but ships no AsyncAPI document, so this captures the webhook
+  catalog (type Webhooks). Streaming progress is also available as Server-Sent Events on the
+  per-resource /events endpoints in the OpenAPI. No fabricated event names - families are as
+  documented; exact per-API event_type strings live in each API's reference page.

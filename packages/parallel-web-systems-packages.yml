@@ -1,0 +1,50 @@
+generated: '2026-07-20'
+method: searched
+source: npm + PyPI registries and github.com/parallel-web
+packages:
+- name: parallel-web
+  registry: npm
+  official: true
+  language: typescript
+  latest: 1.1.0
+  description: The official TypeScript library for the Parallel API.
+  url: https://www.npmjs.com/package/parallel-web
+  repository: https://github.com/parallel-web/parallel-sdk-typescript
+  install: npm install parallel-web
+- name: parallel-web
+  registry: pypi
+  official: true
+  language: python
+  latest: 1.1.0
+  description: The official Python library for the Parallel API.
+  url: https://pypi.org/project/parallel-web/
+  repository: https://github.com/parallel-web/parallel-sdk-python
+  install: pip install parallel-web
+- name: parallel-web-tools
+  registry: pypi
+  official: true
+  language: python
+  latest: 0.7.1
+  description: 'Parallel Tools: CLI (parallel-cli) and Python SDK for AI-powered web intelligence.'
+  url: https://pypi.org/project/parallel-web-tools/
+  repository: https://github.com/parallel-web/parallel-web-tools
+  install: uv tool install parallel-web-tools
+  provides_cli: parallel-cli
+- name: langchain-parallel
+  registry: pypi
+  official: true
+  language: python
+  description: LangChain integration for the Parallel API.
+  url: https://pypi.org/project/langchain-parallel/
+  repository: https://github.com/parallel-web/langchain-parallel
+- name: parallel-n8n-nodes
+  registry: npm
+  official: true
+  language: typescript
+  description: n8n community nodes for Parallel.
+  repository: https://github.com/parallel-web/parallel-n8n-nodes
+notes: >-
+  First-party SDKs are published under the parallel-web GitHub org. The Python and
+  TypeScript client libraries both ship as `parallel-web`. The parallel-cli terminal
+  client is distributed via the parallel-web-tools PyPI package and a Homebrew cask
+  (parallel-web/homebrew-tap, Casks/parallel-cli.rb).

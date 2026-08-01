@@ -1,0 +1,44 @@
+generated: '2026-07-20'
+method: searched
+source: https://parallel.ai/agents.md + PyPI parallel-web-tools + github.com/parallel-web/homebrew-tap
+name: parallel-cli
+description: >-
+  Terminal client for the Parallel web intelligence stack - web search, URL content
+  extraction, deep research tasks, and entity/data enrichment directly from the shell
+  or an agent's Bash tool.
+binary: parallel-cli
+min_version: 0.7.1
+install:
+- method: homebrew
+  command: brew install parallel-web/tap/parallel-cli
+  source: https://github.com/parallel-web/homebrew-tap
+- method: uv
+  command: uv tool install parallel-web-tools
+- method: pipx
+  command: pipx install parallel-web-tools
+- method: pip
+  command: pip install parallel-web-tools
+auth:
+  style: device-oauth
+  detail: >-
+    `parallel-cli auth` runs an OAuth 2.0 device-code flow against
+    platform.parallel.ai (--no-browser for headless/code-based login).
+    `parallel-cli auth --json` reports auth status; balance is checked/topped up via
+    the CLI or platform settings.
+command_groups:
+- name: search
+  purpose: Web search - natural-language queries with turbo/basic/advanced modes, date/domain/geo filters.
+- name: extract
+  purpose: Pull token-efficient markdown from specific URLs.
+- name: research
+  purpose: Deep research tasks over multi-hop queries.
+- name: enrich
+  purpose: Data enrichment for lists of entities.
+- name: auth
+  purpose: Device-OAuth login and status.
+- name: skills
+  purpose: Install Parallel Agent Skills into the local agent environment.
+notes: >-
+  The CLI binary ships inside the parallel-web-tools PyPI package (also a Homebrew
+  cask, Casks/parallel-cli.rb). Setup guidance is published at https://parallel.ai/agents.md.
+  The unrelated `parallel-cli` npm package (last published 2015) is NOT this tool.

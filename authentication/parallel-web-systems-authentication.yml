@@ -1,0 +1,23 @@
+generated: '2026-07-20'
+method: searched
+source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai
+docs: https://docs.parallel.ai/getting-started/overview
+key_issuance:
+  platform: https://platform.parallel.ai
+  device_oauth_metadata: https://platform.parallel.ai/.well-known/oauth-authorization-server
+  detail: >-
+    Data-plane requests authenticate with a per-account API key in the x-api-key header.
+    Keys are minted at platform.parallel.ai; parallel-cli obtains them via an OAuth 2.0
+    device-code flow (issuer platform.parallel.ai, scope key:read, PKCE S256).
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: x-api-key
+  sources:
+  - openapi/parallel-web-systems-openapi.json

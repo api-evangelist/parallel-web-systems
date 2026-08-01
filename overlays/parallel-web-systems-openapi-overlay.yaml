@@ -1,0 +1,41 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for the Parallel API
+  version: 1.0.0
+extends: ../openapi/parallel-web-systems-openapi.json
+actions:
+- target: $.info
+  description: Annotate the API with API Evangelist enrichment provenance and canonical links.
+  update:
+    x-apievangelist:
+      provider: parallel-web-systems
+      enriched: '2026-07-20'
+    x-documentation: https://docs.parallel.ai
+    x-status-page: https://status.parallel.ai
+    x-changelog: https://docs.parallel.ai/resources/changelog
+    x-mcp-server: https://search.parallel.ai/mcp
+    x-terms-of-service: https://parallel.ai/customer-terms
+    x-privacy-policy: https://parallel.ai/privacy-policy
+- target: $.info
+  description: Record the custom (non-RFC9457) error envelope shape.
+  update:
+    x-error-envelope:
+      format: custom-json
+      shape: '{"type":"error","error":{"ref_id","message","detail"}}'
+      reference_id_field: error.ref_id
+- target: $.components.securitySchemes.ApiKeyAuth
+  description: Clarify how API keys are issued.
+  update:
+    x-key-issuance:
+      platform: https://platform.parallel.ai
+      device_oauth_metadata: https://platform.parallel.ai/.well-known/oauth-authorization-server
+- target: $.tags
+  description: Note webhook + SSE async delivery available for long-running surfaces.
+  update:
+    x-async-delivery:
+      webhooks: standard-webhooks
+      sse: per-resource /events endpoints
+      catalog: ../asyncapi/parallel-web-systems-webhooks.yml
+notes: >-
+  This overlay is additive metadata only; it never mutates the original operation or schema
+  semantics of openapi/parallel-web-systems-openapi.json (Parallel API v0.1.2).

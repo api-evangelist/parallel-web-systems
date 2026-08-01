@@ -1,0 +1,38 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.parallel.ai/resources/changelog
+scheme: dated
+docs: https://docs.parallel.ai/resources/changelog
+current_api_version: 0.1.2
+entries:
+- date: '2026-07-13'
+  highlights: Turbo mode launched for the Search API ($1 per 1,000 requests, p50 ~200ms) for real-time web search.
+  breaking: false
+- date: '2026-05-19'
+  highlights: Index platform introduced so content owners can see how AI agents use their work and earn compensation.
+  breaking: false
+- date: '2026-05-06'
+  highlights: Monitor API reached general availability with new processors, event streams, snapshots, and domain filtering.
+  breaking: false
+- date: '2026-04-23'
+  highlights: Parallel Search MCP became free by default for AI tools and agents, no account setup required.
+  breaking: false
+- date: '2026-04-22'
+  highlights: Major Search & Extract upgrades - Basic/Advanced modes, specialized retrieval for coding and finance, global coverage across 30+ countries.
+  breaking: false
+- date: '2026-04-07'
+  highlights: Task API set new state-of-the-art DeepSearchQA results (Parallel Ultra ~82% accuracy).
+  breaking: false
+- date: '2026-03-19'
+  highlights: Interactions enabled stateful web research via unique IDs for sequential task referencing.
+  breaking: false
+- date: '2026-03-18'
+  highlights: Machine Payments Protocol integration lets agents pay for services via automated payments.
+  breaking: false
+- date: '2026-03-10'
+  highlights: Parallel CLI launched for terminal-based agents to access the web intelligence stack.
+  breaking: false
+- date: '2026-02-18'
+  highlights: Parallel integration added to the Cursor Marketplace.
+  breaking: false
+notes: Recent window only. Dates reflect the public changelog at the time of enrichment.

@@ -1,0 +1,30 @@
+generated: '2026-07-20'
+method: searched
+source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai + https://status.parallel.ai
+versioning:
+  style: uri-path + opt-in beta header
+  stable: /v1
+  beta: /v1beta
+  beta_header: parallel-beta
+  api_version: 0.1.2
+status_page:
+  url: https://status.parallel.ai
+  present: true
+deprecation:
+  policy_documented: partial
+  detail: >-
+    Legacy endpoints are retained and cross-linked to successors - e.g. the /v1beta/search
+    legacy Search API and its migration guide are referenced from the current /v1/search
+    operation. The OpenAPI marks a number of legacy fields/operations as deprecated. No
+    machine-readable Sunset/Deprecation (RFC 8594) response headers were observed.
+  legacy_surfaces:
+  - /v1beta/search (legacy Search API, migration guide published)
+  - /v1beta/tasks/runs/{run_id}/events (superseded by /v1/tasks/runs/{run_id}/events)
+support:
+  email: support@parallel.ai
+  docs: https://docs.parallel.ai
+terms: https://parallel.ai/customer-terms
+privacy: https://parallel.ai/privacy-policy
+notes: >-
+  Status page live at status.parallel.ai. Deprecation is handled via versioned paths and
+  published migration guides rather than Sunset headers.

@@ -1,0 +1,31 @@
+generated: '2026-07-20'
+method: probed
+source: live probes of /.well-known/* on parallel.ai, api.parallel.ai, docs.parallel.ai, platform.parallel.ai
+probes:
+- host: platform.parallel.ai
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  file: parallel-web-systems-oauth-authorization-server.json
+- host: parallel.ai
+  path: /.well-known/security.txt
+  status: 404
+- host: parallel.ai
+  path: /.well-known/openid-configuration
+  status: 404
+- host: parallel.ai
+  path: /.well-known/api-catalog
+  status: 404
+- host: parallel.ai
+  path: /.well-known/ai-plugin.json
+  status: 404
+- host: api.parallel.ai
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: docs.parallel.ai
+  path: /.well-known/security.txt
+  status: 404
+notes: >-
+  Only platform.parallel.ai publishes a well-known document: an OAuth 2.0 Authorization
+  Server metadata file (RFC 8414) backing the parallel-cli device-code login and API-key
+  issuance flow (issuer https://platform.parallel.ai, scope key:read, PKCE S256). No
+  security.txt, OpenID configuration, api-catalog, or ai-plugin.json were found.

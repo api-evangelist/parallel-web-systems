@@ -1,0 +1,39 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/parallel-web-systems-openapi.json
+format: custom-json
+envelope:
+  shape: '{"type":"error","error":{"ref_id":str,"message":str,"detail":obj|null}}'
+  content_type: application/json
+  reference_id_field: error.ref_id
+  note: >-
+    Parallel returns a custom error envelope (ErrorResponse -> Error schema), NOT
+    RFC 9457 application/problem+json. `type` is always the literal "error".
+status_codes:
+- status: 401
+  meaning: Unauthorized - missing or invalid x-api-key.
+  remediation: Provide a valid API key from platform.parallel.ai in the x-api-key header.
+- status: 402
+  meaning: Payment required - account balance/credits exhausted.
+  remediation: Add funds or upgrade the plan in platform settings (or `parallel-cli` balance top-up).
+- status: 403
+  meaning: Forbidden - key lacks access to the requested resource or feature.
+  remediation: Confirm the key's plan/entitlements; beta features may require the parallel-beta header.
+- status: 404
+  meaning: Not found - unknown run/monitor/task-group id.
+  remediation: Verify the resource id; it may have expired or never existed.
+- status: 408
+  meaning: Request timeout.
+  remediation: Retry; for long research use async task runs rather than a single blocking call.
+- status: 409
+  meaning: Conflict - resource in a state incompatible with the request (e.g. cancelling a finished run).
+  remediation: Re-read current status before mutating.
+- status: 422
+  meaning: Request validation error - malformed body or invalid parameters (HTTPValidationError / ErrorResponse).
+  remediation: Fix the offending fields listed in error.detail.
+- status: 429
+  meaning: Too many requests - rate/quota limit exceeded.
+  remediation: Back off and retry; raise plan limits or pass a Bearer key on the Search MCP.
+notes: >-
+  Codes enumerated from 4xx/5xx responses across the OpenAPI 3.1 spec. Titles/remediation
+  enriched from the docs. All error bodies share the single Error schema.

@@ -1,0 +1,39 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai + https://trust.parallel.ai
+standards:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    platform.parallel.ai publishes RFC 8414 OAuth 2.0 Authorization Server metadata with
+    authorization_code + device_code grants and PKCE (S256); parallel-cli uses the device flow.
+    Note - the data-plane API itself authenticates with an x-api-key, not OAuth.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration published; OAuth server exposes only key issuance, not OIDC.
+- id: rfc8414
+  conforms: true
+  evidence: /.well-known/oauth-authorization-server present on platform.parallel.ai.
+- id: standard-webhooks
+  conforms: true
+  evidence: >-
+    Webhooks follow the Standard Webhooks spec - webhook-id / webhook-timestamp /
+    webhook-signature headers, HMAC-SHA256 over id.timestamp.payload, whsec_ secret prefix.
+- id: rfc9457
+  conforms: false
+  evidence: Errors use a custom {"type":"error","error":{...}} envelope, not application/problem+json.
+- id: server-sent-events
+  conforms: true
+  evidence: Task/FindAll/Monitor /events endpoints stream Server-Sent Events for run progress.
+- id: pagination
+  conforms: true
+  evidence: Cursor / last_event_id parameters on collection and event endpoints.
+- id: idempotency
+  conforms: false
+  evidence: No idempotency-key header defined in the OpenAPI.
+- id: soc2
+  conforms: true
+  evidence: Parallel publicly states SOC 2 Type II certification (homepage) and runs a Trust Center at trust.parallel.ai.
+notes: >-
+  Cross-cutting conformance asserted from the OpenAPI 3.1 spec, live well-known probes,
+  webhook docs, and public compliance claims. conforms=false is honest, expected data.

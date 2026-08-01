@@ -1,0 +1,306 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/parallel-web-systems-openapi.json
+note: Entity graph derived from OpenAPI $ref links and id-reference fields. id-prefixes not published
+  in the object reference.
+entities:
+- name: ChatCompletion
+  id_fields:
+  - id
+  - interaction_id
+  ref_fields:
+  - Choice
+  - CompletionUsage
+  - FieldBasis
+  - openai__types__chat__chat_completion__Moderation
+  relationships:
+  - type: belongs_to
+    via: id
+    target: Id
+  - type: belongs_to
+    via: interaction_id
+    target: Interaction
+- name: ChatCompletionRequest
+  id_fields:
+  - previous_interaction_id
+  ref_fields:
+  - ChatMessage
+  - ResponseFormatJSONSchema
+  - openai__types__shared_params__response_format_json_object__ResponseFormatJSONObject
+  - openai__types__shared_params__response_format_text__ResponseFormatText
+  relationships:
+  - type: belongs_to
+    via: previous_interaction_id
+    target: PreviousInteraction
+- name: Error
+  id_fields:
+  - ref_id
+  ref_fields: null
+  relationships:
+  - type: belongs_to
+    via: ref_id
+    target: Ref
+- name: FindAllCandidate
+  id_fields:
+  - candidate_id
+  ref_fields:
+  - FieldBasis
+  relationships:
+  - type: belongs_to
+    via: candidate_id
+    target: Candidate
+- name: FindAllCandidateMatchStatusEvent
+  id_fields:
+  - event_id
+  ref_fields:
+  - FindAllCandidate
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+- name: FindAllEntitySearchResponse
+  id_fields:
+  - entity_set_id
+  ref_fields:
+  - EntityItem
+  relationships:
+  - type: belongs_to
+    via: entity_set_id
+    target: EntitySet
+- name: FindAllRun
+  id_fields:
+  - findall_id
+  ref_fields:
+  - FindAllRunStatus
+  relationships:
+  - type: belongs_to
+    via: findall_id
+    target: Findall
+- name: FindAllRunResult
+  id_fields:
+  - last_event_id
+  ref_fields:
+  - FindAllCandidate
+  - FindAllRun
+  relationships:
+  - type: belongs_to
+    via: last_event_id
+    target: LastEvent
+- name: FindAllRunStatusEvent
+  id_fields:
+  - event_id
+  ref_fields:
+  - FindAllRun
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+- name: FindAllSchemaUpdatedEvent
+  id_fields:
+  - event_id
+  ref_fields:
+  - FindAllSchema
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+- name: McpToolCall
+  id_fields:
+  - tool_call_id
+  ref_fields: null
+  relationships:
+  - type: belongs_to
+    via: tool_call_id
+    target: ToolCall
+- name: MonitorEventStreamEvent
+  id_fields:
+  - event_id
+  - event_group_id
+  ref_fields:
+  - TaskRunJsonOutput
+  - TaskRunTextOutput
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+  - type: belongs_to
+    via: event_group_id
+    target: EventGroup
+- name: MonitorResponse
+  id_fields:
+  - monitor_id
+  ref_fields:
+  - MonitorEventStreamResponseSettings
+  - MonitorSnapshotOutput
+  - MonitorSnapshotResponseSettings
+  - MonitorWebhook
+  relationships:
+  - type: belongs_to
+    via: monitor_id
+    target: Monitor
+- name: MonitorSnapshotEvent
+  id_fields:
+  - event_id
+  - event_group_id
+  ref_fields:
+  - TaskRunJsonOutput
+  - TaskRunTextOutput
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+  - type: belongs_to
+    via: event_group_id
+    target: EventGroup
+- name: MonitorSnapshotResponseSettings
+  id_fields:
+  - task_run_id
+  ref_fields:
+  - JsonSchema
+  relationships:
+  - type: belongs_to
+    via: task_run_id
+    target: TaskRun
+- name: MonitorSnapshotSettings
+  id_fields:
+  - task_run_id
+  ref_fields: null
+  relationships:
+  - type: belongs_to
+    via: task_run_id
+    target: TaskRun
+- name: TaskGroupResponse
+  id_fields:
+  - taskgroup_id
+  ref_fields:
+  - TaskGroupStatus
+  relationships:
+  - type: belongs_to
+    via: taskgroup_id
+    target: Taskgroup
+- name: TaskGroupStatusEvent
+  id_fields:
+  - event_id
+  ref_fields:
+  - TaskGroupStatus
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+- name: TaskRun
+  id_fields:
+  - run_id
+  - interaction_id
+  - taskgroup_id
+  ref_fields:
+  - Error
+  - Warning
+  relationships:
+  - type: belongs_to
+    via: run_id
+    target: Run
+  - type: belongs_to
+    via: interaction_id
+    target: Interaction
+  - type: belongs_to
+    via: taskgroup_id
+    target: Taskgroup
+- name: TaskRunEvent
+  id_fields:
+  - event_id
+  ref_fields:
+  - TaskRun
+  - TaskRunInput
+  - TaskRunJsonOutput
+  - TaskRunTextOutput
+  relationships:
+  - type: belongs_to
+    via: event_id
+    target: Event
+- name: TaskRunInput
+  id_fields:
+  - previous_interaction_id
+  ref_fields:
+  - McpServer
+  - SourcePolicy
+  - TaskAdvancedSettings
+  - TaskSpec
+  - Webhook
+  relationships:
+  - type: belongs_to
+    via: previous_interaction_id
+    target: PreviousInteraction
+- name: V1ExtractRequest
+  id_fields:
+  - session_id
+  ref_fields:
+  - AdvancedExtractSettings
+  relationships:
+  - type: belongs_to
+    via: session_id
+    target: Session
+- name: V1ExtractResponse
+  id_fields:
+  - extract_id
+  - session_id
+  ref_fields:
+  - ExtractError
+  - UsageItem
+  - V1ExtractResult
+  - Warning
+  relationships:
+  - type: belongs_to
+    via: extract_id
+    target: Extract
+  - type: belongs_to
+    via: session_id
+    target: Session
+- name: V1SearchRequest
+  id_fields:
+  - session_id
+  ref_fields:
+  - AdvancedSearchSettings
+  relationships:
+  - type: belongs_to
+    via: session_id
+    target: Session
+- name: V1SearchResponse
+  id_fields:
+  - search_id
+  - session_id
+  ref_fields:
+  - UsageItem
+  - V1WebSearchResult
+  - Warning
+  relationships:
+  - type: belongs_to
+    via: search_id
+    target: Search
+  - type: belongs_to
+    via: session_id
+    target: Session
+- name: ChoiceDeltaToolCall
+  id_fields:
+  - id
+  ref_fields:
+  - ChoiceDeltaToolCallFunction
+  relationships:
+  - type: belongs_to
+    via: id
+    target: Id
+- name: ChatCompletionResponseChunk
+  id_fields:
+  - id
+  - interaction_id
+  ref_fields:
+  - Choice
+  - CompletionUsage
+  - FieldBasis
+  - Moderation
+  relationships:
+  - type: belongs_to
+    via: id
+    target: Id
+  - type: belongs_to
+    via: interaction_id
+    target: Interaction

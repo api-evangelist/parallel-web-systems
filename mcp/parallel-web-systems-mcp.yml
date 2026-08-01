@@ -1,0 +1,39 @@
+generated: '2026-07-20'
+method: searched
+source: live MCP initialize handshake + https://docs.parallel.ai/integrations/mcp/search-mcp
+status: live
+name: Parallel Web Search MCP Server
+version: 1.27.0
+website: https://parallel.ai
+docs: https://docs.parallel.ai/integrations/mcp/search-mcp
+transport: streamable-http
+protocol_version: '2025-06-18'
+endpoints:
+- url: https://search.parallel.ai/mcp
+  auth: anonymous
+  notes: >-
+    Free anonymous access at lower rate limits; pass a Parallel API key as
+    'Authorization: Bearer <key>' for higher limits.
+- url: https://search.parallel.ai/mcp-oauth
+  auth: oauth
+  notes: OAuth sign-in variant for clients that support OAuth flows.
+capabilities:
+  tools: true
+  prompts: true
+  resources: true
+tools:
+- name: web_search
+  description: >-
+    General-purpose web search inside an agent's reasoning loop. Use when the agent
+    needs current information or diverse sources across multiple angles. Results include
+    excerpts intended to answer directly; supports multiple search_queries per call.
+- name: web_fetch
+  description: >-
+    Pulls token-efficient markdown from specific URLs. Use after web_search narrows
+    down candidates, or when the agent already has a URL it needs to read in depth.
+    Accepts multiple related URLs plus a common objective per call.
+notes: >-
+  Verified live via a JSON-RPC initialize handshake against https://search.parallel.ai/mcp
+  (serverInfo: "Parallel Web Search MCP Server" v1.27.0). Use is subject to the Parallel
+  Customer Terms and Privacy Policy. A separate task-mcp server repo exists under the org
+  (github.com/parallel-web/task-mcp).

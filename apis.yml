@@ -1,8 +1,14 @@
 aid: parallel-web-systems
 name: Parallel Web Systems
-description: 'Parallel Web Systems is a company surfaced as a portfolio company of index-ventures and
-  added to the API Evangelist network as a stub for enrichment. Sector: ai-ml. This profile is a lead
-  awaiting the enrichment pipeline.'
+description: >-
+  Parallel Web Systems builds infrastructure for intelligence on the web, giving AI agents
+  and developers high-quality, low-latency access to the internet. Its API suite spans a
+  Search API (high-accuracy, cross-referenced web search with turbo/basic/advanced modes),
+  an Extract API for token-efficient page content, a Task / Deep Research API for multi-hop
+  research, FindAll for entity discovery, a Monitor API for continuous web change tracking,
+  and a Chat Completions (beta) surface. Parallel ships first-party Python and TypeScript
+  SDKs, a parallel-cli, a free hosted Search MCP server, and published Agent Skills. The
+  company is SOC 2 Type II certified and backed by Index Ventures.
 url: https://raw.githubusercontent.com/api-evangelist/parallel-web-systems/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -10,18 +16,271 @@ x-backed-by:
 - index-ventures
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://assets.parallel.ai/dark-parallel-avatar-540.png
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
 - Ai Ml
-apis: []
+- Web Search
+- Deep Research
+- Data Enrichment
+- Web Monitoring
+- AI Agents
+- MCP
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: parallel-web-systems:parallel-web-systems-chat-api-beta-api
+  name: Parallel Web Systems Chat API (Beta) API
+  description: >-
+    The Chat API provides a programmatic chat-style text generation interface. It accepts a sequence of
+    messages and returns model responses. Intended for assistant-like interactions and evaluation. Streaming
+    responses are supported.
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - Chat API (Beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-chat-api-beta-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Webhooks
+    url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/search/search
+  - type: GettingStarted
+    url: https://docs.parallel.ai/search/search-quickstart
+- aid: parallel-web-systems:parallel-web-systems-extract-api
+  name: Parallel Web Systems Extract API
+  description: >-
+    Extract returns excerpts or full content from one or more URLs. Inputs are a list of URLs and an optional
+    search objective and keyword queries. The returned excerpts or full content is formatted as markdown
+    and suitable for LLM consumption.
+
+    - Result: excerpts or full content from the URL formatted as markdown
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - Extract
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-extract-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Webhooks
+    url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/search/search
+  - type: GettingStarted
+    url: https://docs.parallel.ai/search/search-quickstart
+- aid: parallel-web-systems:parallel-web-systems-findall-api
+  name: Parallel Web Systems FindAll API
+  description: >-
+    The FindAll API discovers and evaluates entities that match complex criteria from natural language
+    objectives. Submit a high-level goal and the service automatically generates structured match conditions,
+    discovers relevant candidates, and evaluates each against the criteria. Returns comprehensive results
+    with detailed reasoning, citations, and confidence scores for each match decision. Streaming events
+    and webhooks are supported.
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - FindAll
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-findall-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Webhooks
+    url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/search/search
+  - type: GettingStarted
+    url: https://docs.parallel.ai/search/search-quickstart
+- aid: parallel-web-systems:parallel-web-systems-monitor-api
+  name: Parallel Web Systems Monitor API
+  description: >-
+    The Monitor API watches the web for material changes on a fixed frequency. Each monitor runs once
+    on creation and then on its configured schedule, emitting events when meaningful changes are detected.
+
+    - `event_stream` monitors track a search query and emit an event for each new material change.
+
+    - `snapshot` monitors track a specific task run's output and emit an event when the output changes.
+
+
+    Results can be polled via the events endpoint or delivered via webhooks.
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - Monitor
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-monitor-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Webhooks
+    url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/search/search
+  - type: GettingStarted
+    url: https://docs.parallel.ai/search/search-quickstart
+- aid: parallel-web-systems:parallel-web-systems-search-api
+  name: Parallel Web Systems Search API
+  description: >-
+    Search returns ranked URLs with extended excerpts suitable for LLM consumption. Inputs are a natural-language
+    objective and optional keyword queries. Source policies allow including or excluding specific domains
+    and have configurable output sizes. The returned extended snippets contain dense, relevant information
+    from relevant pages.
+
+    - Result: ranked list with URL, title, and long text excerpts
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-search-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Webhooks
+    url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/search/search
+  - type: GettingStarted
+    url: https://docs.parallel.ai/search/search-quickstart
+- aid: parallel-web-systems:parallel-web-systems-tasks-api
+  name: Parallel Web Systems Tasks API
+  description: >-
+    The Task API executes web research and extraction tasks. Clients submit a natural-language objective
+    with an optional input schema; the service plans retrieval, fetches relevant URLs, and returns outputs
+    that conform to a provided or inferred JSON schema. Supports deep research style queries and can return
+    rich structured JSON outputs. Processors trade-off between cost, latency, and quality. Each processor
+    supports calibrated confidences.
+
+    - Output metadata: citations, excerpts, reasoning, and confidence per field
+
+
+    Task Groups enable batch execution of many independent Task runs with group-level monitoring and failure
+    handling.
+
+    - Submit hundreds or thousands of Tasks as a single group
+
+    - Observe group progress and receive results as they complete
+
+    - Real-time updates via Server-Sent Events (SSE)
+
+    - Add tasks to an existing group while it is running
+
+    - Group-level retry and error aggregation
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - Tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-tasks-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Webhooks
+    url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/search/search
+  - type: GettingStarted
+    url: https://docs.parallel.ai/search/search-quickstart
 common:
 - type: Website
   url: https://parallel.ai/
+- type: DeveloperPortal
+  url: https://platform.parallel.ai
+- type: Documentation
+  url: https://docs.parallel.ai
+- type: APIReference
+  url: https://docs.parallel.ai/api-reference/search/search
+- type: GettingStarted
+  url: https://docs.parallel.ai/getting-started/overview
+- type: Blog
+  url: https://parallel.ai/blog
+- type: GitHubOrganization
+  url: https://github.com/parallel-web
+- type: SignUp
+  url: https://platform.parallel.ai
+- type: TermsOfService
+  url: https://parallel.ai/customer-terms
+- type: PrivacyPolicy
+  url: https://parallel.ai/privacy-policy
+- type: StatusPage
+  url: https://status.parallel.ai
+- type: Lifecycle
+  url: lifecycle/parallel-web-systems-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/parallel-web-systems-lifecycle.yml
+- type: ChangeLog
+  url: changelog/parallel-web-systems-changelog.yml
+- type: Packages
+  url: packages/parallel-web-systems-packages.yml
+- type: SDKs
+  url: packages/parallel-web-systems-packages.yml
+- type: CLI
+  url: cli/parallel-web-systems-cli.yml
+- type: Authentication
+  url: authentication/parallel-web-systems-authentication.yml
+- type: DomainSecurity
+  url: security/parallel-web-systems-domain-security.yml
+- type: TrustCenter
+  url: security/parallel-web-systems-trust-center.yml
+- type: Compliance
+  url: security/parallel-web-systems-trust-center.yml
+- type: Conformance
+  url: conformance/parallel-web-systems-conformance.yml
+- type: WellKnown
+  url: well-known/parallel-web-systems-well-known.yml
+- type: LLMsTxt
+  url: llms/parallel-web-systems-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 15
+  pass: local-v1

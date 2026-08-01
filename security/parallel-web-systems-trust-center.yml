@@ -1,0 +1,22 @@
+generated: '2026-07-20'
+method: searched
+source: https://trust.parallel.ai + https://parallel.ai (homepage) + https://docs.parallel.ai
+trust_center:
+  url: https://trust.parallel.ai
+  status: 200
+  present: true
+  description: >-
+    Parallel Trust Center - overview of the company's commitment to security, compliance,
+    and responsible AI practices, with downloadable compliance artifacts (gated portal).
+certifications:
+- name: SOC 2 Type II
+  source: parallel.ai homepage ("SOC-II Type 2 Certified")
+  status: published
+compliance_program:
+  responsible_ai: true
+  terms: https://parallel.ai/customer-terms
+  privacy: https://parallel.ai/privacy-policy
+notes: >-
+  Trust Center is live at trust.parallel.ai. SOC 2 Type II is stated publicly on the
+  marketing site; named artifacts (report PDFs) sit behind the trust-portal gate and were
+  not individually enumerated. No public bug-bounty or security.txt was found.
