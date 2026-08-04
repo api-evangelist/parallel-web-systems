@@ -1,7 +1,8 @@
 generated: '2026-07-20'
 method: searched
 source: live MCP initialize handshake + https://docs.parallel.ai/integrations/mcp/search-mcp
-status: live
+status: published
+status_raw: live
 name: Parallel Web Search MCP Server
 version: 1.27.0
 website: https://parallel.ai
