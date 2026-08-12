@@ -229,6 +229,10 @@ apis:
   - type: GettingStarted
     url: https://docs.parallel.ai/search/search-quickstart
 common:
+- type: MCPServer
+  url: mcp/parallel-web-systems-mcp.yml
+- type: Overlay
+  url: overlays/parallel-web-systems-openapi-overlay.yaml
 - type: Website
   url: https://parallel.ai/
 - type: DeveloperPortal
