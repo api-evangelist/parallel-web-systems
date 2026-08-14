@@ -5,33 +5,42 @@ description: >-
   and developers high-quality, low-latency access to the internet. Its API suite spans a
   Search API (high-accuracy, cross-referenced web search with turbo/basic/advanced modes),
   an Extract API for token-efficient page content, a Task / Deep Research API for multi-hop
-  research, FindAll for entity discovery, a Monitor API for continuous web change tracking,
-  and a Chat Completions (beta) surface. Parallel ships first-party Python and TypeScript
-  SDKs, a parallel-cli, a free hosted Search MCP server, and published Agent Skills. The
-  company is SOC 2 Type II certified and backed by Index Ventures.
+  research, an OpenAI-compatible Responses API for cited answers in seconds, FindAll and
+  Entity Search for entity discovery, a Monitor API for continuous web change tracking, a
+  beta Memory API for reusable research context, and a Chat Completions (beta) surface.
+  Parallel is unusually complete on the agent surface: a free hosted Search MCP server whose
+  tools/list answers anonymously, an A2A Deep Research agent advertised by a conformant
+  agent card at api.parallel.ai, published Agent Skills served from /.well-known/, an
+  llms.txt, and an OAuth key-issuance provider with RFC 8414 metadata. It ships first-party
+  Python and TypeScript SDKs plus a parallel-cli, prices everything pay-as-you-go with a
+  free monthly allowance, is SOC 2 Type II certified, and is backed by Index Ventures.
 url: https://raw.githubusercontent.com/api-evangelist/parallel-web-systems/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - index-ventures
-x-tier: stub
-x-tier-reason: portfolio-lead
 accessModel:
-  pricing: unknown
+  pricing: pay-as-you-go
   onboarding: self-serve
-  trial: false
-  try_now: false
-  public: false
-  label: Self-serve signup
-  confidence: medium
+  trial: true
+  try_now: true
+  public: true
+  label: Self-serve signup, pay-as-you-go, free tier
+  confidence: high
+  detail: >-
+    Self-serve signup at platform.parallel.ai with up to 5,000 requests per month free plus
+    monthly free credits; hosted playgrounds at platform.parallel.ai/play/*; and a hosted
+    Search MCP server callable with no account at all.
   source:
+  - plans
   - authentication
-  generated: '2026-07-22'
-  method: derived
+  - mcp
+  generated: '2026-08-14'
+  method: searched
 image: https://assets.parallel.ai/dark-parallel-avatar-540.png
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-20'
+modified: '2026-08-14'
 tags:
 - Company
 - Ai Ml
@@ -41,6 +50,10 @@ tags:
 - Web Monitoring
 - AI Agents
 - MCP
+- A2A
+- Agent Skills
+- Content Extraction
+- Entity Resolution
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -53,7 +66,7 @@ apis:
     The Chat API provides a programmatic chat-style text generation interface. It accepts a sequence of
     messages and returns model responses. Intended for assistant-like interactions and evaluation. Streaming
     responses are supported.
-  humanURL: https://docs.parallel.ai
+  humanURL: https://docs.parallel.ai/chat-api/chat-quickstart
   baseURL: https://api.parallel.ai
   tags:
   - Chat API (Beta)
@@ -68,10 +81,12 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Webhooks
     url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
   - type: APIReference
-    url: https://docs.parallel.ai/api-reference/search/search
+    url: https://docs.parallel.ai/api-reference/chat-api-beta/chat-completions
   - type: GettingStarted
-    url: https://docs.parallel.ai/search/search-quickstart
+    url: https://docs.parallel.ai/chat-api/chat-quickstart
 - aid: parallel-web-systems:parallel-web-systems-extract-api
   name: Parallel Web Systems Extract API
   description: >-
@@ -80,7 +95,7 @@ apis:
     and suitable for LLM consumption.
 
     - Result: excerpts or full content from the URL formatted as markdown
-  humanURL: https://docs.parallel.ai
+  humanURL: https://docs.parallel.ai/extract/extract-quickstart
   baseURL: https://api.parallel.ai
   tags:
   - Extract
@@ -95,10 +110,12 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Webhooks
     url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
   - type: APIReference
-    url: https://docs.parallel.ai/api-reference/search/search
+    url: https://docs.parallel.ai/api-reference/extract/extract
   - type: GettingStarted
-    url: https://docs.parallel.ai/search/search-quickstart
+    url: https://docs.parallel.ai/extract/extract-quickstart
 - aid: parallel-web-systems:parallel-web-systems-findall-api
   name: Parallel Web Systems FindAll API
   description: >-
@@ -107,7 +124,7 @@ apis:
     discovers relevant candidates, and evaluates each against the criteria. Returns comprehensive results
     with detailed reasoning, citations, and confidence scores for each match decision. Streaming events
     and webhooks are supported.
-  humanURL: https://docs.parallel.ai
+  humanURL: https://docs.parallel.ai/findall-api/findall-quickstart
   baseURL: https://api.parallel.ai
   tags:
   - FindAll
@@ -122,10 +139,12 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Webhooks
     url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
   - type: APIReference
-    url: https://docs.parallel.ai/api-reference/search/search
+    url: https://docs.parallel.ai/api-reference/findall/create-findall-run
   - type: GettingStarted
-    url: https://docs.parallel.ai/search/search-quickstart
+    url: https://docs.parallel.ai/findall-api/findall-quickstart
 - aid: parallel-web-systems:parallel-web-systems-monitor-api
   name: Parallel Web Systems Monitor API
   description: >-
@@ -138,7 +157,7 @@ apis:
 
 
     Results can be polled via the events endpoint or delivered via webhooks.
-  humanURL: https://docs.parallel.ai
+  humanURL: https://docs.parallel.ai/monitor-api/monitor-quickstart
   baseURL: https://api.parallel.ai
   tags:
   - Monitor
@@ -153,10 +172,12 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Webhooks
     url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
   - type: APIReference
-    url: https://docs.parallel.ai/api-reference/search/search
+    url: https://docs.parallel.ai/api-reference/monitor/create-monitor
   - type: GettingStarted
-    url: https://docs.parallel.ai/search/search-quickstart
+    url: https://docs.parallel.ai/monitor-api/monitor-quickstart
 - aid: parallel-web-systems:parallel-web-systems-search-api
   name: Parallel Web Systems Search API
   description: >-
@@ -166,7 +187,7 @@ apis:
     from relevant pages.
 
     - Result: ranked list with URL, title, and long text excerpts
-  humanURL: https://docs.parallel.ai
+  humanURL: https://docs.parallel.ai/search/search-quickstart
   baseURL: https://api.parallel.ai
   tags:
   - Search
@@ -181,6 +202,8 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Webhooks
     url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
   - type: APIReference
     url: https://docs.parallel.ai/api-reference/search/search
   - type: GettingStarted
@@ -209,7 +232,7 @@ apis:
     - Add tasks to an existing group while it is running
 
     - Group-level retry and error aggregation
-  humanURL: https://docs.parallel.ai
+  humanURL: https://docs.parallel.ai/task-api/task-quickstart
   baseURL: https://api.parallel.ai
   tags:
   - Tasks
@@ -224,10 +247,62 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Webhooks
     url: asyncapi/parallel-web-systems-webhooks.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
   - type: APIReference
-    url: https://docs.parallel.ai/api-reference/search/search
+    url: https://docs.parallel.ai/api-reference/tasks/create-task-run
   - type: GettingStarted
-    url: https://docs.parallel.ai/search/search-quickstart
+    url: https://docs.parallel.ai/task-api/task-quickstart
+- aid: parallel-web-systems:parallel-web-systems-responses-api
+  name: Parallel Web Systems Responses API
+  description: >-
+    The Responses API is an OpenAI Responses-compatible endpoint that returns fully cited answers
+    grounded in the live web, with structured output support and 5-60 second response times. Cost and
+    latency are selected via a `reasoning.effort` tier (low, medium, high). It is the synchronous,
+    latency-sensitive counterpart to the asynchronous Task API, intended for research subagents and
+    in-product answers.
+  humanURL: https://docs.parallel.ai/responses-api/responses-quickstart
+  baseURL: https://api.parallel.ai
+  tags:
+  - Responses API
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-responses-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/responses-api/create-response
+  - type: GettingStarted
+    url: https://docs.parallel.ai/responses-api/responses-quickstart
+- aid: parallel-web-systems:parallel-web-systems-memory-api-beta
+  name: Parallel Web Systems Memory API (Beta)
+  description: >-
+    The beta Memory API gives agents a persistent retrieval layer over previously gathered web
+    context. It exposes three operations - retrieve memory for a query, evict a specific source from
+    memory, and clear memory entirely - so an agent can reuse research across turns without refetching
+    the web. The surface lives under the /v1beta prefix and is opted into via the `parallel-beta`
+    request header.
+  humanURL: https://docs.parallel.ai
+  baseURL: https://api.parallel.ai
+  tags:
+  - Memory
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-memory-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: Documentation
+    url: https://docs.parallel.ai
 common:
 - type: MCPServer
   url: mcp/parallel-web-systems-mcp.yml
@@ -283,8 +358,32 @@ common:
   url: llms/parallel-web-systems-llms.txt
 - type: AgentSkill
   url: skills/_index.yml
+- type: AgentCard
+  url: a2a/parallel-web-systems-a2a.yml
+- type: ToolCrosswalk
+  url: mcp/parallel-web-systems-tool-crosswalk.yml
+- type: OAuthScopes
+  url: scopes/parallel-web-systems-scopes.yml
+- type: Plans
+  url: plans/parallel-web-systems-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/parallel-web-systems-rate-limits.yml
+- type: PostmanCollection
+  url: collections/parallel-web-systems-search-api.postman_collection.json
+- type: OpenCollection
+  url: collections/parallel-web-systems-search-api.opencollection.json
+- type: Pricing
+  url: https://parallel.ai/pricing
 x-enrichment:
-  date: '2026-07-20'
+  date: '2026-08-14'
   status: enriched
-  artifacts_added: 15
+  artifacts_added: 11
   pass: local-v1
+x-coverage:
+  state: covered
+  reason: n/a
+  detail: >-
+    Fully covered. Live OpenAPI (34 paths), a callable hosted MCP server whose tools/list
+    answers anonymously, two real A2A agent cards, published Agent Skills served from
+    /.well-known/, llms.txt, RFC 8414 OAuth metadata, published pricing and rate limits.
+  checked: '2026-08-14'
