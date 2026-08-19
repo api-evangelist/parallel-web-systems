@@ -1,0 +1,202 @@
+{
+  "item": [
+    {
+      "id": "c4b7f831-bf44-45de-b04b-b32dfc299896",
+      "name": "Extract",
+      "description": {
+        "content": "Extract returns excerpts or full content from one or more URLs. Inputs are a list of URLs and an optional search objective and keyword queries. The returned excerpts or full content is formatted as markdown and suitable for LLM consumption.\n- Result: excerpts or full content from the URL formatted as markdown",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b6059250-c2e3-47f0-a674-1a0524daad3d",
+          "name": "Extract",
+          "request": {
+            "name": "Extract",
+            "description": {
+              "content": "Extracts relevant content from specific web URLs.\n\nThe legacy Extract API reference (`/v1beta/extract` endpoint) is available\n[here](https://docs.parallel.ai/api-reference/legacy/extract-beta/extract), and\nmigration guide is [here](https://docs.parallel.ai/extract/extract-migration-guide).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "extract"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urls\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"objective\": \"<string>\",\n  \"search_queries\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"max_chars_total\": \"<integer>\",\n  \"session_id\": \"<string>\",\n  \"client_model\": \"<string>\",\n  \"advanced_settings\": {\n    \"fetch_policy\": {\n      \"max_age_seconds\": \"<integer>\",\n      \"timeout_seconds\": \"<number>\",\n      \"disable_cache_fallback\": false\n    },\n    \"excerpt_settings\": {\n      \"max_chars_per_result\": \"<integer>\"\n    },\n    \"full_content\": {\n      \"max_chars_per_result\": \"<integer>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b38531b2-1a77-4fdf-894e-b36001b10e4d",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "extract"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"urls\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"objective\": \"<string>\",\n  \"search_queries\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"max_chars_total\": \"<integer>\",\n  \"session_id\": \"<string>\",\n  \"client_model\": \"<string>\",\n  \"advanced_settings\": {\n    \"fetch_policy\": {\n      \"max_age_seconds\": 8324,\n      \"timeout_seconds\": 1622.151276598166,\n      \"disable_cache_fallback\": false\n    },\n    \"excerpt_settings\": {\n      \"max_chars_per_result\": 990\n    },\n    \"full_content\": {\n      \"max_chars_per_result\": 487\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"extract_id\": \"extract_8a911eb27c7a4afaa20d0d9dc98d07c0\",\n  \"results\": [\n    {\n      \"url\": \"https://www.example.com\",\n      \"title\": \"Example Title\",\n      \"excerpts\": [\n        \"Excerpted text ...\"\n      ],\n      \"full_content\": \"Full content ...\"\n    }\n  ],\n  \"errors\": [\n    {\n      \"url\": \"https://www.example.com\",\n      \"error_type\": \"fetch_error\",\n      \"http_status_code\": 500,\n      \"content\": \"Error fetching content from https://www.example.com\"\n    }\n  ],\n  \"session_id\": \"session_8a911eb27c7a4afaa20d0d9dc98d07c0\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5ccf4d24-5b7b-4823-bc6f-bf11ec5e51ab",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "extract"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"urls\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"objective\": \"<string>\",\n  \"search_queries\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"max_chars_total\": \"<integer>\",\n  \"session_id\": \"<string>\",\n  \"client_model\": \"<string>\",\n  \"advanced_settings\": {\n    \"fetch_policy\": {\n      \"max_age_seconds\": 8324,\n      \"timeout_seconds\": 1622.151276598166,\n      \"disable_cache_fallback\": false\n    },\n    \"excerpt_settings\": {\n      \"max_chars_per_result\": 990\n    },\n    \"full_content\": {\n      \"max_chars_per_result\": 487\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"extract_8a911eb27c7a4afaa20d0d9dc98d07c0\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.parallel.ai",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "20d9b180-23c6-4bab-b3b0-fb7547e63be7",
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Extract API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Parallel API\n\nContact Support:\n Name: Parallel Support\n Email: support@parallel.ai",
+      "type": "text/plain"
+    }
+  }
+}

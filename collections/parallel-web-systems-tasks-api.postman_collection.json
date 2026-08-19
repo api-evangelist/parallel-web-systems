@@ -1,0 +1,3282 @@
+{
+  "item": [
+    {
+      "id": "26cd4340-de5b-4369-8c96-1fb73701806b",
+      "name": "Tasks",
+      "description": {
+        "content": "The Task API executes web research and extraction tasks. Clients submit a natural-language objective with an optional input schema; the service plans retrieval, fetches relevant URLs, and returns outputs that conform to a provided or inferred JSON schema. Supports deep research style queries and can return rich structured JSON outputs. Processors trade-off between cost, latency, and quality. Each processor supports calibrated confidences.\n- Output metadata: citations, excerpts, reasoning, and confidence per field\n\nTask Groups enable batch execution of many independent Task runs with group-level monitoring and failure handling.\n- Submit hundreds or thousands of Tasks as a single group\n- Observe group progress and receive results as they complete\n- Real-time updates via Server-Sent Events (SSE)\n- Add tasks to an existing group while it is running\n- Group-level retry and error aggregation",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4d11b36b-a847-459d-a9c7-494b57fee9ce",
+          "name": "Create Task Group",
+          "request": {
+            "name": "Create Task Group",
+            "description": {
+              "content": "Initiates a TaskGroup to group and track multiple runs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "groups"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "844915ee-4579-431c-bd5e-44fbd718401a",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"taskgroup_id\": \"string\",\n  \"status\": {\n    \"num_task_runs\": 2425,\n    \"task_run_status_counts\": {\n      \"key_0\": 8711,\n      \"key_1\": 1386,\n      \"key_2\": 5093\n    },\n    \"is_active\": false,\n    \"status_message\": \"string\",\n    \"modified_at\": \"string\"\n  },\n  \"created_at\": \"string\",\n  \"metadata\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2aeef7fb-a702-4ba9-acb6-0190abb0c8f8",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c33e65e1-68a9-4a39-bc17-8eccf12f7b8b",
+          "name": "Retrieve Task Group",
+          "request": {
+            "name": "Retrieve Task Group",
+            "description": {
+              "content": "Retrieves aggregated status across runs in a TaskGroup.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "groups",
+                ":taskgroup_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "taskgroup_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e436a62f-1267-4acc-bb04-7b9c7b7662a9",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"taskgroup_id\": \"string\",\n  \"status\": {\n    \"num_task_runs\": 2425,\n    \"task_run_status_counts\": {\n      \"key_0\": 8711,\n      \"key_1\": 1386,\n      \"key_2\": 5093\n    },\n    \"is_active\": false,\n    \"status_message\": \"string\",\n    \"modified_at\": \"string\"\n  },\n  \"created_at\": \"string\",\n  \"metadata\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f5021c2e-a8b0-4bce-90b5-14ba8c992f8a",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cbf8c65a-81a5-49f2-a7a3-9ccad8ff4f8a",
+          "name": "Stream Task Group Events",
+          "request": {
+            "name": "Stream Task Group Events",
+            "description": {
+              "content": "Streams events from a TaskGroup: status updates and run completions.\n\nThe connection will remain open for up to an hour as long as at least one run in the\ngroup is still active.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "groups",
+                ":taskgroup_id",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "last_event_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "timeout",
+                  "value": "<number>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "taskgroup_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1e88b78b-13a2-41fa-ac44-4e3887b8921f",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "last_event_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "timeout",
+                      "value": "<number>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6a5c1656-b729-49a7-bbc3-7ac3d36cbd2d",
+              "name": "TaskGroup not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "last_event_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "timeout",
+                      "value": "<number>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"TaskGroup not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "579c8714-d237-40da-af45-c873e643c9f5",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "last_event_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "timeout",
+                      "value": "<number>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a85c363d-ec84-4244-bea5-6e283f7d3390",
+          "name": "Add Runs to Task Group",
+          "request": {
+            "name": "Add Runs to Task Group",
+            "description": {
+              "content": "Initiates multiple task runs within a TaskGroup.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "groups",
+                ":taskgroup_id",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "refresh_status",
+                  "value": "true"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "taskgroup_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "parallel-beta",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inputs\": [\n    {\n      \"processor\": \"<string>\",\n      \"input\": \"<string>\",\n      \"metadata\": {\n        \"key_0\": \"<string>\"\n      },\n      \"source_policy\": {\n        \"include_domains\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"exclude_domains\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"after_date\": \"<date>\"\n      },\n      \"advanced_settings\": {\n        \"location\": \"<string>\"\n      },\n      \"task_spec\": {\n        \"output_schema\": {\n          \"json_schema\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"input_schema\": \"<string>\"\n      },\n      \"previous_interaction_id\": \"<string>\",\n      \"mcp_servers\": [\n        {\n          \"url\": \"<string>\",\n          \"name\": \"<string>\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        {\n          \"url\": \"<string>\",\n          \"name\": \"<string>\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      ],\n      \"enable_events\": \"<boolean>\",\n      \"webhook\": {\n        \"url\": \"<string>\"\n      }\n    },\n    {\n      \"processor\": \"<string>\",\n      \"input\": \"<string>\",\n      \"metadata\": {\n        \"key_0\": \"<string>\"\n      },\n      \"source_policy\": {\n        \"include_domains\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"exclude_domains\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"after_date\": \"<date>\"\n      },\n      \"advanced_settings\": {\n        \"location\": \"<string>\"\n      },\n      \"task_spec\": {\n        \"output_schema\": {\n          \"json_schema\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"input_schema\": \"<string>\"\n      },\n      \"previous_interaction_id\": \"<string>\",\n      \"mcp_servers\": [\n        {\n          \"url\": \"<string>\",\n          \"name\": \"<string>\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        {\n          \"url\": \"<string>\",\n          \"name\": \"<string>\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      ],\n      \"enable_events\": \"<boolean>\",\n      \"webhook\": {\n        \"url\": \"<string>\"\n      }\n    }\n  ],\n  \"default_task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"key_0\": 8404,\n        \"key_1\": true\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "554803dc-e788-42c0-a418-57c710d96368",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "refresh_status",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inputs\": [\n    {\n      \"processor\": \"base\",\n      \"input\": \"string\",\n      \"metadata\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"source_policy\": {\n        \"include_domains\": [\n          \"wikipedia.org\",\n          \"usa.gov\",\n          \".edu\"\n        ],\n        \"exclude_domains\": [\n          \"reddit.com\",\n          \"x.com\",\n          \".ai\"\n        ],\n        \"after_date\": \"1990-08-08\"\n      },\n      \"advanced_settings\": {\n        \"location\": \"string\"\n      },\n      \"task_spec\": {\n        \"output_schema\": {\n          \"json_schema\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"input_schema\": \"string\"\n      },\n      \"previous_interaction_id\": \"string\",\n      \"mcp_servers\": [\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      ],\n      \"enable_events\": true,\n      \"webhook\": {\n        \"url\": \"string\"\n      }\n    },\n    {\n      \"processor\": \"base\",\n      \"input\": \"string\",\n      \"metadata\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"source_policy\": {\n        \"include_domains\": [\n          \"wikipedia.org\",\n          \"usa.gov\",\n          \".edu\"\n        ],\n        \"exclude_domains\": [\n          \"reddit.com\",\n          \"x.com\",\n          \".ai\"\n        ],\n        \"after_date\": \"1953-07-13\"\n      },\n      \"advanced_settings\": {\n        \"location\": \"string\"\n      },\n      \"task_spec\": {\n        \"output_schema\": {\n          \"json_schema\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"input_schema\": \"string\"\n      },\n      \"previous_interaction_id\": \"string\",\n      \"mcp_servers\": [\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      ],\n      \"enable_events\": false,\n      \"webhook\": {\n        \"url\": \"string\"\n      }\n    }\n  ],\n  \"default_task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": {\n    \"num_task_runs\": 1973,\n    \"task_run_status_counts\": {\n      \"key_0\": 2086,\n      \"key_1\": 9712,\n      \"key_2\": 6068,\n      \"key_3\": 1940\n    },\n    \"is_active\": false,\n    \"status_message\": \"string\",\n    \"modified_at\": \"string\"\n  },\n  \"run_ids\": [\n    \"string\",\n    \"string\"\n  ],\n  \"run_cursor\": \"string\",\n  \"event_cursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7070ca20-ccc0-40a4-bc07-2a546000b8ad",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "refresh_status",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inputs\": [\n    {\n      \"processor\": \"base\",\n      \"input\": \"string\",\n      \"metadata\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"source_policy\": {\n        \"include_domains\": [\n          \"wikipedia.org\",\n          \"usa.gov\",\n          \".edu\"\n        ],\n        \"exclude_domains\": [\n          \"reddit.com\",\n          \"x.com\",\n          \".ai\"\n        ],\n        \"after_date\": \"1990-08-08\"\n      },\n      \"advanced_settings\": {\n        \"location\": \"string\"\n      },\n      \"task_spec\": {\n        \"output_schema\": {\n          \"json_schema\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"input_schema\": \"string\"\n      },\n      \"previous_interaction_id\": \"string\",\n      \"mcp_servers\": [\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      ],\n      \"enable_events\": true,\n      \"webhook\": {\n        \"url\": \"string\"\n      }\n    },\n    {\n      \"processor\": \"base\",\n      \"input\": \"string\",\n      \"metadata\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"source_policy\": {\n        \"include_domains\": [\n          \"wikipedia.org\",\n          \"usa.gov\",\n          \".edu\"\n        ],\n        \"exclude_domains\": [\n          \"reddit.com\",\n          \"x.com\",\n          \".ai\"\n        ],\n        \"after_date\": \"1953-07-13\"\n      },\n      \"advanced_settings\": {\n        \"location\": \"string\"\n      },\n      \"task_spec\": {\n        \"output_schema\": {\n          \"json_schema\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"input_schema\": \"string\"\n      },\n      \"previous_interaction_id\": \"string\",\n      \"mcp_servers\": [\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        {\n          \"url\": \"string\",\n          \"name\": \"string\",\n          \"type\": \"url\",\n          \"headers\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"allowed_tools\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      ],\n      \"enable_events\": false,\n      \"webhook\": {\n        \"url\": \"string\"\n      }\n    }\n  ],\n  \"default_task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "85a5721c-5dc6-4595-8b21-cd8e3da960c1",
+          "name": "Fetch Task Group Runs",
+          "request": {
+            "name": "Fetch Task Group Runs",
+            "description": {
+              "content": "Retrieves task runs in a TaskGroup and optionally their inputs and outputs.\n\nAll runs within a TaskGroup are returned as a stream. To get the inputs and/or\noutputs back in the stream, set the corresponding `include_input` and\n`include_output` parameters to `true`.\n\nThe stream is resumable using the `event_id` as the cursor. To resume a stream,\nspecify the `last_event_id` parameter with the `event_id` of the last event in the\nstream. The stream will resume from the next event after the `last_event_id`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "groups",
+                ":taskgroup_id",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "last_event_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "include_input",
+                  "value": "false"
+                },
+                {
+                  "disabled": false,
+                  "key": "include_output",
+                  "value": "false"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "taskgroup_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fce7f7b9-4f23-41d2-b2cc-0d5e033359c2",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "last_event_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include_input",
+                      "value": "false"
+                    },
+                    {
+                      "key": "include_output",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "795d9cf3-1dda-48ce-8cd4-25d9682a751d",
+              "name": "TaskGroup not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "last_event_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include_input",
+                      "value": "false"
+                    },
+                    {
+                      "key": "include_output",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"TaskGroup not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e973da78-79dc-4d46-9375-7d133c1b4c18",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "last_event_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include_input",
+                      "value": "false"
+                    },
+                    {
+                      "key": "include_output",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "92b80604-19ce-45fd-a22b-b9eb4e37f562",
+          "name": "Retrieve Task Group Run",
+          "request": {
+            "name": "Retrieve Task Group Run",
+            "description": {
+              "content": "Retrieves run status by run_id.\n\nThis endpoint is equivalent to fetching run status directly using the\n`retrieve()` method or the `tasks/runs` GET endpoint.\n\nThe run result is available from the `/result` endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "groups",
+                ":taskgroup_id",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "taskgroup_id",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4fb4260c-168f-4998-96c4-ab0755891fed",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"run_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n  \"interaction_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n  \"status\": \"running\",\n  \"is_active\": true,\n  \"processor\": \"core\",\n  \"metadata\": {\n    \"my_key\": \"my_value\"\n  },\n  \"created_at\": \"2025-04-23T20:21:48.037943Z\",\n  \"modified_at\": \"2025-04-23T20:21:48.037943Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "673a2a75-cfee-45ec-a5ca-ad157bd11168",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6e73361d-72bb-41ba-8721-6163945f2d79",
+              "name": "Run id not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Run id not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52bd5e1b-a2c5-40b7-860c-a68399273b7d",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "groups",
+                    ":taskgroup_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "taskgroup_id",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f55cc0c5-e365-4067-9d1a-1e970f7c2d42",
+          "name": "Create Task Run",
+          "request": {
+            "name": "Create Task Run",
+            "description": {
+              "content": "Initiates a task run.\n\nReturns immediately with a run object in status 'queued'.\n\nBeta features can be enabled by setting the 'parallel-beta' header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "parallel-beta",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"processor\": \"<string>\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"exclude_domains\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"after_date\": \"<date>\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"<string>\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"key_0\": 8431,\n        \"key_1\": \"string\",\n        \"key_2\": 1549.002019675556,\n        \"key_3\": 6831\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"<string>\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"<string>\",\n      \"name\": \"<string>\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"<password>\"\n      },\n      \"allowed_tools\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    {\n      \"url\": \"<string>\",\n      \"name\": \"<string>\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"<password>\",\n        \"key_1\": \"<password>\",\n        \"key_2\": \"<password>\"\n      },\n      \"allowed_tools\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "be124aa8-244e-4ad0-838d-eb7995bde8c0",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processor\": \"base\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"wikipedia.org\",\n      \"usa.gov\",\n      \".edu\"\n    ],\n    \"exclude_domains\": [\n      \"reddit.com\",\n      \"x.com\",\n      \".ai\"\n    ],\n    \"after_date\": \"1996-10-25\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"string\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"run_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n  \"interaction_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n  \"status\": \"queued\",\n  \"is_active\": true,\n  \"processor\": \"core\",\n  \"metadata\": {\n    \"my_key\": \"my_value\"\n  },\n  \"created_at\": \"2025-04-23T20:21:48.037943Z\",\n  \"modified_at\": \"2025-04-23T20:21:48.037943Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d855857b-4220-47f9-be41-fed306c083e6",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processor\": \"base\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"wikipedia.org\",\n      \"usa.gov\",\n      \".edu\"\n    ],\n    \"exclude_domains\": [\n      \"reddit.com\",\n      \"x.com\",\n      \".ai\"\n    ],\n    \"after_date\": \"1996-10-25\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"string\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6feedb6b-f0cb-4835-924d-b679d803b32e",
+              "name": "Payment required: insufficient credit in account",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processor\": \"base\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"wikipedia.org\",\n      \"usa.gov\",\n      \".edu\"\n    ],\n    \"exclude_domains\": [\n      \"reddit.com\",\n      \"x.com\",\n      \".ai\"\n    ],\n    \"after_date\": \"1996-10-25\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"string\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Payment required: insufficient credit in account\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ddd96d57-49b8-499f-b310-766663381b9b",
+              "name": "Forbidden: invalid processor in request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processor\": \"base\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"wikipedia.org\",\n      \"usa.gov\",\n      \".edu\"\n    ],\n    \"exclude_domains\": [\n      \"reddit.com\",\n      \"x.com\",\n      \".ai\"\n    ],\n    \"after_date\": \"1996-10-25\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"string\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Forbidden: invalid processor in request\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0325de7f-14c1-4417-88e3-8dd6872bbddc",
+              "name": "Unprocessable content: request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processor\": \"base\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"wikipedia.org\",\n      \"usa.gov\",\n      \".edu\"\n    ],\n    \"exclude_domains\": [\n      \"reddit.com\",\n      \"x.com\",\n      \".ai\"\n    ],\n    \"after_date\": \"1996-10-25\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"string\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unprocessable content: request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "47715886-c4ad-49f9-8aa9-50b5381ba210",
+              "name": "Too many requests: quota temporarily exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processor\": \"base\",\n  \"input\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"source_policy\": {\n    \"include_domains\": [\n      \"wikipedia.org\",\n      \"usa.gov\",\n      \".edu\"\n    ],\n    \"exclude_domains\": [\n      \"reddit.com\",\n      \"x.com\",\n      \".ai\"\n    ],\n    \"after_date\": \"1996-10-25\"\n  },\n  \"advanced_settings\": {\n    \"location\": \"string\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"gdp\": {\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"type\": \"object\"\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": \"string\"\n  },\n  \"previous_interaction_id\": \"<string>\",\n  \"mcp_servers\": [\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"url\": \"string\",\n      \"name\": \"string\",\n      \"type\": \"url\",\n      \"headers\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"allowed_tools\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"enable_events\": \"<boolean>\",\n  \"webhook\": {\n    \"url\": \"string\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Too many requests: quota temporarily exceeded\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "317fea0f-82c8-4a63-a1d2-2396db2a1c77",
+          "name": "Retrieve Task Run",
+          "request": {
+            "name": "Retrieve Task Run",
+            "description": {
+              "content": "Retrieves run status by run_id.\n\nThe run result is available from the `/result` endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3ce6edab-ce39-403d-b75c-4b7874f6c2fe",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"run_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n  \"interaction_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n  \"status\": \"running\",\n  \"is_active\": true,\n  \"processor\": \"core\",\n  \"metadata\": {\n    \"my_key\": \"my_value\"\n  },\n  \"created_at\": \"2025-04-23T20:21:48.037943Z\",\n  \"modified_at\": \"2025-04-23T20:21:48.037943Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1549bd8-867a-40c3-847c-a98c4a0f40c1",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5113e00e-e855-48b3-99a5-6842b63dc71e",
+              "name": "Run id not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Run id not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b811588a-0e18-48a3-8081-c630b5e85660",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7860a631-2215-46d0-a77c-8d79efac9c08",
+          "name": "Stream Task Run Events",
+          "request": {
+            "name": "Stream Task Run Events",
+            "description": {
+              "content": "Streams events for a task run.\n\nReturns a stream of events showing progress updates and state changes for the task\nrun.\n\nFor task runs that did not have enable_events set to true during creation, the\nfrequency of events will be reduced.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "runs",
+                ":run_id",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d37737d4-35b4-4c0a-a2e1-8e00fea67be5",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0bb8b164-dd80-493e-aebe-4271adfacb10",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "29e97615-4c97-4b42-9753-abf5e5f9da28",
+              "name": "Run id not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Run id not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "474f7ae0-2d20-46a9-9403-e89bb2ec0756",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "42abba98-1533-4451-957d-acc27724f286",
+          "name": "Retrieve Task Run Input",
+          "request": {
+            "name": "Retrieve Task Run Input",
+            "description": {
+              "content": "Retrieves the input of a run by run_id.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "runs",
+                ":run_id",
+                "input"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "45d81970-a34e-457f-b849-bb9f3ca7f0bc",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "input"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"processor\": \"core\",\n  \"metadata\": {\n    \"my_key\": \"my_value\"\n  },\n  \"task_spec\": {\n    \"output_schema\": {\n      \"json_schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"gdp\": {\n            \"type\": \"string\",\n            \"description\": \"GDP in USD for the year, formatted like '$3.1 trillion (2023)'\"\n          }\n        },\n        \"required\": [\n          \"gdp\"\n        ],\n        \"additionalProperties\": false\n      },\n      \"type\": \"json\"\n    },\n    \"input_schema\": {\n      \"json_schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"country\": {\n            \"type\": \"string\"\n          },\n          \"year\": {\n            \"type\": \"integer\"\n          }\n        },\n        \"required\": [\n          \"country\",\n          \"year\"\n        ],\n        \"additionalProperties\": false\n      },\n      \"type\": \"json\"\n    }\n  },\n  \"input\": {\n    \"country\": \"France\",\n    \"year\": 2023\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d793593a-11fc-48a5-b5a3-0972ca98342f",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "input"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63267c94-d478-48c5-93ae-182c031a5952",
+              "name": "Run id not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "input"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Run id not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18c2b127-a185-44ae-90d7-971ede822058",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "input"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c9d3df15-d080-463f-9200-dfcf16a8eea3",
+          "name": "Retrieve Task Run Result",
+          "request": {
+            "name": "Retrieve Task Run Result",
+            "description": {
+              "content": "Retrieves a run result by run_id, blocking until the run is completed.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tasks",
+                "runs",
+                ":run_id",
+                "result"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "timeout",
+                  "value": "600"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "parallel-beta",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "99bd9caa-04ec-4ced-b749-c8554b922ac5",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "result"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "timeout",
+                      "value": "600"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"run\": {\n    \"run_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n    \"interaction_id\": \"trun_9907962f83aa4d9d98fd7f4bf745d654\",\n    \"status\": \"completed\",\n    \"is_active\": false,\n    \"processor\": \"core\",\n    \"metadata\": {\n      \"my_key\": \"my_value\"\n    },\n    \"created_at\": \"2025-04-23T20:21:48.037943Z\",\n    \"modified_at\": \"2025-04-23T20:21:48.037943Z\"\n  },\n  \"output\": {\n    \"basis\": [],\n    \"type\": \"json\",\n    \"content\": {\n      \"gdp\": \"$3.1 trillion (2023)\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c5543bf-261b-4808-aea6-e9f9471c3135",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "result"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "timeout",
+                      "value": "600"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4f5d563f-89ee-437d-b83a-b84bf7329f2e",
+              "name": "Run failed or run id not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "result"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "timeout",
+                      "value": "600"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Run failed or run id not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ddb83281-2ca6-4bca-947c-f944ccf41d87",
+              "name": "Request timed out; run still active",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "result"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "timeout",
+                      "value": "600"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Request Timeout",
+              "code": 408,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request timed out; run still active\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3abc509e-1ab9-41e6-80e5-ee29d29fea91",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "result"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "timeout",
+                      "value": "600"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "parallel-beta",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dbb49101-1cfb-4747-95d6-4a374cd7e872",
+          "name": "Stream Task Run Events",
+          "request": {
+            "name": "Stream Task Run Events",
+            "description": {
+              "content": "Streams events for a task run.\n\nReturns a stream of events showing progress updates and state changes for the task\nrun.\n\nFor task runs that did not have enable_events set to true during creation, the\nfrequency of events will be reduced.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1beta",
+                "tasks",
+                "runs",
+                ":run_id",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "714381f5-33d8-4fc6-bea5-296d19be5c91",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d13cc2cb-e6a7-4b81-ae88-645009b58f06",
+              "name": "Unauthorized: invalid or missing credentials",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Unauthorized: invalid or missing credentials\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a94421a-dd96-467a-8ab7-37769fae5618",
+              "name": "Run id not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Run id not found\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "23d8c7dd-eae8-415c-abc9-d437c6f59ebf",
+              "name": "Request validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "tasks",
+                    "runs",
+                    ":run_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"error\": {\n    \"ref_id\": \"fcb2b4f3-c75e-4186-87bc-caa1a8381331\",\n    \"message\": \"Request validation error\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.parallel.ai",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "8df4a2d7-0ed8-4d37-9dd9-ad60c22999c0",
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Tasks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Parallel API\n\nContact Support:\n Name: Parallel Support\n Email: support@parallel.ai",
+      "type": "text/plain"
+    }
+  }
+}

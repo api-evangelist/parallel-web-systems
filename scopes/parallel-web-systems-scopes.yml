@@ -1,0 +1,68 @@
+generated: '2026-08-14'
+method: searched
+source: https://docs.parallel.ai/integrations/oauth-provider
+docs: https://docs.parallel.ai/integrations/oauth-provider
+metadata:
+  discovery: https://platform.parallel.ai/.well-known/oauth-authorization-server
+  file: well-known/parallel-web-systems-oauth-authorization-server.json
+  spec: RFC 8414
+  issuer: https://platform.parallel.ai
+provider:
+  name: Parallel OAuth Provider
+  url: https://platform.parallel.ai
+  authorization_endpoint: https://platform.parallel.ai/getKeys/authorize
+  token_endpoint: https://platform.parallel.ai/getKeys/token
+  registration_endpoint: https://platform.parallel.ai/getKeys/register
+  device_authorization_endpoint: https://platform.parallel.ai/getKeys/device/code
+grant_types:
+- authorization_code
+- urn:ietf:params:oauth:grant-type:device_code
+client_authentication:
+  token_endpoint_auth_methods_supported:
+  - none
+  detail: Public-client design - PKCE (S256) is mandatory and there is no client secret.
+pkce:
+  required: true
+  methods:
+  - S256
+scope_count: 1
+scopes:
+- name: key:read
+  description: >-
+    Use a Parallel API key to access the API on the user's behalf. The access_token
+    returned by the token endpoint IS the user's Parallel API key, which is then sent as
+    the x-api-key header on data-plane calls.
+  source: /.well-known/oauth-authorization-server scopes_supported + OAuth Provider docs
+consumers:
+- name: parallel-cli
+  flow: device_code
+  detail: '`parallel-cli auth` runs the RFC 8628 device-code flow (--no-browser for headless).'
+- name: A2A Deep Research agent
+  flow: authorization_code
+  detail: >-
+    The A2A agent card at api.parallel.ai declares securityScheme `parallel_oauth` with
+    the authorizationCode flow and requires scope key:read. See a2a/parallel-web-systems-a2a.yml.
+- name: Search MCP (OAuth endpoint)
+  flow: authorization_code
+  detail: >-
+    https://search.parallel.ai/mcp-oauth is the OAuth-capable MCP endpoint; anonymous
+    requests return 401. The default /mcp endpoint does not advertise OAuth.
+- name: Third-party applications
+  flow: authorization_code
+  detail: >-
+    Applications identify by hostname as client_id and users explicitly consent per
+    application, selecting or generating an API key at consent time.
+caveats:
+- >-
+  The scope surface is deliberately minimal. OAuth here is a key-issuance / delegation
+  layer, not a per-resource permission model - there are no read/write or per-product
+  scopes. The data plane authorizes with a single opaque API key whose entitlements are
+  set by the account, not by the token.
+- >-
+  The OpenAPI declares only ApiKeyAuth (x-api-key) and no oauth2 securityScheme, so this
+  file could not be derived from the spec; it was searched from the OAuth Provider docs,
+  the RFC 8414 metadata, and the A2A agent card.
+notes: >-
+  derive-oauth-scopes.py found no oauth2 securityScheme in the OpenAPI (0 providers with
+  oauth2), so this artifact is entirely searched/probed from Parallel's own published
+  OAuth surface. No scopes were invented - scopes_supported carries exactly one value.

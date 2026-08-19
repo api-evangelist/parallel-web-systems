@@ -1,0 +1,198 @@
+generated: '2026-08-14'
+method: derived
+source: >-
+  live MCP tools/list against https://search.parallel.ai/mcp (HTTP 200, unauthenticated) +
+  openapi/_original/parallel-web-systems-openapi.json +
+  https://docs.parallel.ai/integrations/mcp/search-mcp
+type: ToolCrosswalk
+surfaces:
+  openapi: openapi/_original/parallel-web-systems-openapi.json
+  openapi_operations: 36
+  mcp:
+    url: https://search.parallel.ai/mcp
+    gated: false
+    detail: >-
+      tools/list returns 200 anonymously with full inputSchema AND outputSchema for both
+      tools, so this crosswalk is bound against the REAL live tool schemas, not doc prose.
+  mcp_oauth:
+    url: https://search.parallel.ai/mcp-oauth
+    gated: true
+    detail: Anonymous requests return 401; OAuth or Bearer API key required.
+  a2a:
+    url: https://api.parallel.ai/a2a
+    gated: true
+    detail: 401 to anonymous callers; card declares OAuth scope key:read.
+  graphql: null
+coverage:
+  mcp_tools: 2
+  mapped_high_confidence: 2
+  mcp_only: 0
+  rest_only: 34
+  rest_coverage_pct: 5.6
+crosswalk:
+- tool: web_search
+  category: search
+  rest:
+  - v1_search_v1_search_post
+  binding: POST /v1/search
+  confidence: high
+  tool_inputs:
+    required:
+    - objective
+    - search_queries
+    optional:
+    - session_id
+    - model_name
+  note: >-
+    Parallel's own MCP documentation states the tools "invoke the Search API and Extract
+    API endpoints but present a simpler interface". The tool inherits the /v1/search
+    objective + search_queries contract; the MCP wrapper pins mode to `basic` and caps
+    total excerpts per call at roughly 25,000 characters, so it is a constrained subset of
+    the REST operation, not a 1:1 passthrough. session_id and model_name are MCP-only
+    arguments used for free-tier rate limiting and analytics - they have no REST
+    equivalent.
+- tool: web_fetch
+  category: extract
+  rest:
+  - extract_v1_extract_post
+  binding: POST /v1/extract
+  confidence: high
+  tool_inputs:
+    required:
+    - urls
+    optional:
+    - objective
+    - search_queries
+    - full_content
+    - session_id
+    - model_name
+  note: >-
+    Maps to the Extract API. urls/objective/search_queries/full_content mirror the
+    /v1/extract request body. Same session_id/model_name MCP-only arguments as web_search.
+mcp_only: []
+rest_only:
+- operationId: create_response_v1_responses_post
+  op: POST /v1/responses
+  reason: Responses API has no MCP tool; the Search MCP exposes only search + fetch.
+- operationId: tasks_runs_post_v1_tasks_runs_post
+  op: POST /v1/tasks/runs
+  reason: >-
+    Deep research is not exposed through the Search MCP. It IS reachable agent-to-agent via
+    the A2A "research" skill at https://api.parallel.ai/a2a, and a separate task-mcp repo
+    exists under the GitHub org (github.com/parallel-web/task-mcp) but no hosted endpoint
+    for it was found.
+- operationId: tasks_runs_get_v1_tasks_runs__run_id__get
+  op: GET /v1/tasks/runs/{run_id}
+  reason: Async task polling; no MCP tool.
+- operationId: tasks_runs_events_get_v1_tasks_runs__run_id__events_get
+  op: GET /v1/tasks/runs/{run_id}/events
+  reason: SSE stream; no MCP tool.
+- operationId: tasks_runs_input_get_v1_tasks_runs__run_id__input_get
+  op: GET /v1/tasks/runs/{run_id}/input
+  reason: No MCP tool.
+- operationId: tasks_runs_result_get_v1_tasks_runs__run_id__result_get
+  op: GET /v1/tasks/runs/{run_id}/result
+  reason: No MCP tool.
+- operationId: tasks_taskgroups_post_v1_tasks_groups_post
+  op: POST /v1/tasks/groups
+  reason: Batch task groups; no MCP tool.
+- operationId: tasks_taskgroups_get_v1_tasks_groups__taskgroup_id__get
+  op: GET /v1/tasks/groups/{taskgroup_id}
+  reason: No MCP tool.
+- operationId: tasks_sessions_events_get_v1_tasks_groups__taskgroup_id__events_get
+  op: GET /v1/tasks/groups/{taskgroup_id}/events
+  reason: No MCP tool.
+- operationId: tasks_taskgroups_runs_post_v1_tasks_groups__taskgroup_id__runs_post
+  op: POST /v1/tasks/groups/{taskgroup_id}/runs
+  reason: No MCP tool.
+- operationId: tasks_taskgroups_runs_get_v1_tasks_groups__taskgroup_id__runs_get
+  op: GET /v1/tasks/groups/{taskgroup_id}/runs
+  reason: No MCP tool.
+- operationId: tasks_taskgroups_runs_id_get_v1_tasks_groups__taskgroup_id__runs__run_id__get
+  op: GET /v1/tasks/groups/{taskgroup_id}/runs/{run_id}
+  reason: No MCP tool.
+- operationId: tasks_runs_events_get_v1beta_tasks_runs__run_id__events_get
+  op: GET /v1beta/tasks/runs/{run_id}/events
+  reason: Legacy beta SSE stream; no MCP tool.
+- operationId: chat_completions_v1beta_chat_completions_post
+  op: POST /v1beta/chat/completions
+  reason: No MCP tool.
+- operationId: create_monitor_v1_monitors_post
+  op: POST /v1/monitors
+  reason: Monitor API has no MCP tool.
+- operationId: list_monitors_v1_monitors_get
+  op: GET /v1/monitors
+  reason: No MCP tool.
+- operationId: retrieve_monitor_v1_monitors__monitor_id__get
+  op: GET /v1/monitors/{monitor_id}
+  reason: No MCP tool.
+- operationId: cancel_monitor_v1_monitors__monitor_id__cancel_post
+  op: POST /v1/monitors/{monitor_id}/cancel
+  reason: No MCP tool.
+- operationId: list_monitor_events_v1_monitors__monitor_id__events_get
+  op: GET /v1/monitors/{monitor_id}/events
+  reason: No MCP tool.
+- operationId: trigger_monitor_run_v1_monitors__monitor_id__trigger_post
+  op: POST /v1/monitors/{monitor_id}/trigger
+  reason: No MCP tool.
+- operationId: update_monitor_v1_monitors__monitor_id__update_post
+  op: POST /v1/monitors/{monitor_id}/update
+  reason: No MCP tool.
+- operationId: findall_runs_v1_v1beta_findall_runs_post
+  op: POST /v1beta/findall/runs
+  reason: FindAll has no MCP tool.
+- operationId: findall_runs_v1_get_v1beta_findall_runs__findall_id__get
+  op: GET /v1beta/findall/runs/{findall_id}
+  reason: No MCP tool.
+- operationId: findall_entity_search_v1beta_findall_entity_search_post
+  op: POST /v1beta/findall/entity-search
+  reason: No MCP tool.
+- operationId: ingest_findall_run_v1beta_findall_ingest_post
+  op: POST /v1beta/findall/ingest
+  reason: No MCP tool.
+- operationId: cancel_findall_run_v1beta_findall_runs__findall_id__cancel_post
+  op: POST /v1beta/findall/runs/{findall_id}/cancel
+  reason: No MCP tool.
+- operationId: enrich_findall_run_v1beta_findall_runs__findall_id__enrich_post
+  op: POST /v1beta/findall/runs/{findall_id}/enrich
+  reason: No MCP tool.
+- operationId: get_findall_events_v1beta_findall_runs__findall_id__events_get
+  op: GET /v1beta/findall/runs/{findall_id}/events
+  reason: No MCP tool.
+- operationId: extend_findall_run_v1beta_findall_runs__findall_id__extend_post
+  op: POST /v1beta/findall/runs/{findall_id}/extend
+  reason: No MCP tool.
+- operationId: get_findall_result_v1beta_findall_runs__findall_id__result_get
+  op: GET /v1beta/findall/runs/{findall_id}/result
+  reason: No MCP tool.
+- operationId: get_findall_schema_v1beta_findall_runs__findall_id__schema_get
+  op: GET /v1beta/findall/runs/{findall_id}/schema
+  reason: No MCP tool.
+- operationId: clear_memory_v1beta_memory_clear_post
+  op: POST /v1beta/memory/clear
+  reason: Beta Memory API; no MCP tool.
+- operationId: evict_memory_source_v1beta_memory_evict_post
+  op: POST /v1beta/memory/evict
+  reason: Beta Memory API; no MCP tool.
+- operationId: retrieve_memory_v1beta_memory_retrieve_post
+  op: POST /v1beta/memory/retrieve
+  reason: Beta Memory API; no MCP tool.
+a2a_crosswalk:
+- skill: research
+  agent: https://api.parallel.ai/a2a
+  rest:
+  - tasks_runs_post_v1_tasks_runs_post
+  binding: POST /v1/tasks/runs
+  confidence: medium
+  note: >-
+    The A2A card describes a "task-generating A2A agent for deep web research" returning
+    cited markdown, and its documentationUrl points at the Task API quickstart. Mapped by
+    the provider's own documentation link and semantics; the A2A endpoint is auth-gated so
+    the exact request binding could not be observed.
+notes: >-
+  Nothing here is fabricated. The two MCP tools and their input/output schemas were read
+  from a live tools/list response; the REST operations are exactly the operationIds in the
+  captured OpenAPI. The headline finding is the asymmetry - Parallel ships 36 REST
+  operations but only 2 of them are reachable as MCP tools, so an MCP-only agent gets
+  search and fetch while deep research, FindAll, Monitor, Responses and Memory remain
+  REST-only (deep research partially reachable via A2A).

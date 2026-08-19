@@ -1,12 +1,16 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: searched
-source: npm + PyPI registries and github.com/parallel-web
+source: >-
+  registry.npmjs.org + pypi.org/pypi/<pkg>/json metadata endpoints +
+  github.com/parallel-web org listing
+package_count: 6
 packages:
 - name: parallel-web
   registry: npm
   official: true
   language: typescript
-  latest: 1.1.0
+  version: 1.3.0
+  published: '2026-08-12'
   description: The official TypeScript library for the Parallel API.
   url: https://www.npmjs.com/package/parallel-web
   repository: https://github.com/parallel-web/parallel-sdk-typescript
@@ -15,7 +19,8 @@ packages:
   registry: pypi
   official: true
   language: python
-  latest: 1.1.0
+  version: 1.3.0
+  published: '2026-08-12'
   description: The official Python library for the Parallel API.
   url: https://pypi.org/project/parallel-web/
   repository: https://github.com/parallel-web/parallel-sdk-python
@@ -24,27 +29,76 @@ packages:
   registry: pypi
   official: true
   language: python
-  latest: 0.7.1
+  version: 0.8.2
+  published: '2026-08-11'
   description: 'Parallel Tools: CLI (parallel-cli) and Python SDK for AI-powered web intelligence.'
   url: https://pypi.org/project/parallel-web-tools/
   repository: https://github.com/parallel-web/parallel-web-tools
   install: uv tool install parallel-web-tools
   provides_cli: parallel-cli
+  see: cli/parallel-web-systems-cli.yml
 - name: langchain-parallel
   registry: pypi
   official: true
   language: python
-  description: LangChain integration for the Parallel API.
+  version: 0.5.0
+  published: '2026-07-13'
+  description: >-
+    A LangChain integration for Parallel Web AI services, including search, extract, and
+    task tools.
   url: https://pypi.org/project/langchain-parallel/
   repository: https://github.com/parallel-web/langchain-parallel
+  install: pip install langchain-parallel
+- name: parallel-google-adk
+  registry: pypi
+  official: true
+  language: python
+  version: 0.0.1
+  published: '2026-04-30'
+  description: Google ADK FunctionTools and Plugin for Parallel APIs (search, extract, task).
+  url: https://pypi.org/project/parallel-google-adk/
+  repository: https://github.com/parallel-web/parallel-google-adk
+  install: pip install parallel-google-adk
+  note: >-
+    Framework adapter, not a core SDK. Still at 0.0.1 with a single April 2026 release
+    while the core SDKs shipped 1.3.0 in August 2026 - the weakest currency signal in the
+    set.
 - name: parallel-n8n-nodes
-  registry: npm
+  registry: null
   official: true
   language: typescript
+  version: null
+  published: null
   description: n8n community nodes for Parallel.
   repository: https://github.com/parallel-web/parallel-n8n-nodes
+  note: >-
+    Checked registry.npmjs.org/parallel-n8n-nodes - 404. The repo is actively pushed
+    (2026-08-11) but no matching package is published to npm under that name, so there is
+    no registry metadata endpoint to read a version or date from. version/published are
+    null because they were checked and found absent, not because they were skipped.
+distributions:
+- name: parallel-cli (Homebrew)
+  channel: homebrew-cask
+  install: brew install parallel-web/tap/parallel-cli
+  source: https://github.com/parallel-web/homebrew-tap
+  version: null
+  published: null
+  note: >-
+    A Homebrew tap has no unauthenticated JSON metadata endpoint in this pipeline's set;
+    the cask (Casks/parallel-cli.rb) tracks the parallel-web-tools PyPI release, whose
+    dated version is recorded above.
+currency:
+  assessment: current
+  detail: >-
+    Both first-party SDKs published 1.3.0 on 2026-08-12, two days before this check, and
+    the CLI toolchain 0.8.2 on 2026-08-11. There is no abandonment signal on the core
+    client libraries - they track the API closely (the Responses API shipped 2026-07-21 and
+    the SDKs have released since).
+  checked: '2026-08-14'
+negative_findings:
+- The npm package `parallel-cli` (last published 2015) is unrelated to Parallel Web Systems.
+- No Maven Central, NuGet, RubyGems, Packagist, crates.io or pkg.go.dev first-party package was found.
 notes: >-
-  First-party SDKs are published under the parallel-web GitHub org. The Python and
-  TypeScript client libraries both ship as `parallel-web`. The parallel-cli terminal
-  client is distributed via the parallel-web-tools PyPI package and a Homebrew cask
-  (parallel-web/homebrew-tap, Casks/parallel-cli.rb).
+  Versions and dates read from the registries' own metadata endpoints on 2026-08-14, not
+  from docs prose. First-party status confirmed by repository ownership under the
+  github.com/parallel-web organization.

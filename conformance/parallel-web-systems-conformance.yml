@@ -1,6 +1,8 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: derived
-source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai + https://trust.parallel.ai
+source: >-
+  openapi/_original/parallel-web-systems-openapi.json + https://docs.parallel.ai +
+  https://trust.parallel.ai + live /.well-known probes + live MCP tools/list
 standards:
 - id: oauth2
   conforms: true
@@ -31,6 +33,46 @@ standards:
 - id: idempotency
   conforms: false
   evidence: No idempotency-key header defined in the OpenAPI.
+- id: a2a
+  conforms: true
+  evidence: >-
+    Serves an A2A Agent Card at https://api.parallel.ai/.well-known/agent-card.json (HTTP 200,
+    protocolVersion 0.3.0) declaring a callable agent at https://api.parallel.ai/a2a. Graded
+    conformant against A2A 1.0.0 - capabilities is an object, protocolVersion present, skills
+    is an array, plus preferredTransport and default input/output modes. A second card is
+    served from docs.parallel.ai. See a2a/parallel-web-systems-a2a.yml.
+- id: mcp
+  conforms: true
+  evidence: >-
+    Hosted Streamable HTTP MCP server at https://search.parallel.ai/mcp, protocol version
+    2025-06-18. tools/list returned HTTP 200 anonymously with two tools carrying full
+    inputSchema and outputSchema. See mcp/parallel-web-systems-mcp.yml.
+- id: rfc8628
+  conforms: true
+  evidence: >-
+    OAuth 2.0 Device Authorization Grant advertised in the RFC 8414 metadata
+    (device_authorization_endpoint, grant type urn:ietf:params:oauth:grant-type:device_code)
+    and used by parallel-cli auth.
+- id: rfc7636
+  conforms: true
+  evidence: PKCE is mandatory - code_challenge_methods_supported is ["S256"] and there is no client secret.
+- id: rfc9728
+  conforms: false
+  evidence: >-
+    No OAuth 2.0 Protected Resource Metadata is published. /.well-known/oauth-protected-resource
+    404s on api.parallel.ai and search.parallel.ai, so an MCP client cannot discover the
+    authorization server for the OAuth-gated /mcp-oauth endpoint from the resource itself.
+- id: rate-limit-headers
+  conforms: false
+  evidence: >-
+    Limits are published numerically in the docs but no RateLimit-* / X-RateLimit-* response
+    headers are documented or declared in the OpenAPI, so quota is not readable at runtime.
+    See rate-limits/parallel-web-systems-rate-limits.yml.
+- id: openai-compatibility
+  conforms: true
+  evidence: >-
+    POST /v1/responses is documented as an OpenAI Responses-compatible endpoint, and
+    POST /v1beta/chat/completions follows the OpenAI Chat Completions shape.
 - id: soc2
   conforms: true
   evidence: Parallel publicly states SOC 2 Type II certification (homepage) and runs a Trust Center at trust.parallel.ai.

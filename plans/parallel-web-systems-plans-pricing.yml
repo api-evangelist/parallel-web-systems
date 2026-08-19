@@ -1,0 +1,125 @@
+generated: '2026-08-14'
+method: searched
+source: https://docs.parallel.ai/getting-started/pricing
+docs:
+- https://docs.parallel.ai/getting-started/pricing
+- https://parallel.ai/pricing
+model: pay-as-you-go
+currency: USD
+plan_count: 1
+plans:
+- name: Pay as you go
+  price: 0
+  currency: USD
+  billing_period: usage
+  self_serve: true
+  signup: https://platform.parallel.ai
+  included_quota: >-
+    Up to 5,000 requests per month free. Parallel also advertises up to $80 in signup
+    credit plus $5 in free credits per month.
+  overage: Metered per request/run at the published per-API rates below.
+  limits_ref: rate-limits/parallel-web-systems-rate-limits.yml
+  note: >-
+    Parallel publishes no named tier ladder (no Free/Pro/Enterprise). There is a single
+    self-serve pay-as-you-go account with per-API metered pricing; volume/limit increases
+    are handled by contacting support@parallel.ai.
+enterprise_contact: support@parallel.ai
+metered_pricing:
+- api: Search
+  unit: per 1,000 requests (default 10 results)
+  rates:
+  - mode: turbo
+    usd_per_1000: 1
+  - mode: basic
+    usd_per_1000: 5
+  - mode: advanced
+    usd_per_1000: 5
+  additional: $1 per 1,000 additional page results & excerpts
+- api: Extract
+  unit: per 1,000 URLs
+  usd_per_1000: 1
+- api: Task
+  unit: per 1,000 Task Runs, by processor (fast variants priced the same as standard)
+  rates:
+  - processor: lite
+    usd_per_1000: 5
+  - processor: base
+    usd_per_1000: 10
+  - processor: core
+    usd_per_1000: 25
+  - processor: core2x
+    usd_per_1000: 50
+  - processor: pro
+    usd_per_1000: 100
+  - processor: ultra
+    usd_per_1000: 300
+  - processor: ultra2x
+    usd_per_1000: 600
+  - processor: ultra4x
+    usd_per_1000: 1200
+  - processor: ultra8x
+    usd_per_1000: 2400
+  note: Billed per Task Run (row), not per output field. Failed runs are not billed.
+- api: Responses
+  unit: per 1,000 requests, by reasoning.effort
+  rates:
+  - effort: low
+    usd_per_1000: 10
+  - effort: medium
+    usd_per_1000: 50
+  - effort: high
+    usd_per_1000: 250
+  note: Only successful responses are charged.
+- api: Monitor
+  unit: per 1,000 executions (CPM)
+  rates:
+  - processor: lite
+    usd_per_1000: 3
+  - processor: base
+    usd_per_1000: 10
+- api: FindAll
+  unit: fixed cost per run plus per-match cost, by generator
+  rates:
+  - generator: preview
+    fixed_usd: 0.10
+    per_match_usd: 0.00
+  - generator: base
+    fixed_usd: 0.25
+    per_match_usd: 0.03
+  - generator: core
+    fixed_usd: 2.00
+    per_match_usd: 0.15
+  - generator: pro
+    fixed_usd: 10.00
+    per_match_usd: 1.00
+  note: Enrichments add their own per-match cost based on the Task API processor selected.
+- api: Entity Search
+  unit: per 1,000 requests (default 100 results)
+  usd_per_1000: 5
+  additional: $0.05 per 1,000 additional results
+- api: Chat
+  unit: per 1,000 requests, by model
+  rates:
+  - model: speed
+    usd_per_1000: 5
+  - model: lite
+    usd_per_1000: 5
+  - model: base
+    usd_per_1000: 10
+  - model: core
+    usd_per_1000: 25
+  note: Research models (lite/base/core) wrap Task API processors and share their pricing.
+free_surfaces:
+- name: Search MCP
+  url: https://search.parallel.ai/mcp
+  detail: >-
+    The hosted Search MCP server is free to use anonymously with no API key at lower rate
+    limits; a Parallel API key passed as a Bearer token unlocks higher limits.
+- name: Playgrounds
+  detail: >-
+    Hosted try-it consoles at platform.parallel.ai/play/{task,search,extract,monitor,find-all}.
+notes: >-
+  Read verbatim from the published pricing reference. Parallel is purely usage-priced -
+  plan_count is 1 because there is exactly one self-serve commercial arrangement
+  (pay-as-you-go), not because tiers were not found. All figures are the provider's own
+  published rates at the date above.

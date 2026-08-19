@@ -1,10 +1,18 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: searched
 source: https://docs.parallel.ai/resources/changelog
 scheme: dated
 docs: https://docs.parallel.ai/resources/changelog
 current_api_version: 0.1.2
 entries:
+- date: '2026-07-21'
+  highlights: >-
+    Responses API released - an OpenAI Responses-compatible endpoint (POST /v1/responses) for
+    latency-sensitive use cases, with fully cited answers, structured output support, and 5-60s
+    response times.
+  breaking: false
+  additions:
+  - POST /v1/responses
 - date: '2026-07-13'
   highlights: Turbo mode launched for the Search API ($1 per 1,000 requests, p50 ~200ms) for real-time web search.
   breaking: false
@@ -35,4 +43,15 @@ entries:
 - date: '2026-02-18'
   highlights: Parallel integration added to the Cursor Marketplace.
   breaking: false
-notes: Recent window only. Dates reflect the public changelog at the time of enrichment.
+undocumented_changes:
+  detail: >-
+    The live OpenAPI now carries four operations that the dated changelog does not announce:
+    POST /v1/responses (announced 2026-07-21) plus three beta Memory operations
+    (/v1beta/memory/clear, /evict, /retrieve) that appear in the spec with no changelog entry.
+  operations:
+  - clear_memory_v1beta_memory_clear_post
+  - evict_memory_source_v1beta_memory_evict_post
+  - retrieve_memory_v1beta_memory_retrieve_post
+notes: >-
+  Recent window only. Dates reflect the public changelog at https://docs.parallel.ai/resources/changelog
+  as read on 2026-08-14.

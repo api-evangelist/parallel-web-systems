@@ -2,18 +2,23 @@ overlay: 1.0.0
 info:
   title: API Evangelist enrichment overlay for the Parallel API
   version: 1.0.0
-extends: ../openapi/parallel-web-systems-openapi.json
+extends: ../openapi/_original/parallel-web-systems-openapi.json
 actions:
 - target: $.info
   description: Annotate the API with API Evangelist enrichment provenance and canonical links.
   update:
     x-apievangelist:
       provider: parallel-web-systems
-      enriched: '2026-07-20'
+      enriched: '2026-08-14'
     x-documentation: https://docs.parallel.ai
     x-status-page: https://status.parallel.ai
     x-changelog: https://docs.parallel.ai/resources/changelog
     x-mcp-server: https://search.parallel.ai/mcp
+    x-a2a-agent-card: https://api.parallel.ai/.well-known/agent-card.json
+    x-a2a-endpoint: https://api.parallel.ai/a2a
+    x-pricing: https://docs.parallel.ai/getting-started/pricing
+    x-rate-limits: https://docs.parallel.ai/getting-started/rate-limits
+    x-llms-txt: https://docs.parallel.ai/llms.txt
     x-terms-of-service: https://parallel.ai/customer-terms
     x-privacy-policy: https://parallel.ai/privacy-policy
 - target: $.info
@@ -29,6 +34,39 @@ actions:
     x-key-issuance:
       platform: https://platform.parallel.ai
       device_oauth_metadata: https://platform.parallel.ai/.well-known/oauth-authorization-server
+- target: $.components.securitySchemes.ApiKeyAuth
+  description: Record the OAuth key-issuance provider that mints these keys (RFC 8414 metadata).
+  update:
+    x-oauth-provider:
+      issuer: https://platform.parallel.ai
+      scopes:
+      - key:read
+      grant_types:
+      - authorization_code
+      - urn:ietf:params:oauth:grant-type:device_code
+      pkce: S256
+      catalog: ../scopes/parallel-web-systems-scopes.yml
+- target: $.info
+  description: Record published rate limits, which the specification itself does not carry.
+  update:
+    x-rate-limits:
+      scope: per-account
+      counted: resource-creating POSTs only
+      response_headers: none
+      exhaustion_status: 429
+      catalog: ../rate-limits/parallel-web-systems-rate-limits.yml
+- target: $.info
+  description: Record the agent-facing surfaces and how REST operations map onto them.
+  update:
+    x-agent-surfaces:
+      mcp: https://search.parallel.ai/mcp
+      mcp_tools: 2
+      a2a: https://api.parallel.ai/a2a
+      skills: ../skills/_index.yml
+      crosswalk: ../mcp/parallel-web-systems-tool-crosswalk.yml
+      note: >-
+        36 REST operations, 2 of them reachable as MCP tools (web_search -> POST /v1/search,
+        web_fetch -> POST /v1/extract).
 - target: $.tags
   description: Note webhook + SSE async delivery available for long-running surfaces.
   update:

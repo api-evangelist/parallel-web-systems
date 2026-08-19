@@ -1,13 +1,51 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: probed
-source: live probes of /.well-known/* on parallel.ai, api.parallel.ai, docs.parallel.ai, platform.parallel.ai
+source: live probes of /.well-known/* on parallel.ai, api.parallel.ai, docs.parallel.ai, platform.parallel.ai, search.parallel.ai
+hits: 4
 probes:
 - host: platform.parallel.ai
   path: /.well-known/oauth-authorization-server
   status: 200
+  content_type: application/json
+  document: true
   file: parallel-web-systems-oauth-authorization-server.json
+  detail: RFC 8414 OAuth 2.0 Authorization Server metadata. See scopes/parallel-web-systems-scopes.yml.
+- host: api.parallel.ai
+  path: /.well-known/agent-card.json
+  status: 200
+  content_type: application/json
+  document: true
+  file: ../a2a/parallel-web-systems-agent-card.json
+  detail: >-
+    A2A Agent Card for "Parallel Deep Research" (protocolVersion 0.3.0, agent URL
+    https://api.parallel.ai/a2a). Graded conformant. See a2a/parallel-web-systems-a2a.yml.
+- host: docs.parallel.ai
+  path: /.well-known/agent-card.json
+  status: 200
+  content_type: application/json
+  document: true
+  file: ../a2a/parallel-web-systems-docs-agent-card.json
+  detail: Second A2A Agent Card - a docs/discovery card advertising the Parallel platform skill.
+- host: docs.parallel.ai
+  path: /.well-known/agent-skills/parallel/skill.md
+  status: 200
+  content_type: text/markdown
+  document: true
+  file: ../skills/parallel-web-systems-wellknown-parallel-skill.md
+  detail: >-
+    A provider-published Agent Skill served from /.well-known/ and referenced by the docs
+    agent card's skills[0].url. Saved verbatim.
+- host: parallel.ai
+  path: /.well-known/agent-card.json
+  status: 404
+- host: parallel.ai
+  path: /.well-known/agent.json
+  status: 404
 - host: parallel.ai
   path: /.well-known/security.txt
+  status: 404
+- host: parallel.ai
+  path: /security.txt
   status: 404
 - host: parallel.ai
   path: /.well-known/openid-configuration
@@ -18,14 +56,43 @@ probes:
 - host: parallel.ai
   path: /.well-known/ai-plugin.json
   status: 404
+- host: parallel.ai
+  path: /llms.txt
+  status: 404
 - host: api.parallel.ai
   path: /.well-known/oauth-authorization-server
+  status: 404
+- host: api.parallel.ai
+  path: /.well-known/oauth-protected-resource
+  status: 404
+- host: api.parallel.ai
+  path: /.well-known/security.txt
   status: 404
 - host: docs.parallel.ai
   path: /.well-known/security.txt
   status: 404
+- host: docs.parallel.ai
+  path: /.well-known/api-catalog
+  status: 404
+- host: search.parallel.ai
+  path: /.well-known/agent-card.json
+  status: 404
+- host: search.parallel.ai
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: search.parallel.ai
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  detail: >-
+    Notable gap - the MCP server at search.parallel.ai/mcp-oauth requires OAuth but
+    publishes neither RFC 9728 protected-resource metadata nor RFC 8414 server metadata on
+    its own host; clients must be told to use platform.parallel.ai out of band.
+- host: platform.parallel.ai
+  path: /.well-known/agent-card.json
+  status: 404
 notes: >-
-  Only platform.parallel.ai publishes a well-known document: an OAuth 2.0 Authorization
-  Server metadata file (RFC 8414) backing the parallel-cli device-code login and API-key
-  issuance flow (issuer https://platform.parallel.ai, scope key:read, PKCE S256). No
-  security.txt, OpenID configuration, api-catalog, or ai-plugin.json were found.
+  Four real documents are served from /.well-known/ across Parallel's hosts: the RFC 8414
+  OAuth metadata on platform.parallel.ai, two A2A Agent Cards (api. and docs.), and a
+  published Agent Skill markdown file on docs. No security.txt, OpenID configuration,
+  api-catalog, or ai-plugin.json exists on any host. The 404 rows are recorded absences,
+  not failures to probe.

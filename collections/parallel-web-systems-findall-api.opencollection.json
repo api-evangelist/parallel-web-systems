@@ -1,0 +1,269 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Parallel Chat API (Beta) Chat API (Beta) FindAll API",
+    "version": "0.1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "FindAll",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fast Entity Search",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/findall/entity-search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return ranked entities matching a natural language objective.\n\nThis endpoint performs a best-effort search optimized for low latency. To keep\nresponses fast, it returns a fixed set of attributes and supports queries of\nlimited complexity.\n\nFor comprehensive match evaluation and enrichment, use the\n[FindAll API](https://docs.parallel.ai/findall-api/findall-quickstart)."
+        },
+        {
+          "info": {
+            "name": "Ingest FindAll Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/findall/ingest",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Transforms a natural language search objective into a structured FindAll spec.\n\nThe generated specification serves as a suggested starting point and can be further\ncustomized by the user."
+        },
+        {
+          "info": {
+            "name": "Create FindAll Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/findall/runs",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Starts a FindAll run.\n\nThis endpoint immediately returns a FindAll run object with status set to 'queued'.\nYou can get the run result snapshot using the GET /v1beta/findall/runs/{findall_id}/result endpoint.\nYou can track the progress of the run by:\n- Polling the status using the GET /v1beta/findall/runs/{findall_id} endpoint,\n- Subscribing to real-time updates via the /v1beta/findall/runs/{findall_id}/events\nendpoint,\n- Or specifying a webhook with relevant event types during run creation to re"
+        },
+        {
+          "info": {
+            "name": "Retrieve FindAll Run Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a FindAll run."
+        },
+        {
+          "info": {
+            "name": "Cancel FindAll Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id/cancel",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Cancel a FindAll run."
+        },
+        {
+          "info": {
+            "name": "Add Enrichment to FindAll Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id/enrich",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add an enrichment to a FindAll run."
+        },
+        {
+          "info": {
+            "name": "Stream FindAll Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id/events",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "last_event_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "timeout",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Stream events from a FindAll run.\n\nArgs:\n    request: The Shapi request\n    findall_id: The FindAll run ID\n    last_event_id: Optional event ID to resume from.\n    timeout: Optional timeout in seconds. If None, keep connection alive\n    as long as the run is going. If set, stop after specified duration."
+        },
+        {
+          "info": {
+            "name": "Extend FindAll Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id/extend",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Extend a FindAll run by adding additional matches to the current match limit."
+        },
+        {
+          "info": {
+            "name": "FindAll Run Result",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id/result",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve the FindAll run result at the time of the request."
+        },
+        {
+          "info": {
+            "name": "Get FindAll Run Schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1beta/findall/runs/:findall_id/schema",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "findall_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get FindAll Run Schema"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

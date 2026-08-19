@@ -1,12 +1,17 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: searched
-source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai + https://status.parallel.ai
+source: openapi/_original/parallel-web-systems-openapi.json + https://docs.parallel.ai + https://status.parallel.ai
 versioning:
   style: uri-path + opt-in beta header
   stable: /v1
   beta: /v1beta
+  alpha: /v1alpha
   beta_header: parallel-beta
   api_version: 0.1.2
+  detail: >-
+    Three maturity prefixes ship simultaneously - /v1 (Search, Extract, Tasks, Monitor,
+    Responses), /v1beta (Chat, FindAll, Memory, legacy task events) and /v1alpha (the
+    pre-GA Monitor surface named in the rate-limit reference).
 status_page:
   url: https://status.parallel.ai
   present: true
@@ -20,6 +25,15 @@ deprecation:
   legacy_surfaces:
   - /v1beta/search (legacy Search API, migration guide published)
   - /v1beta/tasks/runs/{run_id}/events (superseded by /v1/tasks/runs/{run_id}/events)
+  - /v1beta/extract (legacy Extract, "Extract Migration Guide: Beta to GA" published)
+  - /v1alpha/monitors (superseded by /v1/monitors, "Monitor Migration Guide: Alpha to GA" published)
+  migration_guides:
+  - https://docs.parallel.ai/search/search-migration-guide
+  - https://docs.parallel.ai/extract/extract-migration-guide
+  - https://docs.parallel.ai/monitor-api/monitor-migration-guide
+plans: plans/parallel-web-systems-plans-pricing.yml
+rate_limits: rate-limits/parallel-web-systems-rate-limits.yml
+changelog: changelog/parallel-web-systems-changelog.yml
 support:
   email: support@parallel.ai
   docs: https://docs.parallel.ai

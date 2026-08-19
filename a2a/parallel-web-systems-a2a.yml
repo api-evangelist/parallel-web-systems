@@ -1,0 +1,105 @@
+generated: '2026-08-14'
+method: probed
+source: https://api.parallel.ai/.well-known/agent-card.json
+type: AgentCard
+name: Parallel Deep Research
+description: >-
+  Parallel serves a real A2A Agent Card from its own API host. The card advertises a
+  task-generating A2A agent for deep web research at https://api.parallel.ai/a2a that
+  returns cited markdown research reports and supports follow-up questions in the same
+  conversation context.
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: api.parallel.ai
+card_file: parallel-web-systems-agent-card.json
+agent:
+  url: https://api.parallel.ai/a2a
+  protocol_version: 0.3.0
+  version: 1.0.0
+  preferred_transport: HTTP+JSON
+  documentation_url: https://docs.parallel.ai/task-api/task-quickstart
+  provider:
+    organization: Parallel
+    url: https://parallel.ai
+  capabilities:
+    streaming: true
+    push_notifications: false
+  default_input_modes:
+  - text/plain
+  default_output_modes:
+  - text/markdown
+  supports_authenticated_extended_card: false
+  security:
+    scheme: parallel_oauth
+    type: oauth2
+    flow: authorizationCode
+    authorization_url: https://platform.parallel.ai/getKeys/authorize
+    token_url: https://platform.parallel.ai/getKeys/token
+    scopes:
+    - key:read
+    note: >-
+      OAuth 2.0 via the Parallel Platform getKeys provider; the bearer token returned is
+      the user's Parallel API key. Matches the RFC 8414 metadata captured in
+      well-known/parallel-web-systems-oauth-authorization-server.json.
+  skills:
+  - id: research
+    name: Deep Research
+    tags:
+    - research
+    - web
+    - citations
+    - report
+    input_modes:
+    - text/plain
+    output_modes:
+    - text/markdown
+grade: conformant
+grade_basis: >-
+  Graded against A2A 1.0.0. Hard checks all pass - `capabilities` is an OBJECT,
+  `protocolVersion` is present ("0.3.0"), and `skills` is an ARRAY. The optional fields
+  that most published cards omit are all present: preferredTransport, defaultInputModes,
+  and defaultOutputModes.
+deviations:
+- field: protocolVersion
+  detail: >-
+    Declares A2A protocol 0.3.0 rather than 1.0.0; the card shape is 1.0.0-compatible but
+    the agent is pinned to the 0.3.x protocol line.
+- field: capabilities.pushNotifications
+  detail: Push notifications are explicitly false; streaming is the only async transport advertised.
+x-evidence:
+  fetched: '2026-08-14'
+  url: https://api.parallel.ai/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  bytes: 1354
+additional_cards:
+- host: docs.parallel.ai
+  url: https://docs.parallel.ai/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  file: parallel-web-systems-docs-agent-card.json
+  name: Parallel
+  protocol_version: '0.3'
+  grade: conformant
+  detail: >-
+    A second, documentation-oriented card served from the docs host. It is a discovery /
+    capability advertisement rather than a callable agent - its `url` is the docs site
+    itself and its single skill points at a published Agent Skill markdown file
+    (https://docs.parallel.ai/.well-known/agent-skills/parallel/skill.md) rather than
+    declaring input/output modes. Hard checks pass (capabilities object, protocolVersion,
+    skills array). It also carries the newer `supportedInterfaces` array.
+negative_probes:
+- url: https://parallel.ai/.well-known/agent-card.json
+  status: 404
+- url: https://parallel.ai/.well-known/agent.json
+  status: 404
+- url: https://search.parallel.ai/.well-known/agent-card.json
+  status: 404
+- url: https://platform.parallel.ai/.well-known/agent-card.json
+  status: 404
+notes: >-
+  Searched only - both cards were fetched live from Parallel-controlled hosts and saved
+  verbatim; nothing here was generated or derived. The A2A endpoint itself
+  (https://api.parallel.ai/a2a) returns 401 to anonymous callers, which is consistent with
+  the card's declared OAuth security requirement.

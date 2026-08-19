@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Search API",
+    "version": "0.1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Search",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Searches the web.\n\nThe legacy Search API reference (`/v1beta/search` endpoint) is available\n[here](https://docs.parallel.ai/api-reference/legacy/search-beta/search), and\nmigration guide is [here](https://docs.parallel.ai/search/search-migration-guide)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

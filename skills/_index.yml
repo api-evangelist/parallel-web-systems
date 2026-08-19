@@ -1,35 +1,66 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: searched
-source: https://github.com/parallel-web/parallel-agent-skills (published, saved verbatim)
+source: >-
+  https://github.com/parallel-web/parallel-agent-skills +
+  https://docs.parallel.ai/.well-known/agent-skills/parallel/skill.md +
+  https://parallel.ai/agents.md
 api: parallel-web-systems
+skill_count: 8
 description: >-
   First-party Parallel Agent Skills, published by Parallel Web Systems and saved here
-  verbatim. Each skill drives the parallel-cli against a marquee API flow.
+  verbatim. Six drive the parallel-cli against a marquee API flow; one is served from
+  /.well-known/agent-skills/ on the docs host and referenced by Parallel's A2A agent card;
+  one is the CLI setup skill published at parallel.ai/agents.md.
 skills:
 - name: parallel-web-search
   file: parallel-web-systems-parallel-web-search.md
   flow: Web Search (default research/lookup)
   operation: POST /v1/search
+  source: github.com/parallel-web/parallel-agent-skills
 - name: parallel-web-extract
   file: parallel-web-systems-parallel-web-extract.md
   flow: URL content extraction
   operation: POST /v1/extract
+  source: github.com/parallel-web/parallel-agent-skills
 - name: parallel-deep-research
   file: parallel-web-systems-parallel-deep-research.md
   flow: Deep research task runs
   operation: POST /v1/tasks/runs
+  source: github.com/parallel-web/parallel-agent-skills
 - name: parallel-data-enrichment
   file: parallel-web-systems-parallel-data-enrichment.md
   flow: Data enrichment over entity lists
   operation: POST /v1/tasks/groups
+  source: github.com/parallel-web/parallel-agent-skills
 - name: parallel-findall
   file: parallel-web-systems-parallel-findall.md
   flow: Entity discovery (FindAll)
   operation: POST /v1beta/findall/runs
+  source: github.com/parallel-web/parallel-agent-skills
 - name: parallel-monitor
   file: parallel-web-systems-parallel-monitor.md
   flow: Continuous web monitoring
   operation: POST /v1/monitors
+  source: github.com/parallel-web/parallel-agent-skills
+- name: Parallel
+  file: parallel-web-systems-wellknown-parallel-skill.md
+  flow: Platform-wide API selection and usage skill (all six APIs plus SDK/CLI/MCP routing)
+  operation: multiple
+  source: https://docs.parallel.ai/.well-known/agent-skills/parallel/skill.md
+  discovery: /.well-known/agent-skills/parallel/skill.md
+  http_status: 200
+  note: >-
+    Served from the docs host under /.well-known/ and pointed at by skills[0].url in the
+    docs A2A agent card - a machine-discoverable skill, not just a repo file.
+- name: parallel-cli-setup
+  file: parallel-web-systems-parallel-cli-setup.md
+  flow: Install, authenticate and maintain parallel-cli (user-invocable)
+  operation: n/a
+  source: https://parallel.ai/agents.md
+  http_status: 200
+  note: >-
+    Declares user-invocable:true and an allowed-tools list scoped to Bash package
+    managers and parallel-cli. See cli/parallel-web-systems-cli.yml.
 notes: >-
-  Skills are the official published SKILL.md files (parallel-web/parallel-agent-skills),
-  saved verbatim - not generated. They require parallel-cli and internet access.
+  Every skill here is the provider's own published file, saved verbatim - none were
+  generated. They require parallel-cli and internet access.

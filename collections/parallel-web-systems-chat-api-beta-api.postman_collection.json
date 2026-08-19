@@ -1,0 +1,205 @@
+{
+  "item": [
+    {
+      "id": "c79040f6-aa18-4961-9905-c027eef4c68f",
+      "name": "Chat API (Beta)",
+      "description": {
+        "content": "The Chat API provides a programmatic chat-style text generation interface. It accepts a sequence of messages and returns model responses. Intended for assistant-like interactions and evaluation. Streaming responses are supported.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "952db890-3454-4deb-a284-be89a98e188b",
+          "name": "Chat Completions",
+          "request": {
+            "name": "Chat Completions",
+            "description": {
+              "content": "Chat completions.\n\nThis endpoint can be used to get realtime chat completions. It can also be used\nwith the Task API processors to get structured, research outputs via a chat\ninterface.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1beta",
+                "chat",
+                "completions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"messages\": [\n    {\n      \"role\": \"<string>\",\n      \"content\": \"<string>\",\n      \"name\": \"<string>\"\n    },\n    {\n      \"role\": \"<string>\",\n      \"content\": \"<string>\",\n      \"name\": \"<string>\"\n    }\n  ],\n  \"stream\": \"<boolean>\",\n  \"response_format\": {\n    \"type\": \"<string>\"\n  },\n  \"max_tokens\": \"<integer>\",\n  \"temperature\": \"<number>\",\n  \"top_p\": \"<number>\",\n  \"n\": \"<integer>\",\n  \"presence_penalty\": \"<number>\",\n  \"frequency_penalty\": \"<number>\",\n  \"previous_interaction_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1e2d5b99-ea23-4b92-9519-f3d96e48dd7b",
+              "name": "Returns a ChatCompletion object for non-streaming requests (application/json), or a stream of ChatCompletionResponseChunk objects for streaming requests (text/event-stream) when `stream=true` is set in the request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "chat",
+                    "completions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"string\",\n      \"name\": \"string\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"string\",\n      \"name\": \"string\"\n    }\n  ],\n  \"stream\": \"<boolean>\",\n  \"response_format\": {\n    \"type\": \"string\"\n  },\n  \"max_tokens\": \"<integer>\",\n  \"temperature\": \"<number>\",\n  \"top_p\": \"<number>\",\n  \"n\": \"<integer>\",\n  \"presence_penalty\": \"<number>\",\n  \"frequency_penalty\": \"<number>\",\n  \"previous_interaction_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"choices\": [\n    {\n      \"delta\": {\n        \"content\": \"string\",\n        \"function_call\": {\n          \"arguments\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"name\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"key_0\": 2842.7790608899995,\n          \"key_1\": 1997,\n          \"key_2\": false\n        },\n        \"refusal\": \"string\",\n        \"role\": \"tool\",\n        \"tool_calls\": [\n          {\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"function\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"function\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"index\": 6669,\n      \"finish_reason\": \"tool_calls\",\n      \"logprobs\": {\n        \"content\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"refusal\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      }\n    },\n    {\n      \"delta\": {\n        \"content\": \"string\",\n        \"function_call\": {\n          \"arguments\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"name\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"key_0\": \"string\"\n        },\n        \"refusal\": \"string\",\n        \"role\": \"tool\",\n        \"tool_calls\": [\n          {\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"function\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"function\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"index\": 8294,\n      \"finish_reason\": \"tool_calls\",\n      \"logprobs\": {\n        \"content\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"refusal\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"key_0\": true,\n        \"key_1\": 5224,\n        \"key_2\": 8919\n      }\n    }\n  ],\n  \"created\": 5571,\n  \"model\": \"string\",\n  \"object\": \"string\",\n  \"moderation\": {\n    \"input\": {\n      \"model\": \"string\",\n      \"results\": [\n        {\n          \"categories\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_applied_input_types\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_scores\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"flagged\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"model\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"categories\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_applied_input_types\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_scores\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"flagged\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"model\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"type\": \"string\"\n    },\n    \"output\": {\n      \"model\": \"string\",\n      \"results\": [\n        {\n          \"categories\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_applied_input_types\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_scores\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"flagged\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"model\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"categories\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_applied_input_types\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"category_scores\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"flagged\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"model\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"type\": \"string\"\n    }\n  },\n  \"service_tier\": \"priority\",\n  \"system_fingerprint\": \"string\",\n  \"usage\": {\n    \"completion_tokens\": 1606,\n    \"prompt_tokens\": 9119,\n    \"total_tokens\": 4794,\n    \"completion_tokens_details\": {\n      \"accepted_prediction_tokens\": 6129,\n      \"audio_tokens\": 3367,\n      \"reasoning_tokens\": 3920,\n      \"rejected_prediction_tokens\": 9986,\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": 3367.3208529855747\n    },\n    \"prompt_tokens_details\": {\n      \"audio_tokens\": 4299,\n      \"cached_tokens\": 8414\n    }\n  },\n  \"interaction_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "593349b3-6a50-4cda-89b9-0540f2fab077",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "chat",
+                    "completions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"string\",\n      \"name\": \"string\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"string\",\n      \"name\": \"string\"\n    }\n  ],\n  \"stream\": \"<boolean>\",\n  \"response_format\": {\n    \"type\": \"string\"\n  },\n  \"max_tokens\": \"<integer>\",\n  \"temperature\": \"<number>\",\n  \"top_p\": \"<number>\",\n  \"n\": \"<integer>\",\n  \"presence_penalty\": \"<number>\",\n  \"frequency_penalty\": \"<number>\",\n  \"previous_interaction_id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.parallel.ai",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "0778b51f-e415-4cbd-aa17-2fa1f5750046",
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Chat API (Beta) API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Parallel API\n\nContact Support:\n Name: Parallel Support\n Email: support@parallel.ai",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Tasks API",
+    "version": "0.1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tasks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Task Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/tasks/groups",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates a TaskGroup to group and track multiple runs."
+        },
+        {
+          "info": {
+            "name": "Retrieve Task Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/groups/:taskgroup_id",
+            "params": [
+              {
+                "name": "taskgroup_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves aggregated status across runs in a TaskGroup."
+        },
+        {
+          "info": {
+            "name": "Stream Task Group Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/groups/:taskgroup_id/events",
+            "params": [
+              {
+                "name": "taskgroup_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "last_event_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "timeout",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Streams events from a TaskGroup: status updates and run completions.\n\nThe connection will remain open for up to an hour as long as at least one run in the\ngroup is still active."
+        },
+        {
+          "info": {
+            "name": "Fetch Task Group Runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/groups/:taskgroup_id/runs",
+            "params": [
+              {
+                "name": "taskgroup_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "last_event_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "include_input",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "include_output",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieves task runs in a TaskGroup and optionally their inputs and outputs.\n\nAll runs within a TaskGroup are returned as a stream. To get the inputs and/or\noutputs back in the stream, set the corresponding `include_input` and\n`include_output` parameters to `true`.\n\nThe stream is resumable using the `event_id` as the cursor. To resume a stream,\nspecify the `last_event_id` parameter with the `event_id` of the last event in the\nstream. The stream will resume from the next event after the `last_even"
+        },
+        {
+          "info": {
+            "name": "Add Runs to Task Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/tasks/groups/:taskgroup_id/runs",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "taskgroup_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "refresh_status",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates multiple task runs within a TaskGroup."
+        },
+        {
+          "info": {
+            "name": "Retrieve Task Group Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/groups/:taskgroup_id/runs/:run_id",
+            "params": [
+              {
+                "name": "taskgroup_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves run status by run_id.\n\nThis endpoint is equivalent to fetching run status directly using the\n`retrieve()` method or the `tasks/runs` GET endpoint.\n\nThe run result is available from the `/result` endpoint."
+        },
+        {
+          "info": {
+            "name": "Create Task Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/tasks/runs",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates a task run.\n\nReturns immediately with a run object in status 'queued'.\n\nBeta features can be enabled by setting the 'parallel-beta' header."
+        },
+        {
+          "info": {
+            "name": "Retrieve Task Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/runs/:run_id",
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves run status by run_id.\n\nThe run result is available from the `/result` endpoint."
+        },
+        {
+          "info": {
+            "name": "Stream Task Run Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/runs/:run_id/events",
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Streams events for a task run.\n\nReturns a stream of events showing progress updates and state changes for the task\nrun.\n\nFor task runs that did not have enable_events set to true during creation, the\nfrequency of events will be reduced."
+        },
+        {
+          "info": {
+            "name": "Retrieve Task Run Input",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/runs/:run_id/input",
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves the input of a run by run_id."
+        },
+        {
+          "info": {
+            "name": "Retrieve Task Run Result",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/tasks/runs/:run_id/result",
+            "headers": [
+              {
+                "name": "parallel-beta",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "timeout",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieves a run result by run_id, blocking until the run is completed."
+        },
+        {
+          "info": {
+            "name": "Stream Task Run Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1beta/tasks/runs/:run_id/events",
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Streams events for a task run.\n\nReturns a stream of events showing progress updates and state changes for the task\nrun.\n\nFor task runs that did not have enable_events set to true during creation, the\nfrequency of events will be reduced."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

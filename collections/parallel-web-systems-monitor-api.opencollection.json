@@ -1,0 +1,196 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Monitor API",
+    "version": "0.1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Monitor",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Monitors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/monitors",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination token from `next_cursor` in a previous response. Omit to start from the most recently created monitor."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of monitors to return. Defaults to 100. Between 1 and 10000."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by monitor type. Pass multiple times to filter by multiple values. Omit to return all types."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by monitor status. Pass multiple times to filter by multiple values. Defaults to `active` only."
+              }
+            ]
+          },
+          "docs": "List monitors ordered by creation time, newest first.\n\nMonitors are sorted by `created_at` descending. `limit` defaults to 100.\nUse `next_cursor` from the response and pass it as `cursor` to fetch the\nnext page. Pagination ends when `next_cursor` is absent.\n\nBy default only `active` monitors are returned. Pass `status=cancelled`\nor both values to include cancelled monitors.\n\nThe legacy Monitor API (`/v1alpha/monitors` endpoints) is documented under\nthe `Monitor (Alpha)` tag."
+        },
+        {
+          "info": {
+            "name": "Create Monitor",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/monitors",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a monitor.\n\nMonitors run on a fixed frequency to detect material changes in web content.\nSet `type=event_stream` to monitor a search query, or `type=snapshot` to\nmonitor a specific task run's output. The monitor runs once immediately at\ncreation, then continues on the configured schedule."
+        },
+        {
+          "info": {
+            "name": "Retrieve Monitor",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/monitors/:monitor_id",
+            "params": [
+              {
+                "name": "monitor_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a monitor.\n\nRetrieves a specific monitor by `monitor_id`. Returns the monitor\nconfiguration including status, frequency, query, and webhook settings."
+        },
+        {
+          "info": {
+            "name": "Cancel Monitor",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/monitors/:monitor_id/cancel",
+            "params": [
+              {
+                "name": "monitor_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Cancel a monitor.\n\nPermanently stops the monitor from running. Cancellation is irreversible —\ncreate a new monitor to resume monitoring. Cancelling an already-cancelled\nmonitor is a no-op."
+        },
+        {
+          "info": {
+            "name": "List Monitor Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.parallel.ai/v1/monitors/:monitor_id/events",
+            "params": [
+              {
+                "name": "monitor_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "event_group_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter to a single execution. Values come from `event_group_id` in webhook events and listed events. Pagination params are ignored when set."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pass `next_cursor` from a previous response to retrieve more events."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of events to return. Defaults to 20. Between 1 and 100."
+              },
+              {
+                "name": "include_completions",
+                "value": "",
+                "type": "query",
+                "description": "When true, include completion events for executions that ran but detected no material changes. Useful for auditing execution history."
+              }
+            ]
+          },
+          "docs": "List events for a monitor, newest first.\n\nPass `event_group_id` to narrow results to a single execution. Otherwise\nreturns all executions newest-first; use `next_cursor` to paginate.\nSet `include_completions=true` to also include no-change executions."
+        },
+        {
+          "info": {
+            "name": "Trigger Monitor Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/monitors/:monitor_id/trigger",
+            "params": [
+              {
+                "name": "monitor_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Trigger an immediate monitor run.\n\nEnqueues a one-off execution of the monitor outside its normal schedule.\nThe monitor's regular schedule is not affected. An event is only emitted\nif the execution detects a material change. Cancelled monitors cannot be\ntriggered."
+        },
+        {
+          "info": {
+            "name": "Update Monitor",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1/monitors/:monitor_id/update",
+            "params": [
+              {
+                "name": "monitor_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a monitor.\n\nOnly fields explicitly included in the request body are changed. Pass\n`null` for `webhook` or `metadata` to clear those fields. Pass `type` and\n`settings` to update type-specific settings on an `event_stream` monitor.\nAt least one field must be provided. Cancelled monitors cannot be updated."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

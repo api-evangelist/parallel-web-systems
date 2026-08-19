@@ -1,0 +1,85 @@
+generated: '2026-08-14'
+method: searched
+source: https://docs.parallel.ai/getting-started/rate-limits
+docs:
+- https://docs.parallel.ai/getting-started/rate-limits
+- https://parallel.ai/pricing
+scope: per-account (API key)
+counting_rule: >-
+  Rate limits apply only to POST requests that CREATE new resources. GET requests that
+  retrieve results or poll status do not count against the quota - e.g. polling
+  GET /v1/tasks/runs/{run_id} does not consume the Tasks limit.
+limit_count: 7
+limits:
+- product: Search
+  operation: POST /v1/search
+  limit: 600
+  window: 1m
+  scope: per-account
+- product: Extract
+  operation: POST /v1/extract
+  limit: 600
+  window: 1m
+  scope: per-account
+- product: Tasks / TaskGroups
+  operation: POST /v1/tasks/runs or POST /v1/tasks/groups/{taskgroup_id}/runs
+  limit: 2000
+  window: 1m
+  scope: per-account
+- product: Chat
+  operation: POST /v1beta/chat/completions
+  limit: 300
+  window: 1m
+  scope: per-account
+- product: FindAll
+  operation: POST /v1beta/findall/runs
+  limit: 300
+  window: 1h
+  scope: per-account
+  note: >-
+    The docs rate-limit table states 300 per hour for creating a FindAll generator; the
+    marketing pricing page shows 25/hr for Find All. Both are published by Parallel and
+    they disagree - recorded as found, not reconciled.
+- product: Entity Search
+  operation: POST /v1beta/findall/entity-search
+  limit: 600
+  window: 1m
+  scope: per-account
+- product: Monitor
+  operation: POST /v1alpha/monitors
+  limit: 300
+  window: 1m
+  scope: per-account
+- product: Responses
+  operation: POST /v1/responses
+  limit: 300
+  window: 1m
+  scope: per-account
+  source: https://parallel.ai/pricing
+  note: Published on the pricing page; not yet listed in the docs rate-limit table.
+response_headers:
+  published: false
+  observed: []
+  detail: >-
+    Parallel documents no RateLimit-* / X-RateLimit-* response headers and the OpenAPI
+    declares none, so an agent cannot read remaining quota from a response. This is the
+    material gap - the numbers are published but the runtime signal is not.
+exhaustion:
+  status_code: 429
+  retry_after: undocumented
+  note: >-
+    A 429 rate-limit status is the conventional exhaustion code and appears in the API
+    error reference; no Retry-After semantics are documented.
+increases:
+  process: Contact support@parallel.ai with use case and requirements.
+  contact: support@parallel.ai
+free_tier:
+  detail: >-
+    The hosted Search MCP (https://search.parallel.ai/mcp) is free anonymously at
+    "lower rate limits" - the anonymous ceiling is not numerically published. Passing a
+    Parallel API key as a Bearer token raises it. Free-tier requests are correlated by
+    the `session_id` argument the MCP tools require.
+notes: >-
+  Limits read verbatim from the published rate-limit reference and cross-checked against
+  the pricing page. See conventions/parallel-web-systems-conventions.yml for the wider
+  runtime semantics and errors/parallel-web-systems-problem-types.yml for the error envelope.

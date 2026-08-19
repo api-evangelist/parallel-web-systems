@@ -1,6 +1,8 @@
-generated: '2026-07-20'
+generated: '2026-08-14'
 method: derived
-source: openapi/parallel-web-systems-openapi.json + https://docs.parallel.ai
+source: >-
+  openapi/_original/parallel-web-systems-openapi.json + https://docs.parallel.ai +
+  https://docs.parallel.ai/getting-started/rate-limits
 auth:
   style: api-key
   scheme: apiKey
@@ -45,13 +47,40 @@ error_envelope:
   reference_id_field: error.ref_id
   see: errors/parallel-web-systems-problem-types.yml
 rate_limiting:
+  scope: per-account (API key)
+  counting_rule: >-
+    Only resource-CREATING POSTs count. GET polling of status/results is not metered against
+    the limit.
+  published_limits:
+  - Search 600/min
+  - Extract 600/min
+  - Tasks/TaskGroups 2,000/min
+  - Chat 300/min
+  - Responses 300/min
+  - FindAll 300/hr
+  - Entity Search 600/min
+  - Monitor 300/min
+  response_headers: none
+  exhaustion_status: 429
   detail: >-
-    Rate limits are tier/plan based (free tier ~5,000 searches/month; Search Turbo priced
-    per 1,000 requests). Higher limits on the Search MCP require a Bearer API key. The
-    published OpenAPI does not standardize RateLimit response headers.
+    Limits are numerically published but there are NO RateLimit-* / X-RateLimit-* response
+    headers, so an agent cannot read remaining quota at runtime - it can only fail into a 429.
+    Free-tier MCP usage is correlated by the `session_id` tool argument rather than a key.
+  see: rate-limits/parallel-web-systems-rate-limits.yml
 request_tracing:
   field: error.ref_id
   detail: Errors carry a ref_id for support correlation.
+  mcp_session: >-
+    The hosted MCP tools require a caller-generated `session_id` (UUID or 32+ char hex) reused
+    across every call in a conversation, used for free-tier rate limiting and log correlation.
+pricing:
+  model: pay-as-you-go, metered per request/run
+  see: plans/parallel-web-systems-plans-pricing.yml
+agent_surfaces:
+  mcp: mcp/parallel-web-systems-mcp.yml
+  a2a: a2a/parallel-web-systems-a2a.yml
+  crosswalk: mcp/parallel-web-systems-tool-crosswalk.yml
+  skills: skills/_index.yml
 notes: >-
   Cross-cutting semantics derived from the OpenAPI 3.1 spec (v0.1.2) and the public docs.
   See also errors/, lifecycle/, and authentication/ artifacts.

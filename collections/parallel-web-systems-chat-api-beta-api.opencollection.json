@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Parallel Chat API (Beta) Chat API (Beta) Chat API (Beta) API",
+    "version": "0.1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chat API (Beta)",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Chat Completions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.parallel.ai/v1beta/chat/completions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Chat completions.\n\nThis endpoint can be used to get realtime chat completions. It can also be used\nwith the Task API processors to get structured, research outputs via a chat\ninterface."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
