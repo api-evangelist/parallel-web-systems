@@ -38,7 +38,7 @@ accessModel:
   generated: '2026-08-14'
   method: searched
 image: https://assets.parallel.ai/dark-parallel-avatar-540.png
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-14'
 tags:
