@@ -160,6 +160,8 @@ apis:
   humanURL: https://docs.parallel.ai/monitor-api/monitor-quickstart
   baseURL: https://api.parallel.ai
   tags:
+  - Monitors
+  tags_raw:
   - Monitor
   properties:
   - type: OpenAPI
@@ -235,6 +237,8 @@ apis:
   humanURL: https://docs.parallel.ai/task-api/task-quickstart
   baseURL: https://api.parallel.ai
   tags:
+  - Task
+  tags_raw:
   - Tasks
   properties:
   - type: OpenAPI
