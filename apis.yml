@@ -257,41 +257,13 @@ apis:
     url: https://docs.parallel.ai/api-reference/tasks/create-task-run
   - type: GettingStarted
     url: https://docs.parallel.ai/task-api/task-quickstart
-- aid: parallel-web-systems:parallel-web-systems-responses-api
-  name: Parallel Web Systems Responses API
-  description: >-
-    The Responses API is an OpenAI Responses-compatible endpoint that returns fully cited answers
-    grounded in the live web, with structured output support and 5-60 second response times. Cost and
-    latency are selected via a `reasoning.effort` tier (low, medium, high). It is the synchronous,
-    latency-sensitive counterpart to the asynchronous Task API, intended for research subagents and
-    in-product answers.
-  humanURL: https://docs.parallel.ai/responses-api/responses-quickstart
-  baseURL: https://api.parallel.ai
-  tags:
-  - Responses API
-  properties:
-  - type: OpenAPI
-    url: openapi/parallel-web-systems-responses-api-openapi.yml
-  - type: Conventions
-    url: conventions/parallel-web-systems-conventions.yml
-  - type: ErrorCatalog
-    url: errors/parallel-web-systems-problem-types.yml
-  - type: DataModel
-    url: data-model/parallel-web-systems-data-model.yml
-  - type: RateLimits
-    url: rate-limits/parallel-web-systems-rate-limits.yml
-  - type: APIReference
-    url: https://docs.parallel.ai/api-reference/responses-api/create-response
-  - type: GettingStarted
-    url: https://docs.parallel.ai/responses-api/responses-quickstart
 - aid: parallel-web-systems:parallel-web-systems-memory-api-beta
   name: Parallel Web Systems Memory API (Beta)
   description: >-
-    The beta Memory API gives agents a persistent retrieval layer over previously gathered web
-    context. It exposes three operations - retrieve memory for a query, evict a specific source from
-    memory, and clear memory entirely - so an agent can reuse research across turns without refetching
-    the web. The surface lives under the /v1beta prefix and is opted into via the `parallel-beta`
-    request header.
+    The beta Memory API gives agents a persistent retrieval layer over previously gathered web context.
+    It exposes three operations - retrieve memory for a query, evict a specific source from memory, and
+    clear memory entirely - so an agent can reuse research across turns without refetching the web. The
+    surface lives under the /v1beta prefix and is opted into via the `parallel-beta` request header.
   humanURL: https://docs.parallel.ai
   baseURL: https://api.parallel.ai
   tags:
@@ -307,6 +279,47 @@ apis:
     url: data-model/parallel-web-systems-data-model.yml
   - type: Documentation
     url: https://docs.parallel.ai
+- aid: parallel-web-systems:parallel-web-systems-responses-api-api
+  name: Parallel Web Systems Responses API
+  description: >-
+    An OpenAI-Responses-compatible interface for answers grounded in live web research, with URL citations.
+    Point any Responses-API client — the OpenAI Python SDK, OpenAI TypeScript SDK, the Agents SDK, or
+    raw HTTP — at `https://api.parallel.ai` with your Parallel API key, set `model` to `parallel`, and
+    call `/v1/responses`.
+
+    - `input` accepts a plain string or an array of role/content messages (canonical OpenAI shape; text
+    content only).
+
+    - `reasoning.effort` (`low`/`medium`/`high`) controls how much research is performed, trading response
+    time for answer quality.
+
+    - Multi-turn via `previous_response_id`.
+
+    - Structured outputs via `text.format = {"type": "json_schema", "name": ..., "schema": {...}}`.
+
+    - Streaming (`stream=true`) emits the standard OpenAI Responses SSE lifecycle: `response.created`
+    and `response.in_progress`, then output item / content part / text delta events with URL-citation
+    annotations, the matching `*.done` events, and a terminal `response.completed` — or `response.failed`
+    if the request fails mid-stream.
+  humanURL: https://docs.parallel.ai/chat-api/chat-quickstart
+  baseURL: https://api.parallel.ai
+  tags:
+  - Responses API
+  properties:
+  - type: OpenAPI
+    url: openapi/parallel-web-systems-responses-api-api-openapi.yml
+  - type: Conventions
+    url: conventions/parallel-web-systems-conventions.yml
+  - type: ErrorCatalog
+    url: errors/parallel-web-systems-problem-types.yml
+  - type: DataModel
+    url: data-model/parallel-web-systems-data-model.yml
+  - type: RateLimits
+    url: rate-limits/parallel-web-systems-rate-limits.yml
+  - type: APIReference
+    url: https://docs.parallel.ai/api-reference/responses-api/create-response
+  - type: GettingStarted
+    url: https://docs.parallel.ai/responses-api/responses-quickstart
 common:
 - type: MCPServer
   url: mcp/parallel-web-systems-mcp.yml
