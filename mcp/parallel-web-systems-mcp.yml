@@ -1,8 +1,6 @@
 generated: '2026-08-14'
 method: searched
-source: >-
-  live MCP tools/list against https://search.parallel.ai/mcp (HTTP 200) +
-  https://docs.parallel.ai/integrations/mcp/search-mcp
+source: live MCP tools/list against https://search.parallel.ai/mcp (HTTP 200) + https://docs.parallel.ai/integrations/mcp/search-mcp
 status: published
 status_raw: live
 name: Parallel Web Search MCP Server
@@ -13,30 +11,22 @@ transport: streamable-http
 protocol_version: '2025-06-18'
 deployment:
   mode: remote
-  endpoint: https://search.parallel.ai/mcp
-  auth: none
-  verified: probed
-  detail: >-
-    A hosted, callable HTTPS endpoint an MCP client POSTs to directly - no install step.
-    Anonymous access works (tools/list returned 200 with no credentials); a Parallel API
-    key passed as `Authorization: Bearer <key>` raises rate limits. A second endpoint,
-    https://search.parallel.ai/mcp-oauth, requires OAuth or a Bearer key and 401s
-    anonymously. No first-party stdio package is published for the Search MCP.
-  checked: '2026-08-14'
+  verified: searched
+  tools: 2
+  checked: '2026-08-12'
+  source: catalog MCP census
 endpoints:
 - url: https://search.parallel.ai/mcp
   auth: anonymous
   probed_status: 200
-  notes: >-
-    Default endpoint. Free anonymous access at lower rate limits; pass a Parallel API key
-    as 'Authorization: Bearer <key>' for higher limits. OAuth is deliberately NOT
-    advertised here, so OAuth-capable clients will not prompt for sign-in.
+  notes: 'Default endpoint. Free anonymous access at lower rate limits; pass a Parallel API key as ''Authorization:
+    Bearer <key>'' for higher limits. OAuth is deliberately NOT advertised here, so OAuth-capable clients
+    will not prompt for sign-in.'
 - url: https://search.parallel.ai/mcp-oauth
   auth: oauth
-  notes: >-
-    OAuth-capable variant. Requires authentication - Bearer API key OR the OAuth flow;
-    anonymous requests return 401. Recommended for org-wide deployments, Zero Data
-    Retention setups, or wherever every request must be attributed to an account.
+  notes: OAuth-capable variant. Requires authentication - Bearer API key OR the OAuth flow; anonymous
+    requests return 401. Recommended for org-wide deployments, Zero Data Retention setups, or wherever
+    every request must be attributed to an account.
 capabilities:
   tools: true
   prompts: true
@@ -44,11 +34,10 @@ capabilities:
 tool_count: 2
 tools:
 - name: web_search
-  description: >-
-    Perform web searches and return LLM-friendly results, including excerpts that are
-    usually sufficient to answer directly without a follow-up fetch. Ideal for questions
-    needing fresh or current information, research/comparison/documentation/troubleshooting,
-    and broad tasks where multiple search_queries can be issued in a single call.
+  description: Perform web searches and return LLM-friendly results, including excerpts that are usually
+    sufficient to answer directly without a follow-up fetch. Ideal for questions needing fresh or current
+    information, research/comparison/documentation/troubleshooting, and broad tasks where multiple search_queries
+    can be issued in a single call.
   backing_rest: POST /v1/search
   input_schema:
     required:
@@ -57,34 +46,28 @@ tools:
     properties:
     - name: objective
       type: string
-      detail: >-
-        Natural-language description of what the search is trying to find. Should be
-        atomic; may include guidance about preferred sources or freshness.
+      detail: Natural-language description of what the search is trying to find. Should be atomic; may
+        include guidance about preferred sources or freshness.
     - name: search_queries
       type: array[string]
-      detail: >-
-        Concise keyword queries, 3-6 words each, may include search operators. At least
-        one required; 2-3 recommended.
+      detail: Concise keyword queries, 3-6 words each, may include search operators. At least one required;
+        2-3 recommended.
     - name: session_id
       type: string
-      detail: >-
-        Stable conversation identifier (UUID or 32+ char hex) reused across every
-        web_search/web_fetch call. Used for free-tier rate limiting and log correlation;
-        ignored on paid-tier keys. maxLength 100.
+      detail: Stable conversation identifier (UUID or 32+ char hex) reused across every web_search/web_fetch
+        call. Used for free-tier rate limiting and log correlation; ignored on paid-tier keys. maxLength
+        100.
     - name: model_name
       type: string
-      detail: >-
-        Identifier of the calling LLM model, passed verbatim. Product analytics only; does
-        not affect search behavior. maxLength 100.
+      detail: Identifier of the calling LLM model, passed verbatim. Product analytics only; does not affect
+        search behavior. maxLength 100.
   output_schema: true
-  output_detail: >-
-    Structured results (url, title, publish_date, excerpts) plus a usage[] block of SKU
-    name/count items - the MCP response carries its own billing telemetry.
+  output_detail: Structured results (url, title, publish_date, excerpts) plus a usage[] block of SKU name/count
+    items - the MCP response carries its own billing telemetry.
 - name: web_fetch
-  description: >-
-    Pulls token-efficient markdown from specific URLs. Use after web_search narrows down
-    candidates, or when the agent already has a URL it needs to read in depth. Accepts
-    multiple related URLs plus a common objective per call.
+  description: Pulls token-efficient markdown from specific URLs. Use after web_search narrows down candidates,
+    or when the agent already has a URL it needs to read in depth. Accepts multiple related URLs plus
+    a common objective per call.
   backing_rest: POST /v1/extract
   input_schema:
     required:
@@ -104,11 +87,9 @@ tools:
       type: string
   output_schema: true
 constraints:
-  search_mode: >-
-    The MCP wrapper runs Search in `basic` mode - tuned for low latency inside agent loops.
-  excerpt_cap: >-
-    Total excerpts per tool call are capped at roughly 25,000 characters to stay within
-    typical MCP client output limits.
+  search_mode: The MCP wrapper runs Search in `basic` mode - tuned for low latency inside agent loops.
+  excerpt_cap: Total excerpts per tool call are capped at roughly 25,000 characters to stay within typical
+    MCP client output limits.
 install_clients:
   one_click:
   - Cursor
@@ -128,11 +109,8 @@ install_clients:
 crosswalk: mcp/parallel-web-systems-tool-crosswalk.yml
 related:
   task_mcp_repo: https://github.com/parallel-web/task-mcp
-  task_mcp_note: >-
-    A task-mcp repo exists under the GitHub org but no hosted endpoint or published
-    package for it was found; it is not counted as a deployed server here.
-notes: >-
-  Upgraded from a bare initialize handshake to a full live tools/list - both tools were
-  returned anonymously with complete inputSchema AND outputSchema, so the tool contract in
-  this file is the server's own, not doc prose. Use is subject to the Parallel Customer
-  Terms and Privacy Policy.
+  task_mcp_note: A task-mcp repo exists under the GitHub org but no hosted endpoint or published package
+    for it was found; it is not counted as a deployed server here.
+notes: Upgraded from a bare initialize handshake to a full live tools/list - both tools were returned
+  anonymously with complete inputSchema AND outputSchema, so the tool contract in this file is the server's
+  own, not doc prose. Use is subject to the Parallel Customer Terms and Privacy Policy.

@@ -416,3 +416,5 @@ x-coverage:
     answers anonymously, two real A2A agent cards, published Agent Skills served from
     /.well-known/, llms.txt, RFC 8414 OAuth metadata, published pricing and rate limits.
   checked: '2026-08-14'
+x-parent: parallel
+x-relationship: product

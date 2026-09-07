@@ -1,6 +1,7 @@
 generated: '2026-08-14'
 method: probed
-source: live probes of /.well-known/* on parallel.ai, api.parallel.ai, docs.parallel.ai, platform.parallel.ai, search.parallel.ai
+source: live probes of /.well-known/* on parallel.ai, api.parallel.ai, docs.parallel.ai, platform.parallel.ai,
+  search.parallel.ai
 hits: 4
 probes:
 - host: platform.parallel.ai
@@ -16,9 +17,8 @@ probes:
   content_type: application/json
   document: true
   file: ../a2a/parallel-web-systems-agent-card.json
-  detail: >-
-    A2A Agent Card for "Parallel Deep Research" (protocolVersion 0.3.0, agent URL
-    https://api.parallel.ai/a2a). Graded conformant. See a2a/parallel-web-systems-a2a.yml.
+  detail: A2A Agent Card for "Parallel Deep Research" (protocolVersion 0.3.0, agent URL https://api.parallel.ai/a2a).
+    Graded conformant. See a2a/parallel-web-systems-a2a.yml.
 - host: docs.parallel.ai
   path: /.well-known/agent-card.json
   status: 200
@@ -32,9 +32,8 @@ probes:
   content_type: text/markdown
   document: true
   file: ../skills/parallel-web-systems-wellknown-parallel-skill.md
-  detail: >-
-    A provider-published Agent Skill served from /.well-known/ and referenced by the docs
-    agent card's skills[0].url. Saved verbatim.
+  detail: A provider-published Agent Skill served from /.well-known/ and referenced by the docs agent
+    card's skills[0].url. Saved verbatim.
 - host: parallel.ai
   path: /.well-known/agent-card.json
   status: 404
@@ -83,16 +82,39 @@ probes:
 - host: search.parallel.ai
   path: /.well-known/oauth-protected-resource
   status: 404
-  detail: >-
-    Notable gap - the MCP server at search.parallel.ai/mcp-oauth requires OAuth but
-    publishes neither RFC 9728 protected-resource metadata nor RFC 8414 server metadata on
-    its own host; clients must be told to use platform.parallel.ai out of band.
+  detail: Notable gap - the MCP server at search.parallel.ai/mcp-oauth requires OAuth but publishes neither
+    RFC 9728 protected-resource metadata nor RFC 8414 server metadata on its own host; clients must be
+    told to use platform.parallel.ai out of band.
 - host: platform.parallel.ai
   path: /.well-known/agent-card.json
   status: 404
-notes: >-
-  Four real documents are served from /.well-known/ across Parallel's hosts: the RFC 8414
-  OAuth metadata on platform.parallel.ai, two A2A Agent Cards (api. and docs.), and a
-  published Agent Skill markdown file on docs. No security.txt, OpenID configuration,
-  api-catalog, or ai-plugin.json exists on any host. The 404 rows are recorded absences,
-  not failures to probe.
+notes: 'Four real documents are served from /.well-known/ across Parallel''s hosts: the RFC 8414 OAuth
+  metadata on platform.parallel.ai, two A2A Agent Cards (api. and docs.), and a published Agent Skill
+  markdown file on docs. No security.txt, OpenID configuration, api-catalog, or ai-plugin.json exists
+  on any host. The 404 rows are recorded absences, not failures to probe.'
+hosts:
+- host: ''
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: parallel-web-systems-oauth-authorization-server.json
+    content_type: application/json
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: ../a2a/parallel-web-systems-agent-card.json
+    content_type: application/json
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: ../a2a/parallel-web-systems-docs-agent-card.json
+    content_type: application/json
+  - path: /.well-known/agent-skills/parallel/skill.md
+    status: 200
+    file: ../skills/parallel-web-systems-wellknown-parallel-skill.md
+    content_type: text/markdown
+x-shape-fix:
+  converted: '2026-08-20'
+  from: probes
+  note: Rewritten into hosts[] -> documents[], the only shape well_known_docs() in score.rb reads. A served
+    .well-known surface recorded in any other shape scores as absent. Promoted ONLY the 2xx rows out of
+    the probe log; non-2xx probes are real negative results and were left in place, not converted into
+    documents.

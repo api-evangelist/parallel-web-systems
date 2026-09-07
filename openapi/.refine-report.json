@@ -4,7 +4,9 @@
     "parallel-web-systems-chat-api-beta-api-openapi.yml",
     "parallel-web-systems-extract-api-openapi.yml",
     "parallel-web-systems-findall-api-openapi.yml",
+    "parallel-web-systems-memory-api-openapi.yml",
     "parallel-web-systems-monitor-api-openapi.yml",
+    "parallel-web-systems-responses-api-openapi.yml",
     "parallel-web-systems-search-api-openapi.yml",
     "parallel-web-systems-tasks-api-openapi.yml"
   ],
@@ -12,13 +14,27 @@
     "parallel-web-systems-chat-api-beta-api-openapi.yml",
     "parallel-web-systems-extract-api-openapi.yml",
     "parallel-web-systems-findall-api-openapi.yml",
+    "parallel-web-systems-memory-api-openapi.yml",
     "parallel-web-systems-monitor-api-openapi.yml",
+    "parallel-web-systems-responses-api-api-openapi.yml",
     "parallel-web-systems-search-api-openapi.yml",
     "parallel-web-systems-tasks-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "archived openapi/parallel-web-systems-responses-api-openapi.yml"
+  ],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "parallel-web-systems-chat-api-beta-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-extract-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-findall-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-memory-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-monitor-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-responses-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-search-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "parallel-web-systems-tasks-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+1 apis, 8 total)"
+  ],
   "skipped": []
 }

@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Parallel Chat API (Beta) Chat API (Beta) Monitor API
   description: Parallel API
@@ -600,121 +600,57 @@ paths:
         source: "import Parallel from \"parallel-web\";\n\nconst client = new Parallel();\n\nconst monitor = await client.monitor.update('monitor_id', {\n    frequency: '12h',\n    type: 'event_stream',\n    settings: { query: 'Extract recent funding news about AI startups' },\n});\nconsole.log(monitor.frequency);"
 components:
   schemas:
-    Citation:
-      description: A citation for a task output.
+    HTTPValidationError:
       properties:
-        title:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PaginatedMonitorResponse:
+      properties:
+        monitors:
+          items:
+            $ref: '#/components/schemas/MonitorResponse'
+          type: array
+          title: Monitors
+          description: List of monitors for the current page.
+        next_cursor:
           anyOf:
           - type: string
           - type: 'null'
-          default: null
-          description: Title of the citation.
-          title: Title
-        url:
-          description: URL of the citation.
-          title: Url
-          type: string
-        excerpts:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          default: null
-          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
-          title: Excerpts
-      required:
-      - url
-      title: Citation
-      type: object
-    MonitorCompletionEvent:
-      properties:
-        event_type:
-          type: string
-          enum:
-          - completion
-          const: completion
-          title: Event Type
-          description: Discriminant for the completion event variant.
-          default: completion
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-          description: Timestamp of when the monitor execution completed, as an RFC 3339 string.
-          examples:
-          - '2025-01-15T10:30:00Z'
+          title: Next Cursor
+          description: Opaque pagination token. Pass as `cursor` to retrieve the next page. Absent when there are no more pages.
       type: object
       required:
-      - timestamp
-      title: MonitorCompletionEvent
-      description: 'Emitted when a monitor execution ran but detected no material changes.
-
-
-        Only returned when `include_completions=true` is passed to the list events
-
-        endpoint. Useful for auditing execution history alongside content events.'
-    MonitorWebhook:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: URL for the webhook.
-          examples:
-          - https://example.com/webhook
-        event_types:
-          items:
-            type: string
-            enum:
-            - monitor.event.detected
-            - monitor.execution.completed
-            - monitor.execution.failed
-          type: array
-          title: Event Types
-          description: Event types to send the webhook notifications for.
-      type: object
-      required:
-      - url
-      title: MonitorWebhook
-      description: Webhook configuration for a monitor.
-    JsonSchema:
-      properties:
-        json_schema:
-          additionalProperties: true
-          type: object
-          title: Json Schema
-          description: A JSON Schema object. Only a subset of JSON Schema is supported.
-          examples:
-          - additionalProperties: false
-            properties:
-              gdp:
-                description: GDP in USD for the year, formatted like '$3.1 trillion (2023)'
-                type: string
-            required:
-            - gdp
-            type: object
-        type:
-          type: string
-          const: json
-          title: Type
-          description: The type of schema being defined. Always `json`.
-          default: json
-      type: object
-      required:
-      - json_schema
-      title: JsonSchema
-      description: JSON schema for a task input or output.
-    MonitorSnapshotSettings:
+      - monitors
+      title: PaginatedMonitorResponse
+      description: Paginated list of monitors.
+    MonitorSnapshotResponseSettings:
       properties:
         task_run_id:
           type: string
           title: Task Run Id
-          description: Task run ID whose output becomes the data and schema for the monitor.
+          description: ID of the task run used as the monitoring baseline.
+        query:
+          type: string
+          title: Query
+          description: The original task input from the baseline task run that this monitor tracks.
+          examples:
+          - Extract recent news about AI
+        output_schema:
+          anyOf:
+          - $ref: '#/components/schemas/JsonSchema'
+          - type: 'null'
+          description: JSON schema derived from the baseline task run that constrains and structures the event output.
       type: object
       required:
       - task_run_id
-      title: MonitorSnapshotSettings
-      description: Type-specific settings for a `snapshot` monitor.
+      - query
+      title: MonitorSnapshotResponseSettings
+      description: Configuration settings for a `snapshot` monitor.
     MonitorResponse:
       properties:
         type:
@@ -823,83 +759,128 @@ components:
         uses `MonitorSnapshotResponseSettings`. Snapshot monitors also carry an
 
         `output` field (`MonitorSnapshotOutput`) with the latest computed state.'
-    MonitorSnapshotOutput:
+    SourcePolicy:
       properties:
-        latest_snapshot:
-          anyOf:
-          - oneOf:
-            - $ref: '#/components/schemas/TaskRunTextOutput'
-            - $ref: '#/components/schemas/TaskRunJsonOutput'
-            discriminator:
-              propertyName: type
-              mapping:
-                json: '#/components/schemas/TaskRunJsonOutput'
-                text: '#/components/schemas/TaskRunTextOutput'
-          - type: 'null'
-          title: Latest Snapshot
-          description: Task run output from the most recent completed execution of this snapshot monitor — same structure as the output of the original task run the monitor was created from. `null` until the first run completes.
-      type: object
-      title: MonitorSnapshotOutput
-      description: Runtime output state for a `snapshot` monitor.
-    MonitorEventStreamSettings:
-      properties:
-        query:
-          type: string
-          title: Query
-          description: Search query to monitor for material changes.
+        include_domains:
+          items:
+            type: string
+          type: array
+          title: Include Domains
+          description: List of domains to restrict the results to. If specified, only sources from these domains will be included. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
           examples:
-          - Extract recent news about AI
-        output_schema:
+          - - wikipedia.org
+            - usa.gov
+            - .edu
+        exclude_domains:
+          items:
+            type: string
+          type: array
+          title: Exclude Domains
+          description: List of domains to exclude from results. If specified, sources from these domains will be excluded. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
+          examples:
+          - - reddit.com
+            - x.com
+            - .ai
+        after_date:
           anyOf:
-          - $ref: '#/components/schemas/JsonSchema'
+          - type: string
+            format: date
           - type: 'null'
-          description: JSON schema that constrains and structures the event output. When set, events are returned as JSON objects matching this schema instead of free-form text.
-        include_backfill:
+          title: After Date
+          description: Optional start date for filtering search results. Results will be limited to content published on or after this date. Provided as an RFC 3339 date string (YYYY-MM-DD).
+          examples:
+          - '2024-01-01'
+      type: object
+      title: SourcePolicy
+      description: 'Source policy for web search results.
+
+
+        This policy governs which sources are allowed/disallowed in results.'
+    FieldBasis:
+      description: Citations and reasoning supporting one field of a task output.
+      properties:
+        field:
+          description: Name of the output field.
+          title: Field
+          type: string
+        citations:
+          default: []
+          description: List of citations supporting the output field.
+          items:
+            $ref: '#/components/schemas/Citation'
+          title: Citations
+          type: array
+        reasoning:
+          description: Reasoning for the output field.
+          title: Reasoning
+          type: string
+        confidence:
           anyOf:
-          - type: boolean
+          - type: string
           - type: 'null'
-          title: Include Backfill
-          description: If true, the first execution returns a sample of recent historical events matching the query (preview only — not exhaustive). If false or omitted, only events from the monitor's creation date onward are returned. Subsequent executions are always incremental.
-        advanced_settings:
-          anyOf:
-          - $ref: '#/components/schemas/AdvancedMonitorSettings'
-          - type: 'null'
-          description: Advanced monitor configuration.
+          default: null
+          description: Confidence level for the output field. Only certain processors provide confidence levels.
+          examples:
+          - low
+          - medium
+          - high
+          title: Confidence
+      required:
+      - field
+      - reasoning
+      title: FieldBasis
+      type: object
+    MonitorSnapshotSettings:
+      properties:
+        task_run_id:
+          type: string
+          title: Task Run Id
+          description: Task run ID whose output becomes the data and schema for the monitor.
       type: object
       required:
-      - query
-      title: MonitorEventStreamSettings
-      description: Type-specific settings for an `event_stream` monitor.
-    Warning:
+      - task_run_id
+      title: MonitorSnapshotSettings
+      description: Type-specific settings for a `snapshot` monitor.
+    TaskRunTextOutput:
       properties:
+        basis:
+          items:
+            $ref: '#/components/schemas/FieldBasis'
+          type: array
+          title: Basis
+          description: Basis for the output. The basis has a single field 'output'.
         type:
           type: string
-          enum:
-          - spec_validation_warning
-          - input_validation_warning
-          - warning
+          const: text
           title: Type
-          description: Type of warning. Note that adding new warning types is considered a backward-compatible change.
-          examples:
-          - spec_validation_warning
-          - input_validation_warning
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
-        detail:
+          description: The type of output being returned, as determined by the output schema of the task spec.
+        mcp_tool_calls:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/McpToolCall'
+            type: array
+          - type: 'null'
+          title: Mcp Tool Calls
+          description: MCP tool calls made by the task.
+        beta_fields:
           anyOf:
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: Detail
-          description: Optional detail supporting the warning.
+          title: Beta Fields
+          description: Deprecated. mcp-server-2025-07-17 is now included directly in the output (e.g. mcp_tool_calls).
+          deprecated: true
+        content:
+          type: string
+          title: Content
+          description: Text output from the task.
       type: object
       required:
+      - basis
       - type
-      - message
-      title: Warning
-      description: Human-readable message for a task.
+      - content
+      title: TaskRunTextOutput
+      description: Output from a task that returns text.
     MonitorEventStreamEvent:
       properties:
         event_id:
@@ -952,43 +933,24 @@ components:
         previous execution. Events are net-new relative to the cursor; clients
 
         should treat them as an append-only log.'
-    SourcePolicy:
+    UpdateMonitorEventStreamSettings:
       properties:
-        include_domains:
-          items:
-            type: string
-          type: array
-          title: Include Domains
-          description: List of domains to restrict the results to. If specified, only sources from these domains will be included. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
-          examples:
-          - - wikipedia.org
-            - usa.gov
-            - .edu
-        exclude_domains:
-          items:
-            type: string
-          type: array
-          title: Exclude Domains
-          description: List of domains to exclude from results. If specified, sources from these domains will be excluded. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
-          examples:
-          - - reddit.com
-            - x.com
-            - .ai
-        after_date:
+        query:
           anyOf:
           - type: string
-            format: date
           - type: 'null'
-          title: After Date
-          description: Optional start date for filtering search results. Results will be limited to content published on or after this date. Provided as an RFC 3339 date string (YYYY-MM-DD).
+          title: Query
+          description: Updated search query for the monitor. Use this for minor updates to prompts and instructions only. Major changes to the query may lead to unexpected results in change detection, as the monitor compares new results with what was previously seen.
           examples:
-          - '2024-01-01'
+          - Extract recent news about AI
+        advanced_settings:
+          anyOf:
+          - $ref: '#/components/schemas/AdvancedMonitorSettings'
+          - type: 'null'
+          description: Advanced monitor configuration.
       type: object
-      title: SourcePolicy
-      description: 'Source policy for web search results.
-
-
-        This policy governs which sources are allowed/disallowed in results.'
+      title: UpdateMonitorEventStreamSettings
+      description: Type-specific update settings for an `event_stream` monitor.
     UpdateMonitorRequest:
       properties:
         type:
@@ -1053,104 +1015,6 @@ components:
         is required to identify the settings shape. The request must still include
 
         at least one field to update; empty updates fail validation.'
-    MonitorEventStreamResponseSettings:
-      properties:
-        query:
-          type: string
-          title: Query
-          description: The search query being monitored.
-          examples:
-          - Extract recent news about AI
-        output_schema:
-          anyOf:
-          - $ref: '#/components/schemas/JsonSchema'
-          - type: 'null'
-          description: JSON schema that constrains and structures the event output. When set, events are returned as JSON objects matching this schema.
-        include_backfill:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Include Backfill
-          description: If true, the first execution returns a sample of recent historical events matching the query (preview only — not exhaustive). If false or omitted, only events from the monitor's creation date onward are returned. Subsequent executions are always incremental.
-        advanced_settings:
-          anyOf:
-          - $ref: '#/components/schemas/AdvancedMonitorSettings'
-          - type: 'null'
-          description: Advanced monitor configuration.
-      type: object
-      required:
-      - query
-      title: MonitorEventStreamResponseSettings
-      description: Type-specific response fields for an `event_stream` monitor.
-    MonitorErrorEvent:
-      properties:
-        event_type:
-          type: string
-          enum:
-          - error
-          const: error
-          title: Event Type
-          description: Discriminant for the error event variant.
-          default: error
-        error_message:
-          type: string
-          title: Error Message
-          description: Human-readable description of the failure.
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-          description: Timestamp of when the monitor execution failed, as an RFC 3339 string.
-          examples:
-          - '2025-01-15T10:30:00Z'
-      type: object
-      required:
-      - error_message
-      - timestamp
-      title: MonitorErrorEvent
-      description: 'Emitted when a monitor execution failed (e.g. payment or quota error).
-
-
-        Always included in the events list regardless of `include_completions`.'
-    ErrorResponse:
-      properties:
-        type:
-          type: string
-          const: error
-          title: Type
-          description: Always 'error'.
-        error:
-          $ref: '#/components/schemas/Error'
-          description: Error.
-      type: object
-      required:
-      - type
-      - error
-      title: ErrorResponse
-      description: Response object used for non-200 status codes.
-    MonitorSnapshotResponseSettings:
-      properties:
-        task_run_id:
-          type: string
-          title: Task Run Id
-          description: ID of the task run used as the monitoring baseline.
-        query:
-          type: string
-          title: Query
-          description: The original task input from the baseline task run that this monitor tracks.
-          examples:
-          - Extract recent news about AI
-        output_schema:
-          anyOf:
-          - $ref: '#/components/schemas/JsonSchema'
-          - type: 'null'
-          description: JSON schema derived from the baseline task run that constrains and structures the event output.
-      type: object
-      required:
-      - task_run_id
-      - query
-      title: MonitorSnapshotResponseSettings
-      description: Configuration settings for a `snapshot` monitor.
     PaginatedMonitorEvents:
       properties:
         events:
@@ -1189,302 +1053,96 @@ components:
       - events
       title: PaginatedMonitorEvents
       description: Paginated list of monitor events, newest first.
-    MonitorSnapshotEvent:
-      properties:
-        event_id:
-          type: string
-          title: Event Id
-          description: Stable identifier for this event. Safe to use for client-side deduplication across pagination and retries.
-        event_group_id:
-          type: string
-          title: Event Group Id
-          description: ID of the event group that owns this event.
-        event_date:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Event Date
-          description: Date when this event was produced. ISO 8601 date (YYYY-MM-DD) or partial (YYYY-MM or YYYY).
-          examples:
-          - '2026-04-07'
-        event_type:
-          type: string
-          enum:
-          - snapshot
-          const: snapshot
-          title: Event Type
-          description: Discriminant for the snapshot event variant.
-          default: snapshot
-        changed_output:
-          oneOf:
-          - $ref: '#/components/schemas/TaskRunTextOutput'
-          - $ref: '#/components/schemas/TaskRunJsonOutput'
-          title: Changed Output
-          description: Partial output containing only the fields that changed since the previous execution, each with its `basis` (reasoning and citations).
-          discriminator:
-            propertyName: type
-            mapping:
-              json: '#/components/schemas/TaskRunJsonOutput'
-              text: '#/components/schemas/TaskRunTextOutput'
-        previous_output:
-          oneOf:
-          - $ref: '#/components/schemas/TaskRunTextOutput'
-          - $ref: '#/components/schemas/TaskRunJsonOutput'
-          title: Previous Output
-          description: The full output from the prior run, including all fields and basis.
-          discriminator:
-            propertyName: type
-            mapping:
-              json: '#/components/schemas/TaskRunJsonOutput'
-              text: '#/components/schemas/TaskRunTextOutput'
-      type: object
-      required:
-      - event_id
-      - event_group_id
-      - event_date
-      - changed_output
-      - previous_output
-      title: MonitorSnapshotEvent
-      description: 'Snapshot diff event emitted when a monitored task run''s output changes.
-
-
-        `changed_output` contains only the fields that changed since the previous execution,
-
-        along with their `basis` (reasoning + citations). `previous_output` holds
-
-        the complete output from the prior run for comparison.'
-    FieldBasis:
-      description: Citations and reasoning supporting one field of a task output.
-      properties:
-        field:
-          description: Name of the output field.
-          title: Field
-          type: string
-        citations:
-          default: []
-          description: List of citations supporting the output field.
-          items:
-            $ref: '#/components/schemas/Citation'
-          title: Citations
-          type: array
-        reasoning:
-          description: Reasoning for the output field.
-          title: Reasoning
-          type: string
-        confidence:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          description: Confidence level for the output field. Only certain processors provide confidence levels.
-          examples:
-          - low
-          - medium
-          - high
-          title: Confidence
-      required:
-      - field
-      - reasoning
-      title: FieldBasis
-      type: object
-    Error:
-      properties:
-        ref_id:
-          type: string
-          title: Reference ID
-          description: Reference ID for the error.
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
-        detail:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Detail
-          description: Optional detail supporting the error.
-      type: object
-      required:
-      - ref_id
-      - message
-      title: Error
-      description: An error message.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    TaskRunTextOutput:
-      properties:
-        basis:
-          items:
-            $ref: '#/components/schemas/FieldBasis'
-          type: array
-          title: Basis
-          description: Basis for the output. The basis has a single field 'output'.
-        type:
-          type: string
-          const: text
-          title: Type
-          description: The type of output being returned, as determined by the output schema of the task spec.
-        mcp_tool_calls:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/McpToolCall'
-            type: array
-          - type: 'null'
-          title: Mcp Tool Calls
-          description: MCP tool calls made by the task.
-        beta_fields:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Beta Fields
-          description: Deprecated. mcp-server-2025-07-17 is now included directly in the output (e.g. mcp_tool_calls).
-          deprecated: true
-        content:
-          type: string
-          title: Content
-          description: Text output from the task.
-      type: object
-      required:
-      - basis
-      - type
-      - content
-      title: TaskRunTextOutput
-      description: Output from a task that returns text.
-    PaginatedMonitorResponse:
-      properties:
-        monitors:
-          items:
-            $ref: '#/components/schemas/MonitorResponse'
-          type: array
-          title: Monitors
-          description: List of monitors for the current page.
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-          description: Opaque pagination token. Pass as `cursor` to retrieve the next page. Absent when there are no more pages.
-      type: object
-      required:
-      - monitors
-      title: PaginatedMonitorResponse
-      description: Paginated list of monitors.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    UpdateMonitorEventStreamSettings:
+    MonitorEventStreamResponseSettings:
       properties:
         query:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           title: Query
-          description: Updated search query for the monitor. Use this for minor updates to prompts and instructions only. Major changes to the query may lead to unexpected results in change detection, as the monitor compares new results with what was previously seen.
+          description: The search query being monitored.
           examples:
           - Extract recent news about AI
+        output_schema:
+          anyOf:
+          - $ref: '#/components/schemas/JsonSchema'
+          - type: 'null'
+          description: JSON schema that constrains and structures the event output. When set, events are returned as JSON objects matching this schema.
+        include_backfill:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Include Backfill
+          description: If true, the first execution returns a sample of recent historical events matching the query (preview only — not exhaustive). If false or omitted, only events from the monitor's creation date onward are returned. Subsequent executions are always incremental.
         advanced_settings:
           anyOf:
           - $ref: '#/components/schemas/AdvancedMonitorSettings'
           - type: 'null'
           description: Advanced monitor configuration.
       type: object
-      title: UpdateMonitorEventStreamSettings
-      description: Type-specific update settings for an `event_stream` monitor.
-    McpToolCall:
+      required:
+      - query
+      title: MonitorEventStreamResponseSettings
+      description: Type-specific response fields for an `event_stream` monitor.
+    ErrorResponse:
       properties:
-        tool_call_id:
+        type:
           type: string
-          title: Tool Call ID
-          description: Identifier for the tool call.
-        server_name:
-          type: string
-          title: Server Name
-          description: Name of the MCP server.
-        tool_name:
-          type: string
-          title: Tool Name
-          description: Name of the tool being called.
-        arguments:
-          type: string
-          title: Arguments
-          description: Arguments used to call the MCP tool.
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-          description: Output received from the tool call, if successful.
+          const: error
+          title: Type
+          description: Always 'error'.
         error:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Error
-          description: Error message if the tool call failed.
+          $ref: '#/components/schemas/Error'
+          description: Error.
       type: object
       required:
-      - tool_call_id
-      - server_name
-      - tool_name
-      - arguments
-      title: McpToolCall
-      description: Result of an MCP tool call.
-    AdvancedMonitorSettings:
+      - type
+      - error
+      title: ErrorResponse
+      description: Response object used for non-200 status codes.
+    MonitorCompletionEvent:
       properties:
-        source_policy:
-          anyOf:
-          - $ref: '#/components/schemas/SourcePolicy'
-          - type: 'null'
-          description: 'Domain filtering preferences: preferred and disallowed domains for monitor search results.'
+        event_type:
+          type: string
+          enum:
+          - completion
+          const: completion
+          title: Event Type
+          description: Discriminant for the completion event variant.
+          default: completion
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+          description: Timestamp of when the monitor execution completed, as an RFC 3339 string.
           examples:
-          - exclude_domains:
-            - reddit.com
-            - x.com
-            - .ai
-            include_domains:
-            - wikipedia.org
-            - usa.gov
-            - .edu
-        location:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Location
-          description: ISO 3166-1 alpha-2 country code for geo-targeted monitor results.
-          examples:
-          - us
-          - gb
-          - de
-          - jp
+          - '2025-01-15T10:30:00Z'
       type: object
-      title: AdvancedMonitorSettings
-      description: Advanced monitor configuration.
+      required:
+      - timestamp
+      title: MonitorCompletionEvent
+      description: 'Emitted when a monitor execution ran but detected no material changes.
+
+
+        Only returned when `include_completions=true` is passed to the list events
+
+        endpoint. Useful for auditing execution history alongside content events.'
+    MonitorSnapshotOutput:
+      properties:
+        latest_snapshot:
+          anyOf:
+          - oneOf:
+            - $ref: '#/components/schemas/TaskRunTextOutput'
+            - $ref: '#/components/schemas/TaskRunJsonOutput'
+            discriminator:
+              propertyName: type
+              mapping:
+                json: '#/components/schemas/TaskRunJsonOutput'
+                text: '#/components/schemas/TaskRunTextOutput'
+          - type: 'null'
+          title: Latest Snapshot
+          description: Task run output from the most recent completed execution of this snapshot monitor — same structure as the output of the original task run the monitor was created from. `null` until the first run completes.
+      type: object
+      title: MonitorSnapshotOutput
+      description: Runtime output state for a `snapshot` monitor.
     CreateMonitorRequest:
       properties:
         type:
@@ -1599,6 +1257,348 @@ components:
       - content
       title: TaskRunJsonOutput
       description: Output from a task that returns JSON.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Error:
+      properties:
+        ref_id:
+          type: string
+          title: Reference ID
+          description: Reference ID for the error.
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the error.
+      type: object
+      required:
+      - ref_id
+      - message
+      title: Error
+      description: An error message.
+    MonitorSnapshotEvent:
+      properties:
+        event_id:
+          type: string
+          title: Event Id
+          description: Stable identifier for this event. Safe to use for client-side deduplication across pagination and retries.
+        event_group_id:
+          type: string
+          title: Event Group Id
+          description: ID of the event group that owns this event.
+        event_date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Event Date
+          description: Date when this event was produced. ISO 8601 date (YYYY-MM-DD) or partial (YYYY-MM or YYYY).
+          examples:
+          - '2026-04-07'
+        event_type:
+          type: string
+          enum:
+          - snapshot
+          const: snapshot
+          title: Event Type
+          description: Discriminant for the snapshot event variant.
+          default: snapshot
+        changed_output:
+          oneOf:
+          - $ref: '#/components/schemas/TaskRunTextOutput'
+          - $ref: '#/components/schemas/TaskRunJsonOutput'
+          title: Changed Output
+          description: Partial output containing only the fields that changed since the previous execution, each with its `basis` (reasoning and citations).
+          discriminator:
+            propertyName: type
+            mapping:
+              json: '#/components/schemas/TaskRunJsonOutput'
+              text: '#/components/schemas/TaskRunTextOutput'
+        previous_output:
+          oneOf:
+          - $ref: '#/components/schemas/TaskRunTextOutput'
+          - $ref: '#/components/schemas/TaskRunJsonOutput'
+          title: Previous Output
+          description: The full output from the prior run, including all fields and basis.
+          discriminator:
+            propertyName: type
+            mapping:
+              json: '#/components/schemas/TaskRunJsonOutput'
+              text: '#/components/schemas/TaskRunTextOutput'
+      type: object
+      required:
+      - event_id
+      - event_group_id
+      - event_date
+      - changed_output
+      - previous_output
+      title: MonitorSnapshotEvent
+      description: 'Snapshot diff event emitted when a monitored task run''s output changes.
+
+
+        `changed_output` contains only the fields that changed since the previous execution,
+
+        along with their `basis` (reasoning + citations). `previous_output` holds
+
+        the complete output from the prior run for comparison.'
+    Citation:
+      description: A citation for a task output.
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Title of the citation.
+          title: Title
+        url:
+          description: URL of the citation.
+          title: Url
+          type: string
+        excerpts:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          default: null
+          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
+          title: Excerpts
+      required:
+      - url
+      title: Citation
+      type: object
+    JsonSchema:
+      properties:
+        json_schema:
+          additionalProperties: true
+          type: object
+          title: Json Schema
+          description: A JSON Schema object. Only a subset of JSON Schema is supported.
+          examples:
+          - additionalProperties: false
+            properties:
+              gdp:
+                description: GDP in USD for the year, formatted like '$3.1 trillion (2023)'
+                type: string
+            required:
+            - gdp
+            type: object
+        type:
+          type: string
+          const: json
+          title: Type
+          description: The type of schema being defined. Always `json`.
+          default: json
+      type: object
+      required:
+      - json_schema
+      title: JsonSchema
+      description: JSON schema for a task input or output.
+    MonitorEventStreamSettings:
+      properties:
+        query:
+          type: string
+          title: Query
+          description: Search query to monitor for material changes.
+          examples:
+          - Extract recent news about AI
+        output_schema:
+          anyOf:
+          - $ref: '#/components/schemas/JsonSchema'
+          - type: 'null'
+          description: JSON schema that constrains and structures the event output. When set, events are returned as JSON objects matching this schema instead of free-form text.
+        include_backfill:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Include Backfill
+          description: If true, the first execution returns a sample of recent historical events matching the query (preview only — not exhaustive). If false or omitted, only events from the monitor's creation date onward are returned. Subsequent executions are always incremental.
+        advanced_settings:
+          anyOf:
+          - $ref: '#/components/schemas/AdvancedMonitorSettings'
+          - type: 'null'
+          description: Advanced monitor configuration.
+      type: object
+      required:
+      - query
+      title: MonitorEventStreamSettings
+      description: Type-specific settings for an `event_stream` monitor.
+    McpToolCall:
+      properties:
+        tool_call_id:
+          type: string
+          title: Tool Call ID
+          description: Identifier for the tool call.
+        server_name:
+          type: string
+          title: Server Name
+          description: Name of the MCP server.
+        tool_name:
+          type: string
+          title: Tool Name
+          description: Name of the tool being called.
+        arguments:
+          type: string
+          title: Arguments
+          description: Arguments used to call the MCP tool.
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: Output received from the tool call, if successful.
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+          description: Error message if the tool call failed.
+      type: object
+      required:
+      - tool_call_id
+      - server_name
+      - tool_name
+      - arguments
+      title: McpToolCall
+      description: Result of an MCP tool call.
+    Warning:
+      properties:
+        type:
+          type: string
+          enum:
+          - spec_validation_warning
+          - input_validation_warning
+          - warning
+          title: Type
+          description: Type of warning. Note that adding new warning types is considered a backward-compatible change.
+          examples:
+          - spec_validation_warning
+          - input_validation_warning
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the warning.
+      type: object
+      required:
+      - type
+      - message
+      title: Warning
+      description: Human-readable message for a task.
+    AdvancedMonitorSettings:
+      properties:
+        source_policy:
+          anyOf:
+          - $ref: '#/components/schemas/SourcePolicy'
+          - type: 'null'
+          description: 'Domain filtering preferences: preferred and disallowed domains for monitor search results.'
+          examples:
+          - exclude_domains:
+            - reddit.com
+            - x.com
+            - .ai
+            include_domains:
+            - wikipedia.org
+            - usa.gov
+            - .edu
+        location:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location
+          description: ISO 3166-1 alpha-2 country code for geo-targeted monitor results.
+          examples:
+          - us
+          - gb
+          - de
+          - jp
+      type: object
+      title: AdvancedMonitorSettings
+      description: Advanced monitor configuration.
+    MonitorWebhook:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL for the webhook.
+          examples:
+          - https://example.com/webhook
+        event_types:
+          items:
+            type: string
+            enum:
+            - monitor.event.detected
+            - monitor.execution.completed
+            - monitor.execution.failed
+          type: array
+          title: Event Types
+          description: Event types to send the webhook notifications for.
+      type: object
+      required:
+      - url
+      title: MonitorWebhook
+      description: Webhook configuration for a monitor.
+    MonitorErrorEvent:
+      properties:
+        event_type:
+          type: string
+          enum:
+          - error
+          const: error
+          title: Event Type
+          description: Discriminant for the error event variant.
+          default: error
+        error_message:
+          type: string
+          title: Error Message
+          description: Human-readable description of the failure.
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+          description: Timestamp of when the monitor execution failed, as an RFC 3339 string.
+          examples:
+          - '2025-01-15T10:30:00Z'
+      type: object
+      required:
+      - error_message
+      - timestamp
+      title: MonitorErrorEvent
+      description: 'Emitted when a monitor execution failed (e.g. payment or quota error).
+
+
+        Always included in the events list regardless of `include_completions`.'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

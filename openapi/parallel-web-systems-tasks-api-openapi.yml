@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Parallel Chat API (Beta) Chat API (Beta) Tasks API
   description: Parallel API
@@ -1065,299 +1065,15 @@ paths:
         source: "import Parallel from \"parallel-web\";\n\nconst client = new Parallel();\n\nconst events = await client.beta.taskRun.events(\n    'run_id',\n);\nfor await (const event of events) {\n    console.log(event);\n}\n"
 components:
   schemas:
-    Citation:
-      description: A citation for a task output.
+    HTTPValidationError:
       properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          description: Title of the citation.
-          title: Title
-        url:
-          description: URL of the citation.
-          title: Url
-          type: string
-        excerpts:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          default: null
-          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
-          title: Excerpts
-      required:
-      - url
-      title: Citation
-      type: object
-    JsonSchema:
-      properties:
-        json_schema:
-          additionalProperties: true
-          type: object
-          title: Json Schema
-          description: A JSON Schema object. Only a subset of JSON Schema is supported.
-          examples:
-          - additionalProperties: false
-            properties:
-              gdp:
-                description: GDP in USD for the year, formatted like '$3.1 trillion (2023)'
-                type: string
-            required:
-            - gdp
-            type: object
-        type:
-          type: string
-          const: json
-          title: Type
-          description: The type of schema being defined. Always `json`.
-          default: json
-      type: object
-      required:
-      - json_schema
-      title: JsonSchema
-      description: JSON schema for a task input or output.
-    TaskRunSourceStats:
-      properties:
-        num_sources_considered:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Num Sources Considered
-          description: Number of sources considered in processing the task.
-        num_sources_read:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Num Sources Read
-          description: Number of sources read in processing the task.
-        sources_read_sample:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Sources Read Sample
-          description: A sample of URLs of sources read in processing the task.
-      type: object
-      required:
-      - num_sources_considered
-      - num_sources_read
-      - sources_read_sample
-      title: TaskRunSourceStats
-      description: Source stats for a task run.
-    TaskGroupRunRequest:
-      properties:
-        default_task_spec:
-          anyOf:
-          - $ref: '#/components/schemas/TaskSpec'
-          - type: 'null'
-          description: Default task spec to use for the runs. If task_spec is specified in a run, it overrides this default.
-        inputs:
-          items:
-            $ref: '#/components/schemas/TaskRunInput'
-          type: array
-          title: Inputs
-          description: List of task runs to execute. Up to 1,000 runs can be specified per request. If you'd like to add more runs, split them across multiple TaskGroup POST requests.
-      type: object
-      required:
-      - inputs
-      title: TaskGroupRunRequest
-      description: Request to initiate new task runs in a task group.
-    TaskRunProgressStatsEvent:
-      properties:
-        type:
-          type: string
-          const: task_run.progress_stats
-          title: Type
-          description: Event type; always 'task_run.progress_stats'.
-        source_stats:
-          $ref: '#/components/schemas/TaskRunSourceStats'
-          description: Source stats describing progress so far.
-        progress_meter:
-          type: number
-          title: Progress Meter
-          description: Completion percentage of the task run. Ranges from 0 to 100 where 0 indicates no progress and 100 indicates completion.
-      type: object
-      required:
-      - type
-      - source_stats
-      - progress_meter
-      title: TaskRunProgressStatsEvent
-      description: A progress update for a task run.
-    TaskGroupStatusEvent:
-      properties:
-        type:
-          type: string
-          const: task_group_status
-          title: Type
-          description: Event type; always 'task_group_status'.
-        event_id:
-          type: string
-          title: Event ID
-          description: Cursor to resume the event stream.
-        status:
-          $ref: '#/components/schemas/TaskGroupStatus'
-          description: Task group status object.
-      type: object
-      required:
-      - type
-      - event_id
-      - status
-      title: TaskGroupStatusEvent
-      description: Event indicating an update to group status.
-    Warning:
-      properties:
-        type:
-          type: string
-          enum:
-          - spec_validation_warning
-          - input_validation_warning
-          - warning
-          title: Type
-          description: Type of warning. Note that adding new warning types is considered a backward-compatible change.
-          examples:
-          - spec_validation_warning
-          - input_validation_warning
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
         detail:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
           title: Detail
-          description: Optional detail supporting the warning.
       type: object
-      required:
-      - type
-      - message
-      title: Warning
-      description: Human-readable message for a task.
-    SourcePolicy:
-      properties:
-        include_domains:
-          items:
-            type: string
-          type: array
-          title: Include Domains
-          description: List of domains to restrict the results to. If specified, only sources from these domains will be included. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
-          examples:
-          - - wikipedia.org
-            - usa.gov
-            - .edu
-        exclude_domains:
-          items:
-            type: string
-          type: array
-          title: Exclude Domains
-          description: List of domains to exclude from results. If specified, sources from these domains will be excluded. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
-          examples:
-          - - reddit.com
-            - x.com
-            - .ai
-        after_date:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: After Date
-          description: Optional start date for filtering search results. Results will be limited to content published on or after this date. Provided as an RFC 3339 date string (YYYY-MM-DD).
-          examples:
-          - '2024-01-01'
-      type: object
-      title: SourcePolicy
-      description: 'Source policy for web search results.
-
-
-        This policy governs which sources are allowed/disallowed in results.'
-    AutoSchema:
-      properties:
-        type:
-          type: string
-          const: auto
-          title: Type
-          description: The type of schema being defined. Always `auto`.
-          default: auto
-      type: object
-      title: AutoSchema
-      description: Auto schema for a task input or output.
-    TaskGroupResponse:
-      properties:
-        taskgroup_id:
-          type: string
-          title: Taskgroup ID
-          description: ID of the group.
-        metadata:
-          anyOf:
-          - additionalProperties:
-              anyOf:
-              - type: string
-              - type: integer
-              - type: number
-              - type: boolean
-            type: object
-          - type: 'null'
-          title: Metadata
-          description: User-provided metadata stored with the group.
-        status:
-          $ref: '#/components/schemas/TaskGroupStatus'
-          description: Status of the group.
-        created_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Created At
-          description: Timestamp of the creation of the group, as an RFC 3339 string.
-          examples:
-          - '2025-04-24T18:56:22.513132Z'
-      type: object
-      required:
-      - taskgroup_id
-      - status
-      - created_at
-      title: TaskGroupResponse
-      description: Response object for a task group, including its status and metadata.
-    Webhook:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: URL for the webhook.
-        event_types:
-          items:
-            type: string
-            enum:
-            - task_run.status
-          type: array
-          title: Event Types
-          description: Event types to send the webhook notifications for.
-          default: []
-      type: object
-      required:
-      - url
-      title: Webhook
-      description: Webhooks for Task Runs.
-    ErrorResponse:
-      properties:
-        type:
-          type: string
-          const: error
-          title: Type
-          description: Always 'error'.
-        error:
-          $ref: '#/components/schemas/Error'
-          description: Error.
-      type: object
-      required:
-      - type
-      - error
-      title: ErrorResponse
-      description: Response object used for non-200 status codes.
+      title: HTTPValidationError
     McpServer:
       properties:
         type:
@@ -1398,6 +1114,341 @@ components:
       - name
       title: McpServer
       description: MCP server configuration.
+    ParallelBeta:
+      anyOf:
+      - enum:
+        - mcp-server-2025-07-17
+        - events-sse-2025-07-24
+        - webhook-2025-08-12
+        - findall-2025-09-15
+        - search-extract-2025-10-10
+        - field-basis-2025-11-25
+        type: string
+      - type: string
+      description: Model for the parallel-beta header.
+      title: ParallelBeta
+    TaskGroupResponse:
+      properties:
+        taskgroup_id:
+          type: string
+          title: Taskgroup ID
+          description: ID of the group.
+        metadata:
+          anyOf:
+          - additionalProperties:
+              anyOf:
+              - type: string
+              - type: integer
+              - type: number
+              - type: boolean
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: User-provided metadata stored with the group.
+        status:
+          $ref: '#/components/schemas/TaskGroupStatus'
+          description: Status of the group.
+        created_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created At
+          description: Timestamp of the creation of the group, as an RFC 3339 string.
+          examples:
+          - '2025-04-24T18:56:22.513132Z'
+      type: object
+      required:
+      - taskgroup_id
+      - status
+      - created_at
+      title: TaskGroupResponse
+      description: Response object for a task group, including its status and metadata.
+    SourcePolicy:
+      properties:
+        include_domains:
+          items:
+            type: string
+          type: array
+          title: Include Domains
+          description: List of domains to restrict the results to. If specified, only sources from these domains will be included. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
+          examples:
+          - - wikipedia.org
+            - usa.gov
+            - .edu
+        exclude_domains:
+          items:
+            type: string
+          type: array
+          title: Exclude Domains
+          description: List of domains to exclude from results. If specified, sources from these domains will be excluded. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
+          examples:
+          - - reddit.com
+            - x.com
+            - .ai
+        after_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: After Date
+          description: Optional start date for filtering search results. Results will be limited to content published on or after this date. Provided as an RFC 3339 date string (YYYY-MM-DD).
+          examples:
+          - '2024-01-01'
+      type: object
+      title: SourcePolicy
+      description: 'Source policy for web search results.
+
+
+        This policy governs which sources are allowed/disallowed in results.'
+    FieldBasis:
+      description: Citations and reasoning supporting one field of a task output.
+      properties:
+        field:
+          description: Name of the output field.
+          title: Field
+          type: string
+        citations:
+          default: []
+          description: List of citations supporting the output field.
+          items:
+            $ref: '#/components/schemas/Citation'
+          title: Citations
+          type: array
+        reasoning:
+          description: Reasoning for the output field.
+          title: Reasoning
+          type: string
+        confidence:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Confidence level for the output field. Only certain processors provide confidence levels.
+          examples:
+          - low
+          - medium
+          - high
+          title: Confidence
+      required:
+      - field
+      - reasoning
+      title: FieldBasis
+      type: object
+    Webhook:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL for the webhook.
+        event_types:
+          items:
+            type: string
+            enum:
+            - task_run.status
+          type: array
+          title: Event Types
+          description: Event types to send the webhook notifications for.
+          default: []
+      type: object
+      required:
+      - url
+      title: Webhook
+      description: Webhooks for Task Runs.
+    TaskRunTextOutput:
+      properties:
+        basis:
+          items:
+            $ref: '#/components/schemas/FieldBasis'
+          type: array
+          title: Basis
+          description: Basis for the output. The basis has a single field 'output'.
+        type:
+          type: string
+          const: text
+          title: Type
+          description: The type of output being returned, as determined by the output schema of the task spec.
+        mcp_tool_calls:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/McpToolCall'
+            type: array
+          - type: 'null'
+          title: Mcp Tool Calls
+          description: MCP tool calls made by the task.
+        beta_fields:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Beta Fields
+          description: Deprecated. mcp-server-2025-07-17 is now included directly in the output (e.g. mcp_tool_calls).
+          deprecated: true
+        content:
+          type: string
+          title: Content
+          description: Text output from the task.
+      type: object
+      required:
+      - basis
+      - type
+      - content
+      title: TaskRunTextOutput
+      description: Output from a task that returns text.
+    TaskGroupRunResponse:
+      properties:
+        status:
+          $ref: '#/components/schemas/TaskGroupStatus'
+          description: Status of the group.
+        run_ids:
+          items:
+            type: string
+          type: array
+          title: Run IDs
+          description: IDs of the newly created runs.
+        run_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Cursor
+          description: Cursor for these runs in the run stream at taskgroup/runs?last_event_id=<run_cursor>. Empty for the first runs in the group.
+        event_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Event Cursor
+          description: Cursor for these runs in the event stream at taskgroup/events?last_event_id=<event_cursor>. Empty for the first runs in the group.
+      type: object
+      required:
+      - status
+      - run_ids
+      - run_cursor
+      - event_cursor
+      title: TaskGroupRunResponse
+      description: Response from adding new task runs to a task group.
+    AutoSchema:
+      properties:
+        type:
+          type: string
+          const: auto
+          title: Type
+          description: The type of schema being defined. Always `auto`.
+          default: auto
+      type: object
+      title: AutoSchema
+      description: Auto schema for a task input or output.
+    TaskGroupStatusEvent:
+      properties:
+        type:
+          type: string
+          const: task_group_status
+          title: Type
+          description: Event type; always 'task_group_status'.
+        event_id:
+          type: string
+          title: Event ID
+          description: Cursor to resume the event stream.
+        status:
+          $ref: '#/components/schemas/TaskGroupStatus'
+          description: Task group status object.
+      type: object
+      required:
+      - type
+      - event_id
+      - status
+      title: TaskGroupStatusEvent
+      description: Event indicating an update to group status.
+    ErrorResponse:
+      properties:
+        type:
+          type: string
+          const: error
+          title: Type
+          description: Always 'error'.
+        error:
+          $ref: '#/components/schemas/Error'
+          description: Error.
+      type: object
+      required:
+      - type
+      - error
+      title: ErrorResponse
+      description: Response object used for non-200 status codes.
+    TaskRunInput:
+      properties:
+        processor:
+          type: string
+          title: Processor
+          description: Processor to use for the task.
+          examples:
+          - base
+        metadata:
+          anyOf:
+          - additionalProperties:
+              anyOf:
+              - type: string
+              - type: integer
+              - type: number
+              - type: boolean
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: User-provided metadata stored with the run. Keys and values must be strings with a maximum length of 16 and 512 characters respectively.
+        source_policy:
+          anyOf:
+          - $ref: '#/components/schemas/SourcePolicy'
+          - type: 'null'
+          description: Optional source policy governing preferred and disallowed domains in web search results.
+        advanced_settings:
+          anyOf:
+          - $ref: '#/components/schemas/TaskAdvancedSettings'
+          - type: 'null'
+          description: Advanced search configuration for the task run.
+        task_spec:
+          anyOf:
+          - $ref: '#/components/schemas/TaskSpec'
+          - type: 'null'
+          description: Task specification. If unspecified, defaults to auto output schema.
+        input:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          title: Input
+          description: Input to the task, either text or a JSON object.
+          examples:
+          - What was the GDP of France in 2023?
+          - '{"country": "France", "year": 2023}'
+        previous_interaction_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Interaction Id
+          description: Interaction ID to use as context for this request.
+        mcp_servers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/McpServer'
+            type: array
+          - type: 'null'
+          title: Mcp Servers
+          description: Optional list of MCP servers to use for the run.
+        enable_events:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enable Events
+          description: Controls tracking of task run execution progress. When set to true, progress events are recorded and can be accessed via the [Task Run events](https://docs.parallel.ai/api-reference) endpoint. When false, no progress events are tracked. Note that progress tracking cannot be enabled after a run has been created. The flag is set to true by default for premium processors (pro and above).
+        webhook:
+          anyOf:
+          - $ref: '#/components/schemas/Webhook'
+          - type: 'null'
+          description: "Callback URL (webhook endpoint) that will receive an HTTP POST when the run completes. \nThis feature is not available via the Python SDK."
+      type: object
+      required:
+      - processor
+      - input
+      title: TaskRunInput
+      description: Request to run a task.
     TaskAdvancedSettings:
       properties:
         location:
@@ -1414,35 +1465,6 @@ components:
       type: object
       title: TaskAdvancedSettings
       description: Advanced search configuration for a task run.
-    TaskRunProgressMessageEvent:
-      properties:
-        type:
-          type: string
-          enum:
-          - task_run.progress_msg.plan
-          - task_run.progress_msg.search
-          - task_run.progress_msg.result
-          - task_run.progress_msg.tool_call
-          - task_run.progress_msg.exec_status
-          title: Type
-          description: Event type; always starts with 'task_run.progress_msg'.
-        message:
-          type: string
-          title: Message
-          description: Progress update message.
-        timestamp:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Timestamp
-          description: Timestamp of the message.
-      type: object
-      required:
-      - type
-      - message
-      - timestamp
-      title: TaskRunProgressMessageEvent
-      description: A message for a task run progress update.
     CreateTaskGroupRequest:
       properties:
         metadata:
@@ -1460,6 +1482,277 @@ components:
       type: object
       title: CreateTaskGroupRequest
       description: Request to create a task group.
+    TaskGroupStatus:
+      properties:
+        num_task_runs:
+          type: integer
+          title: Num Task Runs
+          description: Number of task runs in the group.
+        task_run_status_counts:
+          additionalProperties:
+            type: integer
+          propertyNames:
+            enum:
+            - queued
+            - action_required
+            - running
+            - completed
+            - failed
+            - cancelling
+            - cancelled
+          type: object
+          title: Task Run Status Counts
+          description: Number of task runs with each status.
+        is_active:
+          type: boolean
+          title: Is Active
+          description: True if at least one run in the group is currently active, i.e. status is one of {'cancelling', 'queued', 'running'}.
+        status_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status Message
+          description: Human-readable status message for the group.
+        modified_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Modified At
+          description: Timestamp of the last status update to the group, as an RFC 3339 string.
+          examples:
+          - '2025-04-24T18:56:22.513132Z'
+      type: object
+      required:
+      - num_task_runs
+      - task_run_status_counts
+      - is_active
+      - status_message
+      - modified_at
+      title: TaskGroupStatus
+      description: Status of a task group.
+    TaskSpec:
+      properties:
+        output_schema:
+          anyOf:
+          - $ref: '#/components/schemas/JsonSchema'
+          - $ref: '#/components/schemas/TextSchema'
+          - $ref: '#/components/schemas/AutoSchema'
+          - type: string
+          title: Output Schema
+          description: JSON schema or text fully describing the desired output from the task. Descriptions of output fields will determine the form and content of the response. A bare string is equivalent to a text schema with the same description.
+        input_schema:
+          anyOf:
+          - type: string
+          - $ref: '#/components/schemas/JsonSchema'
+          - $ref: '#/components/schemas/TextSchema'
+          - type: 'null'
+          title: Input Schema
+          description: Optional JSON schema or text description of expected input to the task. A bare string is equivalent to a text schema with the same description.
+      type: object
+      required:
+      - output_schema
+      title: TaskSpec
+      description: 'Specification for a task.
+
+
+        Auto output schemas can be specified by setting `output_schema={"type":"auto"}`. Not
+
+        specifying a TaskSpec is the same as setting an auto output schema.
+
+
+        For convenience bare strings are also accepted as input or output schemas.'
+    TaskRunJsonOutput:
+      properties:
+        basis:
+          items:
+            $ref: '#/components/schemas/FieldBasis'
+          type: array
+          title: Basis
+          description: 'Basis for each top-level field in the JSON output. Per-list-element basis entries are available only when the `parallel-beta: field-basis-2025-11-25` header is supplied.'
+        type:
+          type: string
+          const: json
+          title: Type
+          description: The type of output being returned, as determined by the output schema of the task spec.
+        mcp_tool_calls:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/McpToolCall'
+            type: array
+          - type: 'null'
+          title: Mcp Tool Calls
+          description: MCP tool calls made by the task.
+        beta_fields:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Beta Fields
+          description: Deprecated. mcp-server-2025-07-17 is now included directly in the output (e.g. mcp_tool_calls).
+          deprecated: true
+        content:
+          additionalProperties: true
+          type: object
+          title: Content
+          description: Output from the task as a native JSON object, as determined by the output schema of the task spec.
+        output_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Schema
+          description: Output schema for the Task Run. Populated only if the task was executed with an auto schema.
+      type: object
+      required:
+      - basis
+      - type
+      - content
+      title: TaskRunJsonOutput
+      description: Output from a task that returns JSON.
+    TaskRunResult:
+      properties:
+        run:
+          $ref: '#/components/schemas/TaskRun'
+          description: Task run object with status 'completed'.
+        output:
+          oneOf:
+          - $ref: '#/components/schemas/TaskRunTextOutput'
+          - $ref: '#/components/schemas/TaskRunJsonOutput'
+          title: Output
+          description: Output from the task conforming to the output schema.
+          discriminator:
+            propertyName: type
+            mapping:
+              json: '#/components/schemas/TaskRunJsonOutput'
+              text: '#/components/schemas/TaskRunTextOutput'
+      type: object
+      required:
+      - run
+      - output
+      title: TaskRunResult
+      description: Result of a task run.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    TaskRunEvent:
+      properties:
+        type:
+          type: string
+          const: task_run.state
+          title: Type
+          description: Event type; always 'task_run.state'.
+        event_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Event ID
+          description: Cursor to resume the event stream. Always empty for non Task Group runs.
+        input:
+          anyOf:
+          - $ref: '#/components/schemas/TaskRunInput'
+          - type: 'null'
+          description: Input to the run; included only if requested.
+        run:
+          $ref: '#/components/schemas/TaskRun'
+          description: Task run object.
+        output:
+          anyOf:
+          - oneOf:
+            - $ref: '#/components/schemas/TaskRunTextOutput'
+            - $ref: '#/components/schemas/TaskRunJsonOutput'
+            discriminator:
+              propertyName: type
+              mapping:
+                json: '#/components/schemas/TaskRunJsonOutput'
+                text: '#/components/schemas/TaskRunTextOutput'
+          - type: 'null'
+          title: Output
+          description: Output from the run; included only if requested and if status == `completed`.
+      type: object
+      required:
+      - type
+      - event_id
+      - run
+      title: TaskRunEvent
+      description: 'Event when a task run transitions to a non-active status.
+
+
+        May indicate completion, cancellation, or failure.'
+    TaskGroupRunRequest:
+      properties:
+        default_task_spec:
+          anyOf:
+          - $ref: '#/components/schemas/TaskSpec'
+          - type: 'null'
+          description: Default task spec to use for the runs. If task_spec is specified in a run, it overrides this default.
+        inputs:
+          items:
+            $ref: '#/components/schemas/TaskRunInput'
+          type: array
+          title: Inputs
+          description: List of task runs to execute. Up to 1,000 runs can be specified per request. If you'd like to add more runs, split them across multiple TaskGroup POST requests.
+      type: object
+      required:
+      - inputs
+      title: TaskGroupRunRequest
+      description: Request to initiate new task runs in a task group.
+    ErrorEvent:
+      properties:
+        type:
+          type: string
+          const: error
+          title: Type
+          description: Event type; always 'error'.
+        error:
+          $ref: '#/components/schemas/Error'
+          description: Error.
+      type: object
+      required:
+      - type
+      - error
+      title: ErrorEvent
+      description: Event indicating an error.
+    Error:
+      properties:
+        ref_id:
+          type: string
+          title: Reference ID
+          description: Reference ID for the error.
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the error.
+      type: object
+      required:
+      - ref_id
+      - message
+      title: Error
+      description: An error message.
     TaskRun:
       properties:
         run_id:
@@ -1566,338 +1859,89 @@ components:
       - modified_at
       title: TaskRun
       description: Status of a task run.
-    FieldBasis:
-      description: Citations and reasoning supporting one field of a task output.
+    TaskRunSourceStats:
       properties:
-        field:
-          description: Name of the output field.
-          title: Field
+        num_sources_considered:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Num Sources Considered
+          description: Number of sources considered in processing the task.
+        num_sources_read:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Num Sources Read
+          description: Number of sources read in processing the task.
+        sources_read_sample:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Sources Read Sample
+          description: A sample of URLs of sources read in processing the task.
+      type: object
+      required:
+      - num_sources_considered
+      - num_sources_read
+      - sources_read_sample
+      title: TaskRunSourceStats
+      description: Source stats for a task run.
+    JsonSchema:
+      properties:
+        json_schema:
+          additionalProperties: true
+          type: object
+          title: Json Schema
+          description: A JSON Schema object. Only a subset of JSON Schema is supported.
+          examples:
+          - additionalProperties: false
+            properties:
+              gdp:
+                description: GDP in USD for the year, formatted like '$3.1 trillion (2023)'
+                type: string
+            required:
+            - gdp
+            type: object
+        type:
           type: string
-        citations:
-          default: []
-          description: List of citations supporting the output field.
-          items:
-            $ref: '#/components/schemas/Citation'
-          title: Citations
-          type: array
-        reasoning:
-          description: Reasoning for the output field.
-          title: Reasoning
-          type: string
-        confidence:
+          const: json
+          title: Type
+          description: The type of schema being defined. Always `json`.
+          default: json
+      type: object
+      required:
+      - json_schema
+      title: JsonSchema
+      description: JSON schema for a task input or output.
+    Citation:
+      description: A citation for a task output.
+      properties:
+        title:
           anyOf:
           - type: string
           - type: 'null'
           default: null
-          description: Confidence level for the output field. Only certain processors provide confidence levels.
-          examples:
-          - low
-          - medium
-          - high
-          title: Confidence
-      required:
-      - field
-      - reasoning
-      title: FieldBasis
-      type: object
-    TaskSpec:
-      properties:
-        output_schema:
-          anyOf:
-          - $ref: '#/components/schemas/JsonSchema'
-          - $ref: '#/components/schemas/TextSchema'
-          - $ref: '#/components/schemas/AutoSchema'
-          - type: string
-          title: Output Schema
-          description: JSON schema or text fully describing the desired output from the task. Descriptions of output fields will determine the form and content of the response. A bare string is equivalent to a text schema with the same description.
-        input_schema:
-          anyOf:
-          - type: string
-          - $ref: '#/components/schemas/JsonSchema'
-          - $ref: '#/components/schemas/TextSchema'
-          - type: 'null'
-          title: Input Schema
-          description: Optional JSON schema or text description of expected input to the task. A bare string is equivalent to a text schema with the same description.
-      type: object
-      required:
-      - output_schema
-      title: TaskSpec
-      description: 'Specification for a task.
-
-
-        Auto output schemas can be specified by setting `output_schema={"type":"auto"}`. Not
-
-        specifying a TaskSpec is the same as setting an auto output schema.
-
-
-        For convenience bare strings are also accepted as input or output schemas.'
-    ParallelBeta:
-      anyOf:
-      - enum:
-        - mcp-server-2025-07-17
-        - events-sse-2025-07-24
-        - webhook-2025-08-12
-        - findall-2025-09-15
-        - search-extract-2025-10-10
-        - field-basis-2025-11-25
-        type: string
-      - type: string
-      description: Model for the parallel-beta header.
-      title: ParallelBeta
-    Error:
-      properties:
-        ref_id:
+          description: Title of the citation.
+          title: Title
+        url:
+          description: URL of the citation.
+          title: Url
           type: string
-          title: Reference ID
-          description: Reference ID for the error.
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
-        detail:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Detail
-          description: Optional detail supporting the error.
-      type: object
-      required:
-      - ref_id
-      - message
-      title: Error
-      description: An error message.
-    TaskRunResult:
-      properties:
-        run:
-          $ref: '#/components/schemas/TaskRun'
-          description: Task run object with status 'completed'.
-        output:
-          oneOf:
-          - $ref: '#/components/schemas/TaskRunTextOutput'
-          - $ref: '#/components/schemas/TaskRunJsonOutput'
-          title: Output
-          description: Output from the task conforming to the output schema.
-          discriminator:
-            propertyName: type
-            mapping:
-              json: '#/components/schemas/TaskRunJsonOutput'
-              text: '#/components/schemas/TaskRunTextOutput'
-      type: object
-      required:
-      - run
-      - output
-      title: TaskRunResult
-      description: Result of a task run.
-    ErrorEvent:
-      properties:
-        type:
-          type: string
-          const: error
-          title: Type
-          description: Event type; always 'error'.
-        error:
-          $ref: '#/components/schemas/Error'
-          description: Error.
-      type: object
-      required:
-      - type
-      - error
-      title: ErrorEvent
-      description: Event indicating an error.
-    TaskRunEvent:
-      properties:
-        type:
-          type: string
-          const: task_run.state
-          title: Type
-          description: Event type; always 'task_run.state'.
-        event_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Event ID
-          description: Cursor to resume the event stream. Always empty for non Task Group runs.
-        input:
-          anyOf:
-          - $ref: '#/components/schemas/TaskRunInput'
-          - type: 'null'
-          description: Input to the run; included only if requested.
-        run:
-          $ref: '#/components/schemas/TaskRun'
-          description: Task run object.
-        output:
-          anyOf:
-          - oneOf:
-            - $ref: '#/components/schemas/TaskRunTextOutput'
-            - $ref: '#/components/schemas/TaskRunJsonOutput'
-            discriminator:
-              propertyName: type
-              mapping:
-                json: '#/components/schemas/TaskRunJsonOutput'
-                text: '#/components/schemas/TaskRunTextOutput'
-          - type: 'null'
-          title: Output
-          description: Output from the run; included only if requested and if status == `completed`.
-      type: object
-      required:
-      - type
-      - event_id
-      - run
-      title: TaskRunEvent
-      description: 'Event when a task run transitions to a non-active status.
-
-
-        May indicate completion, cancellation, or failure.'
-    TaskGroupRunResponse:
-      properties:
-        status:
-          $ref: '#/components/schemas/TaskGroupStatus'
-          description: Status of the group.
-        run_ids:
-          items:
-            type: string
-          type: array
-          title: Run IDs
-          description: IDs of the newly created runs.
-        run_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Run Cursor
-          description: Cursor for these runs in the run stream at taskgroup/runs?last_event_id=<run_cursor>. Empty for the first runs in the group.
-        event_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Event Cursor
-          description: Cursor for these runs in the event stream at taskgroup/events?last_event_id=<event_cursor>. Empty for the first runs in the group.
-      type: object
-      required:
-      - status
-      - run_ids
-      - run_cursor
-      - event_cursor
-      title: TaskGroupRunResponse
-      description: Response from adding new task runs to a task group.
-    TaskGroupStatus:
-      properties:
-        num_task_runs:
-          type: integer
-          title: Num Task Runs
-          description: Number of task runs in the group.
-        task_run_status_counts:
-          additionalProperties:
-            type: integer
-          propertyNames:
-            enum:
-            - queued
-            - action_required
-            - running
-            - completed
-            - failed
-            - cancelling
-            - cancelled
-          type: object
-          title: Task Run Status Counts
-          description: Number of task runs with each status.
-        is_active:
-          type: boolean
-          title: Is Active
-          description: True if at least one run in the group is currently active, i.e. status is one of {'cancelling', 'queued', 'running'}.
-        status_message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status Message
-          description: Human-readable status message for the group.
-        modified_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Modified At
-          description: Timestamp of the last status update to the group, as an RFC 3339 string.
-          examples:
-          - '2025-04-24T18:56:22.513132Z'
-      type: object
-      required:
-      - num_task_runs
-      - task_run_status_counts
-      - is_active
-      - status_message
-      - modified_at
-      title: TaskGroupStatus
-      description: Status of a task group.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    TaskRunTextOutput:
-      properties:
-        basis:
-          items:
-            $ref: '#/components/schemas/FieldBasis'
-          type: array
-          title: Basis
-          description: Basis for the output. The basis has a single field 'output'.
-        type:
-          type: string
-          const: text
-          title: Type
-          description: The type of output being returned, as determined by the output schema of the task spec.
-        mcp_tool_calls:
+        excerpts:
           anyOf:
           - items:
-              $ref: '#/components/schemas/McpToolCall'
+              type: string
             type: array
           - type: 'null'
-          title: Mcp Tool Calls
-          description: MCP tool calls made by the task.
-        beta_fields:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Beta Fields
-          description: Deprecated. mcp-server-2025-07-17 is now included directly in the output (e.g. mcp_tool_calls).
-          deprecated: true
-        content:
-          type: string
-          title: Content
-          description: Text output from the task.
-      type: object
+          default: null
+          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
+          title: Excerpts
       required:
-      - basis
-      - type
-      - content
-      title: TaskRunTextOutput
-      description: Output from a task that returns text.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+      - url
+      title: Citation
       type: object
-      title: HTTPValidationError
     McpToolCall:
       properties:
         tool_call_id:
@@ -1936,82 +1980,86 @@ components:
       - arguments
       title: McpToolCall
       description: Result of an MCP tool call.
-    TaskRunInput:
+    Warning:
       properties:
-        processor:
+        type:
           type: string
-          title: Processor
-          description: Processor to use for the task.
+          enum:
+          - spec_validation_warning
+          - input_validation_warning
+          - warning
+          title: Type
+          description: Type of warning. Note that adding new warning types is considered a backward-compatible change.
           examples:
-          - base
-        metadata:
+          - spec_validation_warning
+          - input_validation_warning
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
           anyOf:
-          - additionalProperties:
-              anyOf:
-              - type: string
-              - type: integer
-              - type: number
-              - type: boolean
-            type: object
-          - type: 'null'
-          title: Metadata
-          description: User-provided metadata stored with the run. Keys and values must be strings with a maximum length of 16 and 512 characters respectively.
-        source_policy:
-          anyOf:
-          - $ref: '#/components/schemas/SourcePolicy'
-          - type: 'null'
-          description: Optional source policy governing preferred and disallowed domains in web search results.
-        advanced_settings:
-          anyOf:
-          - $ref: '#/components/schemas/TaskAdvancedSettings'
-          - type: 'null'
-          description: Advanced search configuration for the task run.
-        task_spec:
-          anyOf:
-          - $ref: '#/components/schemas/TaskSpec'
-          - type: 'null'
-          description: Task specification. If unspecified, defaults to auto output schema.
-        input:
-          anyOf:
-          - type: string
           - additionalProperties: true
             type: object
-          title: Input
-          description: Input to the task, either text or a JSON object.
-          examples:
-          - What was the GDP of France in 2023?
-          - '{"country": "France", "year": 2023}'
-        previous_interaction_id:
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the warning.
+      type: object
+      required:
+      - type
+      - message
+      title: Warning
+      description: Human-readable message for a task.
+    TaskRunProgressStatsEvent:
+      properties:
+        type:
+          type: string
+          const: task_run.progress_stats
+          title: Type
+          description: Event type; always 'task_run.progress_stats'.
+        source_stats:
+          $ref: '#/components/schemas/TaskRunSourceStats'
+          description: Source stats describing progress so far.
+        progress_meter:
+          type: number
+          title: Progress Meter
+          description: Completion percentage of the task run. Ranges from 0 to 100 where 0 indicates no progress and 100 indicates completion.
+      type: object
+      required:
+      - type
+      - source_stats
+      - progress_meter
+      title: TaskRunProgressStatsEvent
+      description: A progress update for a task run.
+    TaskRunProgressMessageEvent:
+      properties:
+        type:
+          type: string
+          enum:
+          - task_run.progress_msg.plan
+          - task_run.progress_msg.search
+          - task_run.progress_msg.result
+          - task_run.progress_msg.tool_call
+          - task_run.progress_msg.exec_status
+          title: Type
+          description: Event type; always starts with 'task_run.progress_msg'.
+        message:
+          type: string
+          title: Message
+          description: Progress update message.
+        timestamp:
           anyOf:
           - type: string
           - type: 'null'
-          title: Previous Interaction Id
-          description: Interaction ID to use as context for this request.
-        mcp_servers:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/McpServer'
-            type: array
-          - type: 'null'
-          title: Mcp Servers
-          description: Optional list of MCP servers to use for the run.
-        enable_events:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Enable Events
-          description: Controls tracking of task run execution progress. When set to true, progress events are recorded and can be accessed via the [Task Run events](https://docs.parallel.ai/api-reference) endpoint. When false, no progress events are tracked. Note that progress tracking cannot be enabled after a run has been created. The flag is set to true by default for premium processors (pro and above).
-        webhook:
-          anyOf:
-          - $ref: '#/components/schemas/Webhook'
-          - type: 'null'
-          description: "Callback URL (webhook endpoint) that will receive an HTTP POST when the run completes. \nThis feature is not available via the Python SDK."
+          title: Timestamp
+          description: Timestamp of the message.
       type: object
       required:
-      - processor
-      - input
-      title: TaskRunInput
-      description: Request to run a task.
+      - type
+      - message
+      - timestamp
+      title: TaskRunProgressMessageEvent
+      description: A message for a task run progress update.
     TextSchema:
       properties:
         description:
@@ -2031,54 +2079,6 @@ components:
       type: object
       title: TextSchema
       description: Text description for a task input or output.
-    TaskRunJsonOutput:
-      properties:
-        basis:
-          items:
-            $ref: '#/components/schemas/FieldBasis'
-          type: array
-          title: Basis
-          description: 'Basis for each top-level field in the JSON output. Per-list-element basis entries are available only when the `parallel-beta: field-basis-2025-11-25` header is supplied.'
-        type:
-          type: string
-          const: json
-          title: Type
-          description: The type of output being returned, as determined by the output schema of the task spec.
-        mcp_tool_calls:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/McpToolCall'
-            type: array
-          - type: 'null'
-          title: Mcp Tool Calls
-          description: MCP tool calls made by the task.
-        beta_fields:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Beta Fields
-          description: Deprecated. mcp-server-2025-07-17 is now included directly in the output (e.g. mcp_tool_calls).
-          deprecated: true
-        content:
-          additionalProperties: true
-          type: object
-          title: Content
-          description: Output from the task as a native JSON object, as determined by the output schema of the task spec.
-        output_schema:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Output Schema
-          description: Output schema for the Task Run. Populated only if the task was executed with an auto schema.
-      type: object
-      required:
-      - basis
-      - type
-      - content
-      title: TaskRunJsonOutput
-      description: Output from a task that returns JSON.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

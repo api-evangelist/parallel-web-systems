@@ -74,6 +74,6 @@ actions:
       webhooks: standard-webhooks
       sse: per-resource /events endpoints
       catalog: ../asyncapi/parallel-web-systems-webhooks.yml
-notes: >-
+x-notes: >-
   This overlay is additive metadata only; it never mutates the original operation or schema
   semantics of openapi/parallel-web-systems-openapi.json (Parallel API v0.1.2).
