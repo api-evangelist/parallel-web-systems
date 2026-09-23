@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Parallel Chat API (Beta) Chat API (Beta) Chat API (Beta) Chat API (Beta) API
+  title: Parallel Chat API (Beta) API
   description: Parallel API
   contact:
     name: Parallel Support
@@ -54,270 +54,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ModerationInputModerationResults:
+    ChoiceLogprobs:
       additionalProperties: true
-      description: Successful moderation results for the request input or generated output.
+      description: Log probability information for the choice.
       properties:
-        model:
-          title: Model
-          type: string
-        results:
-          items:
-            $ref: '#/components/schemas/ModerationInputModerationResultsResult'
-          title: Results
-          type: array
-        type:
-          const: moderation_results
-          title: Type
-          type: string
-      required:
-      - model
-      - results
-      - type
-      title: ModerationInputModerationResults
-      type: object
-    openai__types__shared_params__response_format_json_object__ResponseFormatJSONObject:
-      properties:
-        type:
-          type: string
-          const: json_object
-          title: Type
-      type: object
-      required:
-      - type
-      title: ResponseFormatJSONObject
-      description: 'JSON object response format.
-
-
-        An older method of generating JSON responses.
-
-        Using `json_schema` is recommended for models that support it. Note that the
-
-        model will not generate JSON without a system or user message instructing it
-
-        to do so.'
-    openai__types__shared_params__response_format_text__ResponseFormatText:
-      properties:
-        type:
-          type: string
-          const: text
-          title: Type
-      type: object
-      required:
-      - type
-      title: ResponseFormatText
-      description: Default response format. Used to generate text responses.
-    ModerationInputModerationResult:
-      additionalProperties: true
-      description: A moderation result produced for the response input or output.
-      properties:
-        categories:
-          additionalProperties:
-            type: boolean
-          title: Categories
-          type: object
-        category_applied_input_types:
-          additionalProperties:
-            items:
-              enum:
-              - text
-              - image
-              type: string
+        content:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ChatCompletionTokenLogprob'
             type: array
-          title: Category Applied Input Types
-          type: object
-        category_scores:
-          additionalProperties:
-            type: number
-          title: Category Scores
-          type: object
-        flagged:
-          title: Flagged
-          type: boolean
-        model:
-          title: Model
-          type: string
-        type:
-          const: moderation_result
-          title: Type
-          type: string
-      required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      - model
-      - type
-      title: ModerationInputModerationResult
-      type: object
-    ModerationInputError:
-      additionalProperties: true
-      description: An error produced while attempting moderation for the response input or output.
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        type:
-          const: error
-          title: Type
-          type: string
-      required:
-      - code
-      - message
-      - type
-      title: ModerationInputError
-      type: object
-    ModerationInputModerationResultsResult:
-      additionalProperties: true
-      description: A moderation result produced for the response input or output.
-      properties:
-        categories:
-          additionalProperties:
-            type: boolean
-          title: Categories
-          type: object
-        category_applied_input_types:
-          additionalProperties:
-            items:
-              enum:
-              - text
-              - image
-              type: string
-            type: array
-          title: Category Applied Input Types
-          type: object
-        category_scores:
-          additionalProperties:
-            type: number
-          title: Category Scores
-          type: object
-        flagged:
-          title: Flagged
-          type: boolean
-        model:
-          title: Model
-          type: string
-        type:
-          const: moderation_result
-          title: Type
-          type: string
-      required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      - model
-      - type
-      title: ModerationInputModerationResultsResult
-      type: object
-    ChatCompletion:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The id of the chat completion.
-        choices:
-          items:
-            $ref: '#/components/schemas/Choice'
-          type: array
-          title: Choices
-        created:
-          type: integer
-          title: Created
-        model:
-          type: string
-          title: Model
-        object:
-          type: string
-          const: chat.completion
-          title: Object
-        moderation:
-          anyOf:
-          - $ref: '#/components/schemas/openai__types__chat__chat_completion__Moderation'
-          - type: 'null'
-        service_tier:
-          anyOf:
-          - type: string
-            enum:
-            - auto
-            - default
-            - flex
-            - scale
-            - priority
-          - type: 'null'
-          title: Service Tier
-        system_fingerprint:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: System Fingerprint
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/CompletionUsage'
-          - type: 'null'
-        basis:
-          items:
-            $ref: '#/components/schemas/FieldBasis'
-          type: array
-          title: Basis
-          description: Basis for the chat completion, including citations and reasoning supporting the output.
-          default: []
-        interaction_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Interaction Id
-          description: Identifier for this interaction. Pass as previous_interaction_id for follow-ups.
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - choices
-      - created
-      - model
-      - object
-      title: ChatCompletion
-      description: Chat completion response.
-    CompletionUsage:
-      additionalProperties: true
-      description: Usage statistics for the completion request.
-      properties:
-        completion_tokens:
-          title: Completion Tokens
-          type: integer
-        prompt_tokens:
-          title: Prompt Tokens
-          type: integer
-        total_tokens:
-          title: Total Tokens
-          type: integer
-        completion_tokens_details:
-          anyOf:
-          - $ref: '#/components/schemas/CompletionTokensDetails'
           - type: 'null'
           default: null
-        prompt_tokens_details:
+          title: Content
+        refusal:
           anyOf:
-          - $ref: '#/components/schemas/PromptTokensDetails'
+          - items:
+              $ref: '#/components/schemas/ChatCompletionTokenLogprob'
+            type: array
           - type: 'null'
           default: null
-      required:
-      - completion_tokens
-      - prompt_tokens
-      - total_tokens
-      title: CompletionUsage
+          title: Refusal
+      title: ChoiceLogprobs
       type: object
     FieldBasis:
       description: Citations and reasoning supporting one field of a task output.
@@ -353,258 +110,6 @@ components:
       - reasoning
       title: FieldBasis
       type: object
-    ModerationOutputModerationResults:
-      additionalProperties: true
-      description: Successful moderation results for the request input or generated output.
-      properties:
-        model:
-          title: Model
-          type: string
-        results:
-          items:
-            $ref: '#/components/schemas/ModerationOutputModerationResultsResult'
-          title: Results
-          type: array
-        type:
-          const: moderation_results
-          title: Type
-          type: string
-      required:
-      - model
-      - results
-      - type
-      title: ModerationOutputModerationResults
-      type: object
-    ChoiceDeltaToolCallFunction:
-      additionalProperties: true
-      properties:
-        arguments:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: Arguments
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: Name
-      title: ChoiceDeltaToolCallFunction
-      type: object
-    CompletionTokensDetails:
-      additionalProperties: true
-      description: Breakdown of tokens used in a completion.
-      properties:
-        accepted_prediction_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: Accepted Prediction Tokens
-        audio_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: Audio Tokens
-        reasoning_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: Reasoning Tokens
-        rejected_prediction_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: Rejected Prediction Tokens
-      title: CompletionTokensDetails
-      type: object
-    Choice:
-      additionalProperties: true
-      properties:
-        delta:
-          $ref: '#/components/schemas/ChoiceDelta'
-        finish_reason:
-          anyOf:
-          - enum:
-            - stop
-            - length
-            - tool_calls
-            - content_filter
-            - function_call
-            type: string
-          - type: 'null'
-          default: null
-          title: Finish Reason
-        index:
-          title: Index
-          type: integer
-        logprobs:
-          anyOf:
-          - $ref: '#/components/schemas/ChoiceLogprobs'
-          - type: 'null'
-          default: null
-      required:
-      - delta
-      - index
-      title: Choice
-      type: object
-    openai__types__chat__chat_completion__ModerationOutputError:
-      properties:
-        code:
-          type: string
-          title: Code
-        message:
-          type: string
-          title: Message
-        type:
-          type: string
-          const: error
-          title: Type
-      additionalProperties: true
-      type: object
-      required:
-      - code
-      - message
-      - type
-      title: ModerationOutputError
-      description: An error produced while attempting moderation.
-    ChatCompletionTokenLogprob:
-      additionalProperties: true
-      properties:
-        token:
-          title: Token
-          type: string
-        bytes:
-          anyOf:
-          - items:
-              type: integer
-            type: array
-          - type: 'null'
-          default: null
-          title: Bytes
-        logprob:
-          title: Logprob
-          type: number
-        top_logprobs:
-          items:
-            $ref: '#/components/schemas/TopLogprob'
-          title: Top Logprobs
-          type: array
-      required:
-      - token
-      - logprob
-      - top_logprobs
-      title: ChatCompletionTokenLogprob
-      type: object
-    ModerationOutputModerationResult:
-      additionalProperties: true
-      description: A moderation result produced for the response input or output.
-      properties:
-        categories:
-          additionalProperties:
-            type: boolean
-          title: Categories
-          type: object
-        category_applied_input_types:
-          additionalProperties:
-            items:
-              enum:
-              - text
-              - image
-              type: string
-            type: array
-          title: Category Applied Input Types
-          type: object
-        category_scores:
-          additionalProperties:
-            type: number
-          title: Category Scores
-          type: object
-        flagged:
-          title: Flagged
-          type: boolean
-        model:
-          title: Model
-          type: string
-        type:
-          const: moderation_result
-          title: Type
-          type: string
-      required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      - model
-      - type
-      title: ModerationOutputModerationResult
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Moderation:
-      additionalProperties: true
-      description: Moderation results for the response input and output, if moderated completions were requested.
-      properties:
-        input:
-          anyOf:
-          - $ref: '#/components/schemas/ModerationInputModerationResult'
-          - $ref: '#/components/schemas/ModerationInputError'
-          title: Input
-        output:
-          anyOf:
-          - $ref: '#/components/schemas/ModerationOutputModerationResult'
-          - $ref: '#/components/schemas/ModerationOutputError'
-          title: Output
-      required:
-      - input
-      - output
-      title: Moderation
-      type: object
-    JSONSchema:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          type: string
-          title: Description
-        schema:
-          additionalProperties: false
-          type: object
-          title: Schema
-        strict:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Strict
-      type: object
-      required:
-      - name
-      title: JSONSchema
-      description: Structured Outputs configuration options, including a JSON Schema.
     ChoiceDeltaToolCall:
       additionalProperties: true
       properties:
@@ -652,12 +157,8 @@ components:
         Used to generate structured JSON responses.
 
         Learn more about [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs).'
-    ChoiceDeltaFunctionCall:
+    ChoiceDeltaToolCallFunction:
       additionalProperties: true
-      description: 'Deprecated and replaced by `tool_calls`.
-
-
-        The name and arguments of a function that should be called, as generated by the model.'
       properties:
         arguments:
           anyOf:
@@ -671,51 +172,123 @@ components:
           - type: 'null'
           default: null
           title: Name
-      title: ChoiceDeltaFunctionCall
+      title: ChoiceDeltaToolCallFunction
       type: object
-    ChoiceLogprobs:
+    TopLogprob:
       additionalProperties: true
-      description: Log probability information for the choice.
+      properties:
+        token:
+          title: Token
+          type: string
+        bytes:
+          anyOf:
+          - items:
+              type: integer
+            type: array
+          - type: 'null'
+          default: null
+          title: Bytes
+        logprob:
+          title: Logprob
+          type: number
+      required:
+      - token
+      - logprob
+      title: TopLogprob
+      type: object
+    ChoiceDelta:
+      additionalProperties: true
+      description: A chat completion delta generated by streamed model responses.
       properties:
         content:
           anyOf:
-          - items:
-              $ref: '#/components/schemas/ChatCompletionTokenLogprob'
-            type: array
+          - type: string
           - type: 'null'
           default: null
           title: Content
+        function_call:
+          anyOf:
+          - $ref: '#/components/schemas/ChoiceDeltaFunctionCall'
+          - type: 'null'
+          default: null
         refusal:
           anyOf:
-          - items:
-              $ref: '#/components/schemas/ChatCompletionTokenLogprob'
-            type: array
+          - type: string
           - type: 'null'
           default: null
           title: Refusal
-      title: ChoiceLogprobs
+        role:
+          anyOf:
+          - enum:
+            - developer
+            - system
+            - user
+            - assistant
+            - tool
+            type: string
+          - type: 'null'
+          default: null
+          title: Role
+        tool_calls:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ChoiceDeltaToolCall'
+            type: array
+          - type: 'null'
+          default: null
+          title: Tool Calls
+      title: ChoiceDelta
       type: object
-    ModerationOutputError:
-      additionalProperties: true
-      description: An error produced while attempting moderation for the response input or output.
+    openai__types__chat__chat_completion__ModerationOutputError:
       properties:
         code:
+          type: string
           title: Code
-          type: string
         message:
-          title: Message
           type: string
+          title: Message
         type:
+          type: string
           const: error
           title: Type
-          type: string
+      additionalProperties: true
+      type: object
       required:
       - code
       - message
       - type
       title: ModerationOutputError
+      description: An error produced while attempting moderation.
+    openai__types__chat__chat_completion__ModerationInputError:
+      properties:
+        code:
+          type: string
+          title: Code
+        message:
+          type: string
+          title: Message
+        type:
+          type: string
+          const: error
+          title: Type
+      additionalProperties: true
       type: object
-    ModerationOutputModerationResultsResult:
+      required:
+      - code
+      - message
+      - type
+      title: ModerationInputError
+      description: An error produced while attempting moderation.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ModerationInputModerationResult:
       additionalProperties: true
       description: A moderation result produced for the response input or output.
       properties:
@@ -756,194 +329,29 @@ components:
       - flagged
       - model
       - type
-      title: ModerationOutputModerationResultsResult
+      title: ModerationInputModerationResult
       type: object
-    Citation:
-      description: A citation for a task output.
-      properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          description: Title of the citation.
-          title: Title
-        url:
-          description: URL of the citation.
-          title: Url
-          type: string
-        excerpts:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          default: null
-          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
-          title: Excerpts
-      required:
-      - url
-      title: Citation
-      type: object
-    TopLogprob:
+    ModerationInputModerationResults:
       additionalProperties: true
+      description: Successful moderation results for the request input or generated output.
       properties:
-        token:
-          title: Token
-          type: string
-        bytes:
-          anyOf:
-          - items:
-              type: integer
-            type: array
-          - type: 'null'
-          default: null
-          title: Bytes
-        logprob:
-          title: Logprob
-          type: number
-      required:
-      - token
-      - logprob
-      title: TopLogprob
-      type: object
-    openai__types__chat__chat_completion__Moderation:
-      properties:
-        input:
-          anyOf:
-          - $ref: '#/components/schemas/ModerationInputModerationResults'
-          - $ref: '#/components/schemas/openai__types__chat__chat_completion__ModerationInputError'
-          title: Input
-        output:
-          anyOf:
-          - $ref: '#/components/schemas/ModerationOutputModerationResults'
-          - $ref: '#/components/schemas/openai__types__chat__chat_completion__ModerationOutputError'
-          title: Output
-      additionalProperties: true
-      type: object
-      required:
-      - input
-      - output
-      title: Moderation
-      description: 'Moderation results for the request input and generated output, if moderated
-
-        completions were requested.'
-    openai__types__chat__chat_completion__ModerationInputError:
-      properties:
-        code:
-          type: string
-          title: Code
-        message:
-          type: string
-          title: Message
-        type:
-          type: string
-          const: error
-          title: Type
-      additionalProperties: true
-      type: object
-      required:
-      - code
-      - message
-      - type
-      title: ModerationInputError
-      description: An error produced while attempting moderation.
-    PromptTokensDetails:
-      additionalProperties: true
-      description: Breakdown of tokens used in the prompt.
-      properties:
-        audio_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: Audio Tokens
-        cached_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: Cached Tokens
-      title: PromptTokensDetails
-      type: object
-    ChatCompletionResponseChunk:
-      additionalProperties: true
-      description: Chat completion response chunk.
-      properties:
-        type:
-          const: chat.completion.chunk
-          description: The type of the chat completion chunk. Always `chat.completion.chunk`.
-          title: Type
-          type: string
-        id:
-          description: The id of the chat completion response chunk.
-          title: Id
-          type: string
-        choices:
-          items:
-            $ref: '#/components/schemas/Choice'
-          title: Choices
-          type: array
-        created:
-          title: Created
-          type: integer
         model:
           title: Model
           type: string
-        object:
-          const: chat.completion.chunk
-          title: Object
-          type: string
-        moderation:
-          anyOf:
-          - $ref: '#/components/schemas/Moderation'
-          - type: 'null'
-          default: null
-        service_tier:
-          anyOf:
-          - enum:
-            - auto
-            - default
-            - flex
-            - scale
-            - priority
-            type: string
-          - type: 'null'
-          default: null
-          title: Service Tier
-        system_fingerprint:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: System Fingerprint
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/CompletionUsage'
-          - type: 'null'
-          default: null
-        basis:
-          default: []
-          description: Basis for the chat completion chunk, including citations and reasoning supporting the output.
+        results:
           items:
-            $ref: '#/components/schemas/FieldBasis'
-          title: Basis
+            $ref: '#/components/schemas/ModerationInputModerationResultsResult'
+          title: Results
           type: array
-        interaction_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          description: Identifier for this interaction. Pass as previous_interaction_id for follow-ups.
-          title: Interaction Id
+        type:
+          const: moderation_results
+          title: Type
+          type: string
       required:
-      - type
-      - id
-      - choices
-      - created
       - model
-      - object
-      title: ChatCompletionResponseChunk
+      - results
+      - type
+      title: ModerationInputModerationResults
       type: object
     ChatCompletionRequest:
       properties:
@@ -1024,48 +432,597 @@ components:
         Note that all parameters except for `model`, `stream`, and `response_format`
 
         are ignored.'
-    ChoiceDelta:
+    Choice:
       additionalProperties: true
-      description: A chat completion delta generated by streamed model responses.
       properties:
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: Content
-        function_call:
-          anyOf:
-          - $ref: '#/components/schemas/ChoiceDeltaFunctionCall'
-          - type: 'null'
-          default: null
-        refusal:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: Refusal
-        role:
+        delta:
+          $ref: '#/components/schemas/ChoiceDelta'
+        finish_reason:
           anyOf:
           - enum:
-            - developer
-            - system
-            - user
-            - assistant
-            - tool
+            - stop
+            - length
+            - tool_calls
+            - content_filter
+            - function_call
             type: string
           - type: 'null'
           default: null
-          title: Role
-        tool_calls:
+          title: Finish Reason
+        index:
+          title: Index
+          type: integer
+        logprobs:
+          anyOf:
+          - $ref: '#/components/schemas/ChoiceLogprobs'
+          - type: 'null'
+          default: null
+      required:
+      - delta
+      - index
+      title: Choice
+      type: object
+    ModerationInputModerationResultsResult:
+      additionalProperties: true
+      description: A moderation result produced for the response input or output.
+      properties:
+        categories:
+          additionalProperties:
+            type: boolean
+          title: Categories
+          type: object
+        category_applied_input_types:
+          additionalProperties:
+            items:
+              enum:
+              - text
+              - image
+              type: string
+            type: array
+          title: Category Applied Input Types
+          type: object
+        category_scores:
+          additionalProperties:
+            type: number
+          title: Category Scores
+          type: object
+        flagged:
+          title: Flagged
+          type: boolean
+        model:
+          title: Model
+          type: string
+        type:
+          const: moderation_result
+          title: Type
+          type: string
+      required:
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      - model
+      - type
+      title: ModerationInputModerationResultsResult
+      type: object
+    ModerationInputError:
+      additionalProperties: true
+      description: An error produced while attempting moderation for the response input or output.
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        type:
+          const: error
+          title: Type
+          type: string
+      required:
+      - code
+      - message
+      - type
+      title: ModerationInputError
+      type: object
+    ModerationOutputError:
+      additionalProperties: true
+      description: An error produced while attempting moderation for the response input or output.
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        type:
+          const: error
+          title: Type
+          type: string
+      required:
+      - code
+      - message
+      - type
+      title: ModerationOutputError
+      type: object
+    JSONSchema:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        schema:
+          additionalProperties: false
+          type: object
+          title: Schema
+        strict:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Strict
+      type: object
+      required:
+      - name
+      title: JSONSchema
+      description: Structured Outputs configuration options, including a JSON Schema.
+    ChatCompletionResponseChunk:
+      additionalProperties: true
+      description: Chat completion response chunk.
+      properties:
+        id:
+          description: The id of the chat completion response chunk.
+          title: Id
+          type: string
+        choices:
+          items:
+            $ref: '#/components/schemas/Choice'
+          title: Choices
+          type: array
+        created:
+          title: Created
+          type: integer
+        model:
+          title: Model
+          type: string
+        object:
+          const: chat.completion.chunk
+          title: Object
+          type: string
+        moderation:
+          anyOf:
+          - $ref: '#/components/schemas/Moderation'
+          - type: 'null'
+          default: null
+        service_tier:
+          anyOf:
+          - enum:
+            - auto
+            - default
+            - flex
+            - scale
+            - priority
+            type: string
+          - type: 'null'
+          default: null
+          title: Service Tier
+        system_fingerprint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: System Fingerprint
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/CompletionUsage'
+          - type: 'null'
+          default: null
+        type:
+          const: chat.completion.chunk
+          description: The type of the chat completion chunk. Always `chat.completion.chunk`.
+          title: Type
+          type: string
+        basis:
+          default: []
+          description: Basis for the chat completion chunk, including citations and reasoning supporting the output.
+          items:
+            $ref: '#/components/schemas/FieldBasis'
+          title: Basis
+          type: array
+        interaction_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Identifier for this interaction. Pass as previous_interaction_id for follow-ups.
+          title: Interaction Id
+      required:
+      - id
+      - choices
+      - created
+      - model
+      - object
+      - type
+      title: ChatCompletionResponseChunk
+      type: object
+    ChatCompletionTokenLogprob:
+      additionalProperties: true
+      properties:
+        token:
+          title: Token
+          type: string
+        bytes:
           anyOf:
           - items:
-              $ref: '#/components/schemas/ChoiceDeltaToolCall'
+              type: integer
             type: array
           - type: 'null'
           default: null
-          title: Tool Calls
-      title: ChoiceDelta
+          title: Bytes
+        logprob:
+          title: Logprob
+          type: number
+        top_logprobs:
+          items:
+            $ref: '#/components/schemas/TopLogprob'
+          title: Top Logprobs
+          type: array
+      required:
+      - token
+      - logprob
+      - top_logprobs
+      title: ChatCompletionTokenLogprob
+      type: object
+    openai__types__shared_params__response_format_json_object__ResponseFormatJSONObject:
+      properties:
+        type:
+          type: string
+          const: json_object
+          title: Type
+      type: object
+      required:
+      - type
+      title: ResponseFormatJSONObject
+      description: 'JSON object response format.
+
+
+        An older method of generating JSON responses.
+
+        Using `json_schema` is recommended for models that support it. Note that the
+
+        model will not generate JSON without a system or user message instructing it
+
+        to do so.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ChoiceDeltaFunctionCall:
+      additionalProperties: true
+      description: 'Deprecated and replaced by `tool_calls`.
+
+
+        The name and arguments of a function that should be called, as generated by the model.'
+      properties:
+        arguments:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Arguments
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Name
+      title: ChoiceDeltaFunctionCall
+      type: object
+    PromptTokensDetails:
+      additionalProperties: true
+      description: Breakdown of tokens used in the prompt.
+      properties:
+        audio_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Audio Tokens
+        cached_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Cached Tokens
+      title: PromptTokensDetails
+      type: object
+    Citation:
+      description: A citation for a task output.
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Title of the citation.
+          title: Title
+        url:
+          description: URL of the citation.
+          title: Url
+          type: string
+        excerpts:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          default: null
+          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
+          title: Excerpts
+      required:
+      - url
+      title: Citation
+      type: object
+    ModerationOutputModerationResultsResult:
+      additionalProperties: true
+      description: A moderation result produced for the response input or output.
+      properties:
+        categories:
+          additionalProperties:
+            type: boolean
+          title: Categories
+          type: object
+        category_applied_input_types:
+          additionalProperties:
+            items:
+              enum:
+              - text
+              - image
+              type: string
+            type: array
+          title: Category Applied Input Types
+          type: object
+        category_scores:
+          additionalProperties:
+            type: number
+          title: Category Scores
+          type: object
+        flagged:
+          title: Flagged
+          type: boolean
+        model:
+          title: Model
+          type: string
+        type:
+          const: moderation_result
+          title: Type
+          type: string
+      required:
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      - model
+      - type
+      title: ModerationOutputModerationResultsResult
+      type: object
+    CompletionTokensDetails:
+      additionalProperties: true
+      description: Breakdown of tokens used in a completion.
+      properties:
+        accepted_prediction_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Accepted Prediction Tokens
+        audio_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Audio Tokens
+        reasoning_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Reasoning Tokens
+        rejected_prediction_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Rejected Prediction Tokens
+      title: CompletionTokensDetails
+      type: object
+    CompletionUsage:
+      additionalProperties: true
+      description: Usage statistics for the completion request.
+      properties:
+        completion_tokens:
+          title: Completion Tokens
+          type: integer
+        prompt_tokens:
+          title: Prompt Tokens
+          type: integer
+        total_tokens:
+          title: Total Tokens
+          type: integer
+        completion_tokens_details:
+          anyOf:
+          - $ref: '#/components/schemas/CompletionTokensDetails'
+          - type: 'null'
+          default: null
+        prompt_tokens_details:
+          anyOf:
+          - $ref: '#/components/schemas/PromptTokensDetails'
+          - type: 'null'
+          default: null
+      required:
+      - completion_tokens
+      - prompt_tokens
+      - total_tokens
+      title: CompletionUsage
+      type: object
+    openai__types__shared_params__response_format_text__ResponseFormatText:
+      properties:
+        type:
+          type: string
+          const: text
+          title: Type
+      type: object
+      required:
+      - type
+      title: ResponseFormatText
+      description: Default response format. Used to generate text responses.
+    ChatCompletion:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The id of the chat completion.
+        choices:
+          items:
+            $ref: '#/components/schemas/Choice'
+          type: array
+          title: Choices
+        created:
+          type: integer
+          title: Created
+        model:
+          type: string
+          title: Model
+        object:
+          type: string
+          const: chat.completion
+          title: Object
+        moderation:
+          anyOf:
+          - $ref: '#/components/schemas/openai__types__chat__chat_completion__Moderation'
+          - type: 'null'
+        service_tier:
+          anyOf:
+          - type: string
+            enum:
+            - auto
+            - default
+            - flex
+            - scale
+            - priority
+          - type: 'null'
+          title: Service Tier
+        system_fingerprint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Fingerprint
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/CompletionUsage'
+          - type: 'null'
+        basis:
+          items:
+            $ref: '#/components/schemas/FieldBasis'
+          type: array
+          title: Basis
+          description: Basis for the chat completion, including citations and reasoning supporting the output.
+          default: []
+        interaction_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Interaction Id
+          description: Identifier for this interaction. Pass as previous_interaction_id for follow-ups.
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - choices
+      - created
+      - model
+      - object
+      title: ChatCompletion
+      description: Chat completion response.
+    Moderation:
+      additionalProperties: true
+      description: Moderation results for the response input and output, if moderated completions were requested.
+      properties:
+        input:
+          anyOf:
+          - $ref: '#/components/schemas/ModerationInputModerationResult'
+          - $ref: '#/components/schemas/ModerationInputError'
+          title: Input
+        output:
+          anyOf:
+          - $ref: '#/components/schemas/ModerationOutputModerationResult'
+          - $ref: '#/components/schemas/ModerationOutputError'
+          title: Output
+      required:
+      - input
+      - output
+      title: Moderation
+      type: object
+    ModerationOutputModerationResult:
+      additionalProperties: true
+      description: A moderation result produced for the response input or output.
+      properties:
+        categories:
+          additionalProperties:
+            type: boolean
+          title: Categories
+          type: object
+        category_applied_input_types:
+          additionalProperties:
+            items:
+              enum:
+              - text
+              - image
+              type: string
+            type: array
+          title: Category Applied Input Types
+          type: object
+        category_scores:
+          additionalProperties:
+            type: number
+          title: Category Scores
+          type: object
+        flagged:
+          title: Flagged
+          type: boolean
+        model:
+          title: Model
+          type: string
+        type:
+          const: moderation_result
+          title: Type
+          type: string
+      required:
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      - model
+      - type
+      title: ModerationOutputModerationResult
       type: object
     ChatMessage:
       properties:
@@ -1093,6 +1050,49 @@ components:
       - content
       title: ChatMessage
       description: Chat message for OpenAI API.
+    openai__types__chat__chat_completion__Moderation:
+      properties:
+        input:
+          anyOf:
+          - $ref: '#/components/schemas/ModerationInputModerationResults'
+          - $ref: '#/components/schemas/openai__types__chat__chat_completion__ModerationInputError'
+          title: Input
+        output:
+          anyOf:
+          - $ref: '#/components/schemas/ModerationOutputModerationResults'
+          - $ref: '#/components/schemas/openai__types__chat__chat_completion__ModerationOutputError'
+          title: Output
+      additionalProperties: true
+      type: object
+      required:
+      - input
+      - output
+      title: Moderation
+      description: 'Moderation results for the request input and generated output, if moderated
+
+        completions were requested.'
+    ModerationOutputModerationResults:
+      additionalProperties: true
+      description: Successful moderation results for the request input or generated output.
+      properties:
+        model:
+          title: Model
+          type: string
+        results:
+          items:
+            $ref: '#/components/schemas/ModerationOutputModerationResultsResult'
+          title: Results
+          type: array
+        type:
+          const: moderation_results
+          title: Type
+          type: string
+      required:
+      - model
+      - results
+      - type
+      title: ModerationOutputModerationResults
+      type: object
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

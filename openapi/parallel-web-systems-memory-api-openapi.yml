@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Parallel API (Beta) Memory API
+  title: Parallel Memory API
   description: Parallel API
   contact:
     name: Parallel Support
@@ -88,112 +88,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    MonitorMemoryResult:
-      properties:
-        kind:
-          type: string
-          const: monitor
-          title: Kind
-          default: monitor
-        id:
-          type: string
-          title: Id
-          description: ID of the monitor.
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-          description: When the monitor last ran, as an RFC 3339 timestamp.
-        input_excerpt:
-          type: string
-          title: Input Excerpt
-          description: Preview of the monitor's query. May be truncated.
-        status:
-          type: string
-          enum:
-          - active
-          - cancelled
-          title: Status
-          description: Current status of the monitor.
-        matched_events:
-          items:
-            $ref: '#/components/schemas/MonitorMemoryEvent'
-          type: array
-          title: Matched Events
-          description: Detected events matching the retrieval query, ordered by relevance with more recent events favored. For an empty query, events are ordered by recency.
-      type: object
-      required:
-      - id
-      - updated_at
-      - input_excerpt
-      - status
-      title: MonitorMemoryResult
-    MonitorMemoryEvent:
-      properties:
-        event_id:
-          type: string
-          title: Event Id
-          description: ID of the monitor event.
-        event_group_id:
-          type: string
-          title: Event Group Id
-          description: ID of the execution that produced this event.
-        detected_at:
-          type: string
-          format: date-time
-          title: Detected At
-          description: When the event was detected, as an RFC 3339 timestamp.
-        excerpt:
-          type: string
-          title: Excerpt
-          description: Excerpt of the monitor event. May be truncated.
-      type: object
-      required:
-      - event_id
-      - event_group_id
-      - detected_at
-      - excerpt
-      title: MonitorMemoryEvent
-    FindAllMemoryResult:
-      properties:
-        kind:
-          type: string
-          const: findall
-          title: Kind
-          default: findall
-        id:
-          type: string
-          title: Id
-          description: ID of the FindAll run.
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-          description: When the FindAll result was last updated, as an RFC 3339 timestamp.
-        input_excerpt:
-          type: string
-          title: Input Excerpt
-          description: Preview of the run's objective. May be truncated.
-        matched_count:
-          type: integer
-          title: Matched Count
-          description: Current number of matched entities.
-      type: object
-      required:
-      - id
-      - updated_at
-      - input_excerpt
-      - matched_count
-      title: FindAllMemoryResult
     ValidationError:
       properties:
         loc:
@@ -246,6 +140,85 @@ components:
       - input_excerpt
       - output_excerpt
       title: TaskMemoryResult
+    MonitorMemoryResult:
+      properties:
+        kind:
+          type: string
+          const: monitor
+          title: Kind
+          default: monitor
+        id:
+          type: string
+          title: Id
+          description: ID of the monitor.
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: When the monitor last ran, as an RFC 3339 timestamp.
+        input_excerpt:
+          type: string
+          title: Input Excerpt
+          description: Preview of the monitor's query. May be truncated.
+        status:
+          type: string
+          enum:
+          - active
+          - cancelled
+          title: Status
+          description: Current status of the monitor.
+        matched_events:
+          items:
+            $ref: '#/components/schemas/MonitorMemoryEvent'
+          type: array
+          title: Matched Events
+          description: Detected events matching the retrieval query, ordered by relevance with more recent events favored. For an empty query, events are ordered by recency.
+      type: object
+      required:
+      - id
+      - updated_at
+      - input_excerpt
+      - status
+      title: MonitorMemoryResult
+    MemoryClearRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+      type: object
+      title: MemoryClearRequest
+    MonitorMemoryEvent:
+      properties:
+        event_id:
+          type: string
+          title: Event Id
+          description: ID of the monitor event.
+        event_group_id:
+          type: string
+          title: Event Group Id
+          description: ID of the execution that produced this event.
+        detected_at:
+          type: string
+          format: date-time
+          title: Detected At
+          description: When the event was detected, as an RFC 3339 timestamp.
+        excerpt:
+          type: string
+          title: Excerpt
+          description: Excerpt of the monitor event. May be truncated.
+      type: object
+      required:
+      - event_id
+      - event_group_id
+      - detected_at
+      - excerpt
+      title: MonitorMemoryEvent
     MemoryRetrieveResponse:
       properties:
         results:
@@ -266,7 +239,7 @@ components:
       required:
       - results
       title: MemoryRetrieveResponse
-    MemoryClearRequest:
+    MemoryEvictRequest:
       properties:
         memory_scope_key:
           anyOf:
@@ -277,8 +250,26 @@ components:
           - type: 'null'
           title: Memory Scope Key
           description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+        kind:
+          type: string
+          enum:
+          - task
+          - monitor
+          - findall
+          title: Kind
+          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
+        id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_-]+$
+          title: Id
+          description: ID of the task run, monitor, or FindAll run to evict.
       type: object
-      title: MemoryClearRequest
+      required:
+      - kind
+      - id
+      title: MemoryEvictRequest
     MemoryRetrieveRequest:
       properties:
         query:
@@ -325,37 +316,46 @@ components:
           description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
       type: object
       title: MemoryRetrieveRequest
-    MemoryEvictRequest:
+    HTTPValidationError:
       properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    FindAllMemoryResult:
+      properties:
         kind:
           type: string
-          enum:
-          - task
-          - monitor
-          - findall
+          const: findall
           title: Kind
-          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
+          default: findall
         id:
           type: string
-          maxLength: 128
-          minLength: 1
-          pattern: ^[a-zA-Z0-9_-]+$
           title: Id
-          description: ID of the task run, monitor, or FindAll run to evict.
+          description: ID of the FindAll run.
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: When the FindAll result was last updated, as an RFC 3339 timestamp.
+        input_excerpt:
+          type: string
+          title: Input Excerpt
+          description: Preview of the run's objective. May be truncated.
+        matched_count:
+          type: integer
+          title: Matched Count
+          description: Current number of matched entities.
       type: object
       required:
-      - kind
       - id
-      title: MemoryEvictRequest
+      - updated_at
+      - input_excerpt
+      - matched_count
+      title: FindAllMemoryResult
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

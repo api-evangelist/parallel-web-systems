@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Parallel Chat API (Beta) Chat API (Beta) Extract API
+  title: Parallel Extract API
   description: Parallel API
   contact:
     name: Parallel Support
@@ -28,9 +28,9 @@ paths:
 
         The legacy Extract API reference (`/v1beta/extract` endpoint) is available
 
-        [here](https://docs.parallel.ai/api-reference/legacy/extract-beta/extract), and
+        here, and
 
-        migration guide is [here](https://docs.parallel.ai/extract/extract-migration-guide).'
+        migration guide is here.'
       operationId: extract_v1_extract_post
       requestBody:
         content:
@@ -79,62 +79,18 @@ paths:
         source: "curl --request POST \\\n    --url https://api.parallel.ai/v1/extract \\\n    --header 'Content-Type: application/json' \\\n    --header 'x-api-key: <api-key>' \\\n    --data '{\n    \"urls\": [\"https://www.example.com\"],\n    \"objective\": \"Summarize the page\"\n}'"
 components:
   schemas:
-    V1ExtractRequest:
+    V1ExcerptSettings:
       properties:
-        urls:
-          items:
-            type: string
-          type: array
-          title: Urls
-          description: URLs to extract content from. Up to 20 URLs.
-        objective:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Objective
-          description: As in SearchRequest, a natural-language description of the underlying question or goal driving the request. Used together with search_queries to focus excerpts on the most relevant content.
-        search_queries:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Search Queries
-          description: Optional keyword search queries, as in SearchRequest. Used together with objective to focus excerpts on the most relevant content.
-        max_chars_total:
+        max_chars_per_result:
           anyOf:
           - type: integer
           - type: 'null'
-          title: Max Chars Total
-          description: Upper bound on total characters across excerpts from all extracted results.
-        session_id:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Session Id
-          description: Session identifier to track calls across separate search and extract calls, to be used as part of a larger task. Specifying it may give better contextual results for subsequent API calls.
-        client_model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Client Model
-          description: The model generating this request and consuming the results. Enables optimizations and tailors default settings for the model's capabilities.
-          examples:
-          - claude-opus-4-7
-          - gpt-5.4
-          - gemini-3.1-pro
-        advanced_settings:
-          anyOf:
-          - $ref: '#/components/schemas/AdvancedExtractSettings'
-          - type: 'null'
-          description: Advanced configuration for fetch policy, excerpt settings, and full content settings. May impact result quality and latency unless used carefully. When omitted, excerpts are enabled and full content is disabled by default.
+          title: Max Chars Per Result
+          description: Optional upper bound on the total number of characters to include per url. Excerpts may contain fewer characters than this limit to maximize relevance and token efficiency.
       additionalProperties: false
       type: object
-      required:
-      - urls
-      title: V1ExtractRequest
-      description: Extract request.
+      title: V1ExcerptSettings
+      description: Optional settings for returning relevant excerpts.
     FullContentSettings:
       properties:
         max_chars_per_result:
@@ -146,61 +102,6 @@ components:
       type: object
       title: FullContentSettings
       description: Optional settings for returning full content.
-    ExtractError:
-      properties:
-        url:
-          type: string
-          title: Url
-        error_type:
-          type: string
-          title: Error Type
-          description: Error type.
-        http_status_code:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Http Status Code
-          description: HTTP status code, if available.
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-          description: Content returned for http client or server errors, if any.
-      type: object
-      required:
-      - url
-      - error_type
-      - http_status_code
-      - content
-      title: ExtractError
-      description: Extract error details.
-    FetchPolicy:
-      properties:
-        max_age_seconds:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Max Age Seconds
-          description: Maximum age of cached content in seconds to trigger a live fetch. Minimum value 600 seconds (10 minutes).
-          examples:
-          - 86400
-        timeout_seconds:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Timeout Seconds
-          description: Timeout in seconds for fetching live content if unavailable in cache.
-          examples:
-          - 60
-        disable_cache_fallback:
-          type: boolean
-          title: Disable Cache Fallback
-          description: If false, fallback to cached content older than max-age if live fetch fails or times out. If true, returns an error instead.
-          default: false
-      type: object
-      title: FetchPolicy
-      description: Policy for live fetching web results.
     ErrorResponse:
       properties:
         type:
@@ -238,84 +139,6 @@ components:
       - count
       title: UsageItem
       description: Usage item for a single operation.
-    V1ExtractResult:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: URL associated with the search result.
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
-          description: Title of the webpage, if available.
-        publish_date:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Publish Date
-          description: Publish date of the webpage in YYYY-MM-DD format, if available.
-        excerpts:
-          items:
-            type: string
-          type: array
-          title: Excerpts
-          description: Relevant excerpted content from the URL, formatted as markdown.
-        full_content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Full Content
-          description: Full content from the URL formatted as markdown, if requested.
-      type: object
-      required:
-      - url
-      - excerpts
-      title: V1ExtractResult
-      description: Extract result for a single URL.
-    Warning:
-      properties:
-        type:
-          type: string
-          enum:
-          - spec_validation_warning
-          - input_validation_warning
-          - warning
-          title: Type
-          description: Type of warning. Note that adding new warning types is considered a backward-compatible change.
-          examples:
-          - spec_validation_warning
-          - input_validation_warning
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
-        detail:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Detail
-          description: Optional detail supporting the warning.
-      type: object
-      required:
-      - type
-      - message
-      title: Warning
-      description: Human-readable message for a task.
-    V1ExcerptSettings:
-      properties:
-        max_chars_per_result:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Max Chars Per Result
-          description: Optional upper bound on the total number of characters to include per url. Excerpts may contain fewer characters than this limit to maximize relevance and token efficiency.
-      additionalProperties: false
-      type: object
-      title: V1ExcerptSettings
-      description: Optional settings for returning relevant excerpts.
     Error:
       properties:
         ref_id:
@@ -387,6 +210,183 @@ components:
       - session_id
       title: V1ExtractResponse
       description: Extract response.
+    FetchPolicy:
+      properties:
+        max_age_seconds:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Age Seconds
+          description: Maximum age of cached content in seconds to trigger a live fetch. Minimum value 600 seconds (10 minutes).
+          examples:
+          - 86400
+        timeout_seconds:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Timeout Seconds
+          description: Timeout in seconds for fetching live content if unavailable in cache.
+          examples:
+          - 60.0
+        disable_cache_fallback:
+          type: boolean
+          title: Disable Cache Fallback
+          description: If false, fallback to cached content older than max-age if live fetch fails or times out. If true, returns an error instead.
+          default: false
+      type: object
+      title: FetchPolicy
+      description: Policy for live fetching web results.
+    V1ExtractResult:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL associated with the search result.
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+          description: Title of the webpage, if available.
+        publish_date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Publish Date
+          description: Publish date of the webpage in YYYY-MM-DD format, if available.
+        excerpts:
+          items:
+            type: string
+          type: array
+          title: Excerpts
+          description: Relevant excerpted content from the URL, formatted as markdown.
+        full_content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Full Content
+          description: Full content from the URL formatted as markdown, if requested.
+      type: object
+      required:
+      - url
+      - excerpts
+      title: V1ExtractResult
+      description: Extract result for a single URL.
+    ExtractError:
+      properties:
+        url:
+          type: string
+          title: Url
+        error_type:
+          type: string
+          title: Error Type
+          description: Error type.
+        http_status_code:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Http Status Code
+          description: HTTP status code, if available.
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: Content returned for http client or server errors, if any.
+      type: object
+      required:
+      - url
+      - error_type
+      - http_status_code
+      - content
+      title: ExtractError
+      description: Extract error details.
+    Warning:
+      properties:
+        type:
+          type: string
+          enum:
+          - spec_validation_warning
+          - input_validation_warning
+          - warning
+          title: Type
+          description: Type of warning. Note that adding new warning types is considered a backward-compatible change.
+          examples:
+          - spec_validation_warning
+          - input_validation_warning
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the warning.
+      type: object
+      required:
+      - type
+      - message
+      title: Warning
+      description: Human-readable message for a task.
+    V1ExtractRequest:
+      properties:
+        urls:
+          items:
+            type: string
+          type: array
+          title: Urls
+          description: URLs to extract content from. Up to 20 URLs.
+        objective:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Objective
+          description: As in SearchRequest, a natural-language description of the underlying question or goal driving the request. Used together with search_queries to focus excerpts on the most relevant content.
+        search_queries:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Search Queries
+          description: Optional keyword search queries, as in SearchRequest. Used together with objective to focus excerpts on the most relevant content.
+        max_chars_total:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Chars Total
+          description: Upper bound on total characters across excerpts from all extracted results.
+        session_id:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Session Id
+          description: Session identifier to track calls across separate search and extract calls, to be used as part of a larger task. Specifying it may give better contextual results for subsequent API calls.
+        client_model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Model
+          description: The model generating this request and consuming the results. Enables optimizations and tailors default settings for the model's capabilities.
+          examples:
+          - claude-opus-4-7
+          - gpt-5.4
+          - gemini-3.1-pro
+        advanced_settings:
+          anyOf:
+          - $ref: '#/components/schemas/AdvancedExtractSettings'
+          - type: 'null'
+          description: Advanced configuration for fetch policy, excerpt settings, and full content settings. May impact result quality and latency unless used carefully. When omitted, excerpts are enabled and full content is disabled by default.
+      additionalProperties: false
+      type: object
+      required:
+      - urls
+      title: V1ExtractRequest
+      description: Extract request.
     AdvancedExtractSettings:
       properties:
         fetch_policy:
