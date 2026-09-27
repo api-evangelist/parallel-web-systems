@@ -60,55 +60,180 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ResponseReasoningConfig:
-      description: Reasoning configuration (OpenAI-compatible subset).
+    ResponseCreateRequest:
       properties:
-        effort:
-          anyOf:
-          - enum:
-            - low
-            - medium
-            - high
-            type: string
-          - type: 'null'
-          default: null
-          description: Controls how much research is performed, trading response time for answer quality. Defaults to `medium` when omitted.
+        model:
+          type: string
+          title: Model
+          description: The model to run. `parallel` is the only supported value (matched case-insensitively); any other value is rejected. To trade response time for answer quality, set `reasoning.effort` (low/medium/high) rather than changing the model name.
           examples:
-          - high
-          title: Effort
-      title: ResponseReasoningConfig
-      type: object
-    ResponseOutputText:
-      additionalProperties: true
-      description: 'A text content part of an output message. `annotations` carries the URL
-
-        citations grounding the answer.'
-      properties:
-        annotations:
-          items:
-            $ref: '#/components/schemas/AnnotationURLCitation'
-          title: Annotations
-          type: array
+          - parallel
+        input:
+          anyOf:
+          - type: string
+          - items:
+              $ref: '#/components/schemas/ResponseInputMessage'
+            type: array
+          title: Input
+          description: 'The input to generate a response for: a plain string, or a list of role/content messages that includes at least one `user` message. Must be non-empty, and only text content is supported. `input` and `instructions` together may total at most 20,000 characters.'
+          examples:
+          - What are the latest developments in fusion energy?
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: System instructions for the model.
+        previous_response_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Response Id
+          description: ID of a previous response to use as conversation context.
+        stream:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Stream
+          description: Whether to stream the response.
         text:
-          title: Text
+          anyOf:
+          - $ref: '#/components/schemas/ResponseTextConfig'
+          - type: 'null'
+          description: Configuration for text output, including structured output.
+        metadata:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+            maxProperties: 16
+          - type: 'null'
+          title: Metadata
+          description: Arbitrary key-value pairs, echoed back on the Response object. Useful for tagging requests. At most 16 keys; keys up to 64 characters, values up to 512 characters.
+        reasoning:
+          anyOf:
+          - $ref: '#/components/schemas/ResponseReasoningConfig'
+          - type: 'null'
+          description: Reasoning configuration. `effort` (low/medium/high) controls how much research is performed; defaults to `medium`.
+        background:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Background
+          description: 'Background mode is not supported: requests with `background=true` are rejected with a 422 validation error. Use the Task API (POST /v1/tasks/runs) for long-running work.'
+      type: object
+      required:
+      - model
+      - input
+      title: ResponseCreateRequest
+      description: 'Request body for the Responses API (`POST /v1/responses`).
+
+
+        OpenAI-Responses-compatible: point a standard OpenAI client at
+
+        `https://api.parallel.ai/v1` with your Parallel API key and set `model` to
+
+        `parallel`. The fields below are the ones Parallel acts on; other OpenAI
+
+        request fields (`tools`, `tool_choice`, `temperature`, `top_p`,
+
+        `max_output_tokens`, `parallel_tool_calls`, `truncation`, `store`, `user`,
+
+        `include`) are accepted for compatibility but have no effect.'
+    openai__types__responses__response_text_delta_event__Logprob:
+      additionalProperties: true
+      description: 'A logprob is the logarithmic probability that the model assigns to producing
+
+        a particular token at a given position in the sequence. Less-negative (higher)
+
+        logprob values indicate greater model confidence in that token choice.'
+      properties:
+        token:
+          title: Token
           type: string
-        type:
-          const: output_text
-          title: Type
-          type: string
-        logprobs:
+        logprob:
+          title: Logprob
+          type: number
+        top_logprobs:
           anyOf:
           - items:
-              $ref: '#/components/schemas/openai__types__responses__response_output_text__Logprob'
+              $ref: '#/components/schemas/openai__types__responses__response_text_delta_event__LogprobTopLogprob'
             type: array
           - type: 'null'
           default: null
-          title: Logprobs
+          title: Top Logprobs
       required:
-      - annotations
-      - text
+      - token
+      - logprob
+      title: Logprob
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
       - type
-      title: ResponseOutputText
+      title: ValidationError
+    ResponseError:
+      additionalProperties: true
+      description: Details of a failed response.
+      properties:
+        code:
+          const: server_error
+          description: Error code; currently always "server_error".
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+      required:
+      - code
+      - message
+      title: ResponseError
+      type: object
+    ResponseContentPartAddedEvent:
+      additionalProperties: true
+      properties:
+        content_index:
+          title: Content Index
+          type: integer
+        item_id:
+          title: Item Id
+          type: string
+        output_index:
+          title: Output Index
+          type: integer
+        part:
+          $ref: '#/components/schemas/ResponseOutputText'
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.content_part.added
+          title: Type
+          type: string
+      required:
+      - content_index
+      - item_id
+      - output_index
+      - part
+      - sequence_number
+      - type
+      title: ResponseContentPartAddedEvent
       type: object
     ResponseInputContentPart:
       properties:
@@ -131,17 +256,116 @@ components:
         `{"text": "hi", "type": "input_text"}`. Only text parts are supported;
 
         requests containing image, audio, or file parts fail with a 422 error.'
-    ResponseFormatText:
+    ResponseTextDoneEvent:
       additionalProperties: true
-      description: Default response format. Used to generate text responses.
+      description: Emitted when text content is finalized.
       properties:
+        content_index:
+          title: Content Index
+          type: integer
+        item_id:
+          title: Item Id
+          type: string
+        logprobs:
+          items:
+            $ref: '#/components/schemas/openai__types__responses__response_text_done_event__Logprob'
+          title: Logprobs
+          type: array
+        output_index:
+          title: Output Index
+          type: integer
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        text:
+          title: Text
+          type: string
         type:
-          const: text
+          const: response.output_text.done
           title: Type
           type: string
       required:
+      - content_index
+      - item_id
+      - logprobs
+      - output_index
+      - sequence_number
+      - text
       - type
-      title: ResponseFormatText
+      title: ResponseTextDoneEvent
+      type: object
+    openai__types__responses__response_output_text__Logprob:
+      additionalProperties: true
+      description: The log probability of a token.
+      properties:
+        token:
+          title: Token
+          type: string
+        bytes:
+          items:
+            type: integer
+          title: Bytes
+          type: array
+        logprob:
+          title: Logprob
+          type: number
+        top_logprobs:
+          items:
+            $ref: '#/components/schemas/openai__types__responses__response_output_text__LogprobTopLogprob'
+          title: Top Logprobs
+          type: array
+      required:
+      - token
+      - bytes
+      - logprob
+      - top_logprobs
+      title: Logprob
+      type: object
+    AnnotationURLCitation:
+      additionalProperties: true
+      description: A citation for a web resource used to generate a model response.
+      properties:
+        end_index:
+          title: End Index
+          type: integer
+        start_index:
+          title: Start Index
+          type: integer
+        title:
+          title: Title
+          type: string
+        type:
+          const: url_citation
+          title: Type
+          type: string
+        url:
+          title: Url
+          type: string
+      required:
+      - end_index
+      - start_index
+      - title
+      - type
+      - url
+      title: AnnotationURLCitation
+      type: object
+    ResponseReasoningConfig:
+      description: Reasoning configuration (OpenAI-compatible subset).
+      properties:
+        effort:
+          anyOf:
+          - enum:
+            - low
+            - medium
+            - high
+            type: string
+          - type: 'null'
+          default: null
+          description: Controls how much research is performed, trading response time for answer quality. Defaults to `medium` when omitted.
+          examples:
+          - high
+          title: Effort
+      title: ResponseReasoningConfig
       type: object
     ResponseTextDeltaEvent:
       additionalProperties: true
@@ -181,6 +405,39 @@ components:
       - type
       title: ResponseTextDeltaEvent
       type: object
+    ResponseFormatTextJSONSchemaConfig:
+      additionalProperties: true
+      description: 'JSON Schema output format: the response''s output text conforms to `schema`.'
+      properties:
+        name:
+          title: Name
+          type: string
+        schema:
+          additionalProperties: true
+          title: Schema
+          type: object
+        type:
+          const: json_schema
+          title: Type
+          type: string
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Description
+        strict:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: null
+          title: Strict
+      required:
+      - name
+      - schema
+      - type
+      title: ResponseFormatTextJSONSchemaConfig
+      type: object
     HTTPValidationError:
       properties:
         detail:
@@ -190,114 +447,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ModerationInputModerationResult:
-      additionalProperties: true
-      description: A moderation result produced for the response input or output.
-      properties:
-        categories:
-          additionalProperties:
-            type: boolean
-          title: Categories
-          type: object
-        category_applied_input_types:
-          additionalProperties:
-            items:
-              enum:
-              - text
-              - image
-              type: string
-            type: array
-          title: Category Applied Input Types
-          type: object
-        category_scores:
-          additionalProperties:
-            type: number
-          title: Category Scores
-          type: object
-        flagged:
-          title: Flagged
-          type: boolean
-        model:
-          title: Model
-          type: string
-        type:
-          const: moderation_result
-          title: Type
-          type: string
-      required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      - model
-      - type
-      title: ModerationInputModerationResult
-      type: object
-    ResponseOutputMessage:
-      additionalProperties: true
-      description: An assistant message produced by the model.
-      properties:
-        id:
-          title: Id
-          type: string
-        content:
-          items:
-            $ref: '#/components/schemas/ResponseOutputText'
-          title: Content
-          type: array
-        role:
-          const: assistant
-          title: Role
-          type: string
-        status:
-          enum:
-          - in_progress
-          - completed
-          - incomplete
-          title: Status
-          type: string
-        type:
-          const: message
-          title: Type
-          type: string
-        phase:
-          anyOf:
-          - enum:
-            - commentary
-            - final_answer
-            type: string
-          - type: 'null'
-          default: null
-          title: Phase
-      required:
-      - id
-      - content
-      - role
-      - status
-      - type
-      title: ResponseOutputMessage
-      type: object
-    openai__types__responses__response_output_text__LogprobTopLogprob:
-      additionalProperties: true
-      description: The top log probability of a token.
-      properties:
-        token:
-          title: Token
-          type: string
-        bytes:
-          items:
-            type: integer
-          title: Bytes
-          type: array
-        logprob:
-          title: Logprob
-          type: number
-      required:
-      - token
-      - bytes
-      - logprob
-      title: LogprobTopLogprob
-      type: object
     Response:
       additionalProperties: true
       description: 'A response from the `parallel` model. A completed response contains a
@@ -507,349 +656,78 @@ components:
       - parallel_tool_calls
       title: Response
       type: object
-    ResponseFailedEvent:
+    openai__types__responses__response_text_delta_event__LogprobTopLogprob:
       additionalProperties: true
-      properties:
-        response:
-          $ref: '#/components/schemas/Response'
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.failed
-          title: Type
-          type: string
-      required:
-      - response
-      - sequence_number
-      - type
-      title: ResponseFailedEvent
-      type: object
-    ResponseStreamEvent:
-      anyOf:
-      - $ref: '#/components/schemas/ResponseCreatedEvent'
-      - $ref: '#/components/schemas/ResponseInProgressEvent'
-      - $ref: '#/components/schemas/ResponseOutputItemAddedEvent'
-      - $ref: '#/components/schemas/ResponseContentPartAddedEvent'
-      - $ref: '#/components/schemas/ResponseTextDeltaEvent'
-      - $ref: '#/components/schemas/ResponseTextDoneEvent'
-      - $ref: '#/components/schemas/ResponseOutputTextAnnotationAddedEvent'
-      - $ref: '#/components/schemas/ResponseContentPartDoneEvent'
-      - $ref: '#/components/schemas/ResponseOutputItemDoneEvent'
-      - $ref: '#/components/schemas/ResponseCompletedEvent'
-      - $ref: '#/components/schemas/ResponseFailedEvent'
-      - $ref: '#/components/schemas/ResponseIncompleteEvent'
-      description: An event in the Responses API SSE stream; `type` identifies the event.
-      title: ResponseStreamEvent
-    ResponseOutputItemAddedEvent:
-      additionalProperties: true
-      properties:
-        item:
-          $ref: '#/components/schemas/ResponseOutputMessage'
-        output_index:
-          title: Output Index
-          type: integer
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.output_item.added
-          title: Type
-          type: string
-      required:
-      - item
-      - output_index
-      - sequence_number
-      - type
-      title: ResponseOutputItemAddedEvent
-      type: object
-    ResponseContentPartAddedEvent:
-      additionalProperties: true
-      properties:
-        content_index:
-          title: Content Index
-          type: integer
-        item_id:
-          title: Item Id
-          type: string
-        output_index:
-          title: Output Index
-          type: integer
-        part:
-          $ref: '#/components/schemas/ResponseOutputText'
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.content_part.added
-          title: Type
-          type: string
-      required:
-      - content_index
-      - item_id
-      - output_index
-      - part
-      - sequence_number
-      - type
-      title: ResponseContentPartAddedEvent
-      type: object
-    ModerationInputError:
-      additionalProperties: true
-      description: An error produced while attempting moderation for the response input or output.
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        type:
-          const: error
-          title: Type
-          type: string
-      required:
-      - code
-      - message
-      - type
-      title: ModerationInputError
-      type: object
-    ModerationOutputError:
-      additionalProperties: true
-      description: An error produced while attempting moderation for the response input or output.
-      properties:
-        code:
-          title: Code
-          type: string
-        message:
-          title: Message
-          type: string
-        type:
-          const: error
-          title: Type
-          type: string
-      required:
-      - code
-      - message
-      - type
-      title: ModerationOutputError
-      type: object
-    openai__types__responses__response_output_text__Logprob:
-      additionalProperties: true
-      description: The log probability of a token.
       properties:
         token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
           title: Token
-          type: string
-        bytes:
-          items:
-            type: integer
-          title: Bytes
-          type: array
         logprob:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
           title: Logprob
-          type: number
-        top_logprobs:
-          items:
-            $ref: '#/components/schemas/openai__types__responses__response_output_text__LogprobTopLogprob'
-          title: Top Logprobs
-          type: array
-      required:
-      - token
-      - bytes
-      - logprob
-      - top_logprobs
-      title: Logprob
+      title: LogprobTopLogprob
       type: object
-    IncompleteDetails:
+    ResponseFormatText:
       additionalProperties: true
-      description: Details about why the response is incomplete.
+      description: Default response format. Used to generate text responses.
       properties:
-        reason:
+        type:
+          const: text
+          title: Type
+          type: string
+      required:
+      - type
+      title: ResponseFormatText
+      type: object
+    ResponseOutputMessage:
+      additionalProperties: true
+      description: An assistant message produced by the model.
+      properties:
+        id:
+          title: Id
+          type: string
+        content:
+          items:
+            $ref: '#/components/schemas/ResponseOutputText'
+          title: Content
+          type: array
+        role:
+          const: assistant
+          title: Role
+          type: string
+        status:
+          enum:
+          - in_progress
+          - completed
+          - incomplete
+          title: Status
+          type: string
+        type:
+          const: message
+          title: Type
+          type: string
+        phase:
           anyOf:
           - enum:
-            - max_output_tokens
-            - content_filter
+            - commentary
+            - final_answer
             type: string
           - type: 'null'
           default: null
-          title: Reason
-      title: IncompleteDetails
-      type: object
-    InputTokensDetails:
-      additionalProperties: true
-      description: A detailed breakdown of the input tokens.
-      properties:
-        cached_tokens:
-          title: Cached Tokens
-          type: integer
+          title: Phase
       required:
-      - cached_tokens
-      title: InputTokensDetails
-      type: object
-    ResponseIncompleteEvent:
-      additionalProperties: true
-      properties:
-        response:
-          $ref: '#/components/schemas/Response'
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.incomplete
-          title: Type
-          type: string
-      required:
-      - response
-      - sequence_number
+      - id
+      - content
+      - role
+      - status
       - type
-      title: ResponseIncompleteEvent
-      type: object
-    AnnotationURLCitation:
-      additionalProperties: true
-      description: A citation for a web resource used to generate a model response.
-      properties:
-        end_index:
-          title: End Index
-          type: integer
-        start_index:
-          title: Start Index
-          type: integer
-        title:
-          title: Title
-          type: string
-        type:
-          const: url_citation
-          title: Type
-          type: string
-        url:
-          title: Url
-          type: string
-      required:
-      - end_index
-      - start_index
-      - title
-      - type
-      - url
-      title: AnnotationURLCitation
-      type: object
-    ResponseCreateRequest:
-      properties:
-        model:
-          type: string
-          title: Model
-          description: The model to run. `parallel` is the only supported value (matched case-insensitively); any other value is rejected. To trade response time for answer quality, set `reasoning.effort` (low/medium/high) rather than changing the model name.
-          examples:
-          - parallel
-        input:
-          anyOf:
-          - type: string
-          - items:
-              $ref: '#/components/schemas/ResponseInputMessage'
-            type: array
-          title: Input
-          description: 'The input to generate a response for: a plain string, or a list of role/content messages that includes at least one `user` message. Must be non-empty, and only text content is supported. `input` and `instructions` together may total at most 20,000 characters.'
-          examples:
-          - What are the latest developments in fusion energy?
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-          description: System instructions for the model.
-        previous_response_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Previous Response Id
-          description: ID of a previous response to use as conversation context.
-        stream:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Stream
-          description: Whether to stream the response.
-        text:
-          anyOf:
-          - $ref: '#/components/schemas/ResponseTextConfig'
-          - type: 'null'
-          description: Configuration for text output, including structured output.
-        metadata:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-            maxProperties: 16
-          - type: 'null'
-          title: Metadata
-          description: Arbitrary key-value pairs, echoed back on the Response object. Useful for tagging requests. At most 16 keys; keys up to 64 characters, values up to 512 characters.
-        reasoning:
-          anyOf:
-          - $ref: '#/components/schemas/ResponseReasoningConfig'
-          - type: 'null'
-          description: Reasoning configuration. `effort` (low/medium/high) controls how much research is performed; defaults to `medium`.
-        background:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Background
-          description: 'Background mode is not supported: requests with `background=true` are rejected with a 422 validation error. Use the Task API (POST /v1/tasks/runs) for long-running work.'
-      type: object
-      required:
-      - model
-      - input
-      title: ResponseCreateRequest
-      description: 'Request body for the Responses API (`POST /v1/responses`).
-
-
-        OpenAI-Responses-compatible: point a standard OpenAI client at
-
-        `https://api.parallel.ai/v1` with your Parallel API key and set `model` to
-
-        `parallel`. The fields below are the ones Parallel acts on; other OpenAI
-
-        request fields (`tools`, `tool_choice`, `temperature`, `top_p`,
-
-        `max_output_tokens`, `parallel_tool_calls`, `truncation`, `store`, `user`,
-
-        `include`) are accepted for compatibility but have no effect.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ResponseCreatedEvent:
-      additionalProperties: true
-      properties:
-        response:
-          $ref: '#/components/schemas/Response'
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.created
-          title: Type
-          type: string
-      required:
-      - response
-      - sequence_number
-      - type
-      title: ResponseCreatedEvent
+      title: ResponseOutputMessage
       type: object
     ResponseInputMessage:
       properties:
@@ -881,143 +759,206 @@ components:
         `content` accepts either a bare string (`"hi"`) or the canonical OpenAI
 
         list-of-parts (`[{"text": "hi", "type": "input_text"}]`).'
-    ResponseUsage:
+    ModerationInputModerationResult:
       additionalProperties: true
-      description: 'Estimated token usage, populated for OpenAI SDK compatibility. Counts
-
-        are approximate; Parallel bills per request, not per token.'
+      description: A moderation result produced for the response input or output.
       properties:
-        input_tokens:
-          title: Input Tokens
-          type: integer
-        input_tokens_details:
-          $ref: '#/components/schemas/InputTokensDetails'
-        output_tokens:
-          title: Output Tokens
-          type: integer
-        output_tokens_details:
-          $ref: '#/components/schemas/OutputTokensDetails'
-        total_tokens:
-          title: Total Tokens
-          type: integer
-      required:
-      - input_tokens
-      - input_tokens_details
-      - output_tokens
-      - output_tokens_details
-      - total_tokens
-      title: ResponseUsage
-      type: object
-    ResponseTextConfig:
-      additionalProperties: true
-      description: 'Text output configuration. By default the response is plain text; for
-
-        structured output set `format` to
-
-        `{"type": "json_schema", "name": ..., "schema": {...}}`. The `json_object`
-
-        format is accepted for compatibility but produces plain text.'
-      properties:
-        format:
-          anyOf:
-          - $ref: '#/components/schemas/ResponseFormatText'
-          - $ref: '#/components/schemas/ResponseFormatTextJSONSchemaConfig'
-          - $ref: '#/components/schemas/ResponseFormatJSONObject'
-          - type: 'null'
-          default: null
-          title: Format
-        verbosity:
-          anyOf:
-          - enum:
-            - low
-            - medium
-            - high
-            type: string
-          - type: 'null'
-          default: null
-          title: Verbosity
-      title: ResponseTextConfig
-      type: object
-    ResponseFormatJSONObject:
-      additionalProperties: true
-      description: 'JSON object response format.
-
-
-        An older method of generating JSON responses.
-
-        Using `json_schema` is recommended for models that support it. Note that the
-
-        model will not generate JSON without a system or user message instructing it
-
-        to do so.'
-      properties:
-        type:
-          const: json_object
-          title: Type
-          type: string
-      required:
-      - type
-      title: ResponseFormatJSONObject
-      type: object
-    ResponseFormatTextJSONSchemaConfig:
-      additionalProperties: true
-      description: 'JSON Schema output format: the response''s output text conforms to `schema`.'
-      properties:
-        name:
-          title: Name
-          type: string
-        schema:
-          additionalProperties: true
-          title: Schema
+        categories:
+          additionalProperties:
+            type: boolean
+          title: Categories
           type: object
+        category_applied_input_types:
+          additionalProperties:
+            items:
+              enum:
+              - text
+              - image
+              type: string
+            type: array
+          title: Category Applied Input Types
+          type: object
+        category_scores:
+          additionalProperties:
+            type: number
+          title: Category Scores
+          type: object
+        flagged:
+          title: Flagged
+          type: boolean
+        model:
+          title: Model
+          type: string
         type:
-          const: json_schema
+          const: moderation_result
           title: Type
           type: string
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: Description
-        strict:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: null
-          title: Strict
       required:
-      - name
-      - schema
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      - model
       - type
-      title: ResponseFormatTextJSONSchemaConfig
+      title: ModerationInputModerationResult
       type: object
-    openai__types__responses__response_text_delta_event__Logprob:
+    ResponseIncompleteEvent:
       additionalProperties: true
-      description: 'A logprob is the logarithmic probability that the model assigns to producing
-
-        a particular token at a given position in the sequence. Less-negative (higher)
-
-        logprob values indicate greater model confidence in that token choice.'
       properties:
-        token:
-          title: Token
+        response:
+          $ref: '#/components/schemas/Response'
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.incomplete
+          title: Type
           type: string
-        logprob:
-          title: Logprob
-          type: number
-        top_logprobs:
+      required:
+      - response
+      - sequence_number
+      - type
+      title: ResponseIncompleteEvent
+      type: object
+    ResponseInProgressEvent:
+      additionalProperties: true
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.in_progress
+          title: Type
+          type: string
+      required:
+      - response
+      - sequence_number
+      - type
+      title: ResponseInProgressEvent
+      type: object
+    InputTokensDetails:
+      additionalProperties: true
+      description: A detailed breakdown of the input tokens.
+      properties:
+        cached_tokens:
+          title: Cached Tokens
+          type: integer
+      required:
+      - cached_tokens
+      title: InputTokensDetails
+      type: object
+    ResponseStreamEvent:
+      anyOf:
+      - $ref: '#/components/schemas/ResponseCreatedEvent'
+      - $ref: '#/components/schemas/ResponseInProgressEvent'
+      - $ref: '#/components/schemas/ResponseOutputItemAddedEvent'
+      - $ref: '#/components/schemas/ResponseContentPartAddedEvent'
+      - $ref: '#/components/schemas/ResponseTextDeltaEvent'
+      - $ref: '#/components/schemas/ResponseTextDoneEvent'
+      - $ref: '#/components/schemas/ResponseOutputTextAnnotationAddedEvent'
+      - $ref: '#/components/schemas/ResponseContentPartDoneEvent'
+      - $ref: '#/components/schemas/ResponseOutputItemDoneEvent'
+      - $ref: '#/components/schemas/ResponseCompletedEvent'
+      - $ref: '#/components/schemas/ResponseFailedEvent'
+      - $ref: '#/components/schemas/ResponseIncompleteEvent'
+      description: An event in the Responses API SSE stream; `type` identifies the event.
+      title: ResponseStreamEvent
+    ModerationOutputError:
+      additionalProperties: true
+      description: An error produced while attempting moderation for the response input or output.
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+        type:
+          const: error
+          title: Type
+          type: string
+      required:
+      - code
+      - message
+      - type
+      title: ModerationOutputError
+      type: object
+    ResponseOutputText:
+      additionalProperties: true
+      description: 'A text content part of an output message. `annotations` carries the URL
+
+        citations grounding the answer.'
+      properties:
+        annotations:
+          items:
+            $ref: '#/components/schemas/AnnotationURLCitation'
+          title: Annotations
+          type: array
+        text:
+          title: Text
+          type: string
+        type:
+          const: output_text
+          title: Type
+          type: string
+        logprobs:
           anyOf:
           - items:
-              $ref: '#/components/schemas/openai__types__responses__response_text_delta_event__LogprobTopLogprob'
+              $ref: '#/components/schemas/openai__types__responses__response_output_text__Logprob'
             type: array
           - type: 'null'
           default: null
-          title: Top Logprobs
+          title: Logprobs
       required:
-      - token
-      - logprob
-      title: Logprob
+      - annotations
+      - text
+      - type
+      title: ResponseOutputText
+      type: object
+    ModerationOutputModerationResult:
+      additionalProperties: true
+      description: A moderation result produced for the response input or output.
+      properties:
+        categories:
+          additionalProperties:
+            type: boolean
+          title: Categories
+          type: object
+        category_applied_input_types:
+          additionalProperties:
+            items:
+              enum:
+              - text
+              - image
+              type: string
+            type: array
+          title: Category Applied Input Types
+          type: object
+        category_scores:
+          additionalProperties:
+            type: number
+          title: Category Scores
+          type: object
+        flagged:
+          title: Flagged
+          type: boolean
+        model:
+          title: Model
+          type: string
+        type:
+          const: moderation_result
+          title: Type
+          type: string
+      required:
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      - model
+      - type
+      title: ModerationOutputModerationResult
       type: object
     openai__types__responses__response_text_done_event__LogprobTopLogprob:
       additionalProperties: true
@@ -1066,123 +1007,24 @@ components:
       - type
       title: ResponseContentPartDoneEvent
       type: object
-    ResponseTextDoneEvent:
+    Moderation:
       additionalProperties: true
-      description: Emitted when text content is finalized.
+      description: Moderation results for the response input and output, if moderated completions were requested.
       properties:
-        content_index:
-          title: Content Index
-          type: integer
-        item_id:
-          title: Item Id
-          type: string
-        logprobs:
-          items:
-            $ref: '#/components/schemas/openai__types__responses__response_text_done_event__Logprob'
-          title: Logprobs
-          type: array
-        output_index:
-          title: Output Index
-          type: integer
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        text:
-          title: Text
-          type: string
-        type:
-          const: response.output_text.done
-          title: Type
-          type: string
-      required:
-      - content_index
-      - item_id
-      - logprobs
-      - output_index
-      - sequence_number
-      - text
-      - type
-      title: ResponseTextDoneEvent
-      type: object
-    ResponseInProgressEvent:
-      additionalProperties: true
-      properties:
-        response:
-          $ref: '#/components/schemas/Response'
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.in_progress
-          title: Type
-          type: string
-      required:
-      - response
-      - sequence_number
-      - type
-      title: ResponseInProgressEvent
-      type: object
-    openai__types__responses__response_text_delta_event__LogprobTopLogprob:
-      additionalProperties: true
-      properties:
-        token:
+        input:
           anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          title: Token
-        logprob:
+          - $ref: '#/components/schemas/ModerationInputModerationResult'
+          - $ref: '#/components/schemas/ModerationInputError'
+          title: Input
+        output:
           anyOf:
-          - type: number
-          - type: 'null'
-          default: null
-          title: Logprob
-      title: LogprobTopLogprob
-      type: object
-    ResponseCompletedEvent:
-      additionalProperties: true
-      properties:
-        response:
-          $ref: '#/components/schemas/Response'
-        sequence_number:
-          title: Sequence Number
-          type: integer
-        type:
-          const: response.completed
-          title: Type
-          type: string
+          - $ref: '#/components/schemas/ModerationOutputModerationResult'
+          - $ref: '#/components/schemas/ModerationOutputError'
+          title: Output
       required:
-      - response
-      - sequence_number
-      - type
-      title: ResponseCompletedEvent
-      type: object
-    openai__types__responses__response_text_done_event__Logprob:
-      additionalProperties: true
-      description: 'A logprob is the logarithmic probability that the model assigns to producing
-
-        a particular token at a given position in the sequence. Less-negative (higher)
-
-        logprob values indicate greater model confidence in that token choice.'
-      properties:
-        token:
-          title: Token
-          type: string
-        logprob:
-          title: Logprob
-          type: number
-        top_logprobs:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/openai__types__responses__response_text_done_event__LogprobTopLogprob'
-            type: array
-          - type: 'null'
-          default: null
-          title: Top Logprobs
-      required:
-      - token
-      - logprob
-      title: Logprob
+      - input
+      - output
+      title: Moderation
       type: object
     ResponseOutputTextAnnotationAddedEvent:
       additionalProperties: true
@@ -1218,84 +1060,223 @@ components:
       - type
       title: ResponseOutputTextAnnotationAddedEvent
       type: object
-    ResponseError:
+    openai__types__responses__response_output_text__LogprobTopLogprob:
       additionalProperties: true
-      description: Details of a failed response.
+      description: The top log probability of a token.
+      properties:
+        token:
+          title: Token
+          type: string
+        bytes:
+          items:
+            type: integer
+          title: Bytes
+          type: array
+        logprob:
+          title: Logprob
+          type: number
+      required:
+      - token
+      - bytes
+      - logprob
+      title: LogprobTopLogprob
+      type: object
+    ModerationInputError:
+      additionalProperties: true
+      description: An error produced while attempting moderation for the response input or output.
       properties:
         code:
-          const: server_error
-          description: Error code; currently always "server_error".
           title: Code
           type: string
         message:
           title: Message
           type: string
-      required:
-      - code
-      - message
-      title: ResponseError
-      type: object
-    Moderation:
-      additionalProperties: true
-      description: Moderation results for the response input and output, if moderated completions were requested.
-      properties:
-        input:
-          anyOf:
-          - $ref: '#/components/schemas/ModerationInputModerationResult'
-          - $ref: '#/components/schemas/ModerationInputError'
-          title: Input
-        output:
-          anyOf:
-          - $ref: '#/components/schemas/ModerationOutputModerationResult'
-          - $ref: '#/components/schemas/ModerationOutputError'
-          title: Output
-      required:
-      - input
-      - output
-      title: Moderation
-      type: object
-    ModerationOutputModerationResult:
-      additionalProperties: true
-      description: A moderation result produced for the response input or output.
-      properties:
-        categories:
-          additionalProperties:
-            type: boolean
-          title: Categories
-          type: object
-        category_applied_input_types:
-          additionalProperties:
-            items:
-              enum:
-              - text
-              - image
-              type: string
-            type: array
-          title: Category Applied Input Types
-          type: object
-        category_scores:
-          additionalProperties:
-            type: number
-          title: Category Scores
-          type: object
-        flagged:
-          title: Flagged
-          type: boolean
-        model:
-          title: Model
-          type: string
         type:
-          const: moderation_result
+          const: error
           title: Type
           type: string
       required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      - model
+      - code
+      - message
       - type
-      title: ModerationOutputModerationResult
+      title: ModerationInputError
+      type: object
+    OutputTokensDetails:
+      additionalProperties: true
+      description: A detailed breakdown of the output tokens.
+      properties:
+        reasoning_tokens:
+          title: Reasoning Tokens
+          type: integer
+      required:
+      - reasoning_tokens
+      title: OutputTokensDetails
+      type: object
+    ResponseUsage:
+      additionalProperties: true
+      description: 'Estimated token usage, populated for OpenAI SDK compatibility. Counts
+
+        are approximate; Parallel bills per request, not per token.'
+      properties:
+        input_tokens:
+          title: Input Tokens
+          type: integer
+        input_tokens_details:
+          $ref: '#/components/schemas/InputTokensDetails'
+        output_tokens:
+          title: Output Tokens
+          type: integer
+        output_tokens_details:
+          $ref: '#/components/schemas/OutputTokensDetails'
+        total_tokens:
+          title: Total Tokens
+          type: integer
+      required:
+      - input_tokens
+      - input_tokens_details
+      - output_tokens
+      - output_tokens_details
+      - total_tokens
+      title: ResponseUsage
+      type: object
+    ResponseCreatedEvent:
+      additionalProperties: true
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.created
+          title: Type
+          type: string
+      required:
+      - response
+      - sequence_number
+      - type
+      title: ResponseCreatedEvent
+      type: object
+    openai__types__responses__response_text_done_event__Logprob:
+      additionalProperties: true
+      description: 'A logprob is the logarithmic probability that the model assigns to producing
+
+        a particular token at a given position in the sequence. Less-negative (higher)
+
+        logprob values indicate greater model confidence in that token choice.'
+      properties:
+        token:
+          title: Token
+          type: string
+        logprob:
+          title: Logprob
+          type: number
+        top_logprobs:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/openai__types__responses__response_text_done_event__LogprobTopLogprob'
+            type: array
+          - type: 'null'
+          default: null
+          title: Top Logprobs
+      required:
+      - token
+      - logprob
+      title: Logprob
+      type: object
+    ResponseFormatJSONObject:
+      additionalProperties: true
+      description: 'JSON object response format.
+
+
+        An older method of generating JSON responses.
+
+        Using `json_schema` is recommended for models that support it. Note that the
+
+        model will not generate JSON without a system or user message instructing it
+
+        to do so.'
+      properties:
+        type:
+          const: json_object
+          title: Type
+          type: string
+      required:
+      - type
+      title: ResponseFormatJSONObject
+      type: object
+    ResponseFailedEvent:
+      additionalProperties: true
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.failed
+          title: Type
+          type: string
+      required:
+      - response
+      - sequence_number
+      - type
+      title: ResponseFailedEvent
+      type: object
+    IncompleteDetails:
+      additionalProperties: true
+      description: Details about why the response is incomplete.
+      properties:
+        reason:
+          anyOf:
+          - enum:
+            - max_output_tokens
+            - content_filter
+            type: string
+          - type: 'null'
+          default: null
+          title: Reason
+      title: IncompleteDetails
+      type: object
+    ResponseCompletedEvent:
+      additionalProperties: true
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.completed
+          title: Type
+          type: string
+      required:
+      - response
+      - sequence_number
+      - type
+      title: ResponseCompletedEvent
+      type: object
+    ResponseOutputItemAddedEvent:
+      additionalProperties: true
+      properties:
+        item:
+          $ref: '#/components/schemas/ResponseOutputMessage'
+        output_index:
+          title: Output Index
+          type: integer
+        sequence_number:
+          title: Sequence Number
+          type: integer
+        type:
+          const: response.output_item.added
+          title: Type
+          type: string
+      required:
+      - item
+      - output_index
+      - sequence_number
+      - type
+      title: ResponseOutputItemAddedEvent
       type: object
     ResponseOutputItemDoneEvent:
       additionalProperties: true
@@ -1319,16 +1300,35 @@ components:
       - type
       title: ResponseOutputItemDoneEvent
       type: object
-    OutputTokensDetails:
+    ResponseTextConfig:
       additionalProperties: true
-      description: A detailed breakdown of the output tokens.
+      description: 'Text output configuration. By default the response is plain text; for
+
+        structured output set `format` to
+
+        `{"type": "json_schema", "name": ..., "schema": {...}}`. The `json_object`
+
+        format is accepted for compatibility but produces plain text.'
       properties:
-        reasoning_tokens:
-          title: Reasoning Tokens
-          type: integer
-      required:
-      - reasoning_tokens
-      title: OutputTokensDetails
+        format:
+          anyOf:
+          - $ref: '#/components/schemas/ResponseFormatText'
+          - $ref: '#/components/schemas/ResponseFormatTextJSONSchemaConfig'
+          - $ref: '#/components/schemas/ResponseFormatJSONObject'
+          - type: 'null'
+          default: null
+          title: Format
+        verbosity:
+          anyOf:
+          - enum:
+            - low
+            - medium
+            - high
+            type: string
+          - type: 'null'
+          default: null
+          title: Verbosity
+      title: ResponseTextConfig
       type: object
   securitySchemes:
     ApiKeyAuth:

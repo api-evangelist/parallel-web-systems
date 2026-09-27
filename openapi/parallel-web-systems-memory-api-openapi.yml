@@ -88,6 +88,87 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    MemoryRetrieveRequest:
+      properties:
+        query:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Query
+          description: Concise query describing the memories to retrieve. Empty queries return the most recent memories.
+        limit:
+          type: integer
+          maximum: 25.0
+          minimum: 1.0
+          title: Limit
+          description: Maximum number of memories to return.
+          default: 10
+        kind:
+          anyOf:
+          - type: string
+            enum:
+            - task
+            - monitor
+            - findall
+          - type: 'null'
+          title: Kind
+          description: 'Filter memories by kind: `task`, `monitor`, or `findall`.'
+        since:
+          anyOf:
+          - type: string
+          - type: 'null'
+          format: date-time
+          title: Since
+          description: Only return memories sourced from task, monitor, or FindAll runs completed at or after this RFC 3339 timestamp.
+          examples:
+          - '2026-07-15T17:30:00Z'
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+      type: object
+      title: MemoryRetrieveRequest
+    MonitorMemoryEvent:
+      properties:
+        event_id:
+          type: string
+          title: Event Id
+          description: ID of the monitor event.
+        event_group_id:
+          type: string
+          title: Event Group Id
+          description: ID of the execution that produced this event.
+        detected_at:
+          type: string
+          format: date-time
+          title: Detected At
+          description: When the event was detected, as an RFC 3339 timestamp.
+        excerpt:
+          type: string
+          title: Excerpt
+          description: Excerpt of the monitor event. May be truncated.
+      type: object
+      required:
+      - event_id
+      - event_group_id
+      - detected_at
+      - excerpt
+      title: MonitorMemoryEvent
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -140,6 +221,81 @@ components:
       - input_excerpt
       - output_excerpt
       title: TaskMemoryResult
+    FindAllMemoryResult:
+      properties:
+        kind:
+          type: string
+          const: findall
+          title: Kind
+          default: findall
+        id:
+          type: string
+          title: Id
+          description: ID of the FindAll run.
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: When the FindAll result was last updated, as an RFC 3339 timestamp.
+        input_excerpt:
+          type: string
+          title: Input Excerpt
+          description: Preview of the run's objective. May be truncated.
+        matched_count:
+          type: integer
+          title: Matched Count
+          description: Current number of matched entities.
+      type: object
+      required:
+      - id
+      - updated_at
+      - input_excerpt
+      - matched_count
+      title: FindAllMemoryResult
+    MemoryEvictRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+        kind:
+          type: string
+          enum:
+          - task
+          - monitor
+          - findall
+          title: Kind
+          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
+        id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_-]+$
+          title: Id
+          description: ID of the task run, monitor, or FindAll run to evict.
+      type: object
+      required:
+      - kind
+      - id
+      title: MemoryEvictRequest
+    MemoryClearRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+      type: object
+      title: MemoryClearRequest
     MonitorMemoryResult:
       properties:
         kind:
@@ -180,45 +336,6 @@ components:
       - input_excerpt
       - status
       title: MonitorMemoryResult
-    MemoryClearRequest:
-      properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-      type: object
-      title: MemoryClearRequest
-    MonitorMemoryEvent:
-      properties:
-        event_id:
-          type: string
-          title: Event Id
-          description: ID of the monitor event.
-        event_group_id:
-          type: string
-          title: Event Group Id
-          description: ID of the execution that produced this event.
-        detected_at:
-          type: string
-          format: date-time
-          title: Detected At
-          description: When the event was detected, as an RFC 3339 timestamp.
-        excerpt:
-          type: string
-          title: Excerpt
-          description: Excerpt of the monitor event. May be truncated.
-      type: object
-      required:
-      - event_id
-      - event_group_id
-      - detected_at
-      - excerpt
-      title: MonitorMemoryEvent
     MemoryRetrieveResponse:
       properties:
         results:
@@ -239,123 +356,6 @@ components:
       required:
       - results
       title: MemoryRetrieveResponse
-    MemoryEvictRequest:
-      properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-        kind:
-          type: string
-          enum:
-          - task
-          - monitor
-          - findall
-          title: Kind
-          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
-        id:
-          type: string
-          maxLength: 128
-          minLength: 1
-          pattern: ^[a-zA-Z0-9_-]+$
-          title: Id
-          description: ID of the task run, monitor, or FindAll run to evict.
-      type: object
-      required:
-      - kind
-      - id
-      title: MemoryEvictRequest
-    MemoryRetrieveRequest:
-      properties:
-        query:
-          anyOf:
-          - type: string
-            maxLength: 500
-          - type: 'null'
-          title: Query
-          description: Concise query describing the memories to retrieve. Empty queries return the most recent memories.
-        limit:
-          type: integer
-          maximum: 25.0
-          minimum: 1.0
-          title: Limit
-          description: Maximum number of memories to return.
-          default: 10
-        kind:
-          anyOf:
-          - type: string
-            enum:
-            - task
-            - monitor
-            - findall
-          - type: 'null'
-          title: Kind
-          description: 'Filter memories by kind: `task`, `monitor`, or `findall`.'
-        since:
-          anyOf:
-          - type: string
-          - type: 'null'
-          format: date-time
-          title: Since
-          description: Only return memories sourced from task, monitor, or FindAll runs completed at or after this RFC 3339 timestamp.
-          examples:
-          - '2026-07-15T17:30:00Z'
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-      type: object
-      title: MemoryRetrieveRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    FindAllMemoryResult:
-      properties:
-        kind:
-          type: string
-          const: findall
-          title: Kind
-          default: findall
-        id:
-          type: string
-          title: Id
-          description: ID of the FindAll run.
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-          description: When the FindAll result was last updated, as an RFC 3339 timestamp.
-        input_excerpt:
-          type: string
-          title: Input Excerpt
-          description: Preview of the run's objective. May be truncated.
-        matched_count:
-          type: integer
-          title: Matched Count
-          description: Current number of matched entities.
-      type: object
-      required:
-      - id
-      - updated_at
-      - input_excerpt
-      - matched_count
-      title: FindAllMemoryResult
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
