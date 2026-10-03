@@ -88,6 +88,59 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    MemoryClearRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+      type: object
+      title: MemoryClearRequest
+    MemoryEvictRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+        kind:
+          type: string
+          enum:
+          - task
+          - monitor
+          - findall
+          title: Kind
+          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
+        id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_-]+$
+          title: Id
+          description: ID of the task run, monitor, or FindAll run to evict.
+      type: object
+      required:
+      - kind
+      - id
+      title: MemoryEvictRequest
     MemoryRetrieveRequest:
       properties:
         query:
@@ -160,15 +213,46 @@ components:
       - detected_at
       - excerpt
       title: MonitorMemoryEvent
-    HTTPValidationError:
+    MonitorMemoryResult:
       properties:
-        detail:
+        kind:
+          type: string
+          const: monitor
+          title: Kind
+          default: monitor
+        id:
+          type: string
+          title: Id
+          description: ID of the monitor.
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: When the monitor last ran, as an RFC 3339 timestamp.
+        input_excerpt:
+          type: string
+          title: Input Excerpt
+          description: Preview of the monitor's query. May be truncated.
+        status:
+          type: string
+          enum:
+          - active
+          - cancelled
+          title: Status
+          description: Current status of the monitor.
+        matched_events:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/MonitorMemoryEvent'
           type: array
-          title: Detail
+          title: Matched Events
+          description: Detected events matching the retrieval query, ordered by relevance with more recent events favored. For an empty query, events are ordered by recency.
       type: object
-      title: HTTPValidationError
+      required:
+      - id
+      - updated_at
+      - input_excerpt
+      - status
+      title: MonitorMemoryResult
     ValidationError:
       properties:
         loc:
@@ -252,90 +336,6 @@ components:
       - input_excerpt
       - matched_count
       title: FindAllMemoryResult
-    MemoryEvictRequest:
-      properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-        kind:
-          type: string
-          enum:
-          - task
-          - monitor
-          - findall
-          title: Kind
-          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
-        id:
-          type: string
-          maxLength: 128
-          minLength: 1
-          pattern: ^[a-zA-Z0-9_-]+$
-          title: Id
-          description: ID of the task run, monitor, or FindAll run to evict.
-      type: object
-      required:
-      - kind
-      - id
-      title: MemoryEvictRequest
-    MemoryClearRequest:
-      properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-      type: object
-      title: MemoryClearRequest
-    MonitorMemoryResult:
-      properties:
-        kind:
-          type: string
-          const: monitor
-          title: Kind
-          default: monitor
-        id:
-          type: string
-          title: Id
-          description: ID of the monitor.
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-          description: When the monitor last ran, as an RFC 3339 timestamp.
-        input_excerpt:
-          type: string
-          title: Input Excerpt
-          description: Preview of the monitor's query. May be truncated.
-        status:
-          type: string
-          enum:
-          - active
-          - cancelled
-          title: Status
-          description: Current status of the monitor.
-        matched_events:
-          items:
-            $ref: '#/components/schemas/MonitorMemoryEvent'
-          type: array
-          title: Matched Events
-          description: Detected events matching the retrieval query, ordered by relevance with more recent events favored. For an empty query, events are ordered by recency.
-      type: object
-      required:
-      - id
-      - updated_at
-      - input_excerpt
-      - status
-      title: MonitorMemoryResult
     MemoryRetrieveResponse:
       properties:
         results:

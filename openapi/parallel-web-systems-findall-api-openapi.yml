@@ -829,6 +829,238 @@ paths:
           console.log(`Schema: ${JSON.stringify(schema, null, 2)}`);'
 components:
   schemas:
+    ExcludeCandidate:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Name of the entity to exclude from results.
+        url:
+          type: string
+          title: Url
+          description: URL of the entity to exclude from results.
+      type: object
+      required:
+      - name
+      - url
+      title: ExcludeCandidate
+      description: Exclude candidate input model for FindAll run.
+    Error:
+      properties:
+        ref_id:
+          type: string
+          title: Reference ID
+          description: Reference ID for the error.
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the error.
+      type: object
+      required:
+      - ref_id
+      - message
+      title: Error
+      description: An error message.
+    ErrorResponse:
+      properties:
+        type:
+          type: string
+          const: error
+          title: Type
+          description: Always 'error'.
+        error:
+          $ref: '#/components/schemas/Error'
+          description: Error.
+      type: object
+      required:
+      - type
+      - error
+      title: ErrorResponse
+      description: Response object used for non-200 status codes.
+    FindAllSchemaUpdatedEvent:
+      properties:
+        type:
+          type: string
+          enum:
+          - findall.schema.updated
+          const: findall.schema.updated
+          title: Type
+          description: Event type; always 'findall.schema.updated'.
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+          description: Timestamp of the event.
+        event_id:
+          type: string
+          title: Event Id
+          description: Unique event identifier for the event.
+        data:
+          $ref: '#/components/schemas/FindAllSchema'
+          description: Updated FindAll schema.
+      type: object
+      required:
+      - type
+      - timestamp
+      - event_id
+      - data
+      title: FindAllSchemaUpdatedEvent
+      description: Event containing full snapshot of FindAll run state.
+    FieldBasis:
+      description: Citations and reasoning supporting one field of a task output.
+      properties:
+        field:
+          description: Name of the output field.
+          title: Field
+          type: string
+        citations:
+          default: []
+          description: List of citations supporting the output field.
+          items:
+            $ref: '#/components/schemas/Citation'
+          title: Citations
+          type: array
+        reasoning:
+          description: Reasoning for the output field.
+          title: Reasoning
+          type: string
+        confidence:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Confidence level for the output field. Only certain processors provide confidence levels.
+          examples:
+          - low
+          - medium
+          - high
+          title: Confidence
+      required:
+      - field
+      - reasoning
+      title: FieldBasis
+      type: object
+    FindAllRunResult:
+      properties:
+        run:
+          $ref: '#/components/schemas/FindAllRun'
+          description: FindAll run object.
+        candidates:
+          items:
+            $ref: '#/components/schemas/FindAllCandidate'
+          type: array
+          title: Candidates
+          description: All evaluated candidates at the time of the snapshot.
+        last_event_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Event Id
+          description: ID of the last event of the run at the time of the request. This can be used to resume streaming from the last event.
+      type: object
+      required:
+      - run
+      - candidates
+      title: FindAllRunResult
+      description: 'Complete FindAll search results.
+
+
+        Represents a snapshot of a FindAll run, including run metadata and a list of
+
+        candidate entities with their match status and details at the time the snapshot was
+
+        taken.'
+    FindAllEntitySearchResponse:
+      properties:
+        entity_set_id:
+          type: string
+          title: Entity Set Id
+          description: 'Entity set request ID. Example: `entity_set_cad0a6d2dec046bd95ae900527d880e7`'
+        entities:
+          items:
+            $ref: '#/components/schemas/EntityItem'
+          type: array
+          title: Entities
+          description: Ranked list of entities.
+      type: object
+      required:
+      - entity_set_id
+      - entities
+      title: FindAllEntitySearchResponse
+    EntityItem:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Entity name.
+        url:
+          type: string
+          title: Url
+          description: Canonical URL for the entity.
+        description:
+          type: string
+          title: Description
+          description: Descriptive text about the entity.
+      type: object
+      required:
+      - name
+      - url
+      - description
+      title: EntityItem
+    JsonSchema:
+      properties:
+        json_schema:
+          additionalProperties: true
+          type: object
+          title: Json Schema
+          description: A JSON Schema object. Only a subset of JSON Schema is supported.
+          examples:
+          - additionalProperties: false
+            properties:
+              gdp:
+                description: GDP in USD for the year, formatted like '$3.1 trillion (2023)'
+                type: string
+            required:
+            - gdp
+            type: object
+        type:
+          type: string
+          const: json
+          title: Type
+          description: The type of schema being defined. Always `json`.
+          default: json
+      type: object
+      required:
+      - json_schema
+      title: JsonSchema
+      description: JSON schema for a task input or output.
+    Webhook:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: URL for the webhook.
+        event_types:
+          items:
+            type: string
+            enum:
+            - task_run.status
+          type: array
+          title: Event Types
+          description: Event types to send the webhook notifications for.
+          default: []
+      type: object
+      required:
+      - url
+      title: Webhook
+      description: Webhooks for Task Runs.
     FindAllRun:
       properties:
         findall_id:
@@ -878,273 +1110,33 @@ components:
       - generator
       title: FindAllRun
       description: FindAll run object with status and metadata.
-    ExcludeCandidate:
+    Citation:
+      description: A citation for a task output.
       properties:
-        name:
-          type: string
-          title: Name
-          description: Name of the entity to exclude from results.
-        url:
-          type: string
-          title: Url
-          description: URL of the entity to exclude from results.
-      type: object
-      required:
-      - name
-      - url
-      title: ExcludeCandidate
-      description: Exclude candidate input model for FindAll run.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Error:
-      properties:
-        ref_id:
-          type: string
-          title: Reference ID
-          description: Reference ID for the error.
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
-        detail:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Detail
-          description: Optional detail supporting the error.
-      type: object
-      required:
-      - ref_id
-      - message
-      title: Error
-      description: An error message.
-    FindAllEnrichInput:
-      properties:
-        processor:
-          type: string
-          title: Processor
-          description: Processor to use for the task.
-          default: core
-        output_schema:
-          $ref: '#/components/schemas/JsonSchema'
-          description: JSON schema for the enrichment output schema for the FindAll run.
-        mcp_servers:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/McpServer'
-            type: array
-          - type: 'null'
-          title: Mcp Servers
-          description: List of MCP servers to use for the task.
-      type: object
-      required:
-      - output_schema
-      title: FindAllEnrichInput
-      description: Input model for FindAll enrich.
-    FieldBasis:
-      description: Citations and reasoning supporting one field of a task output.
-      properties:
-        field:
-          description: Name of the output field.
-          title: Field
-          type: string
-        citations:
-          default: []
-          description: List of citations supporting the output field.
-          items:
-            $ref: '#/components/schemas/Citation'
-          title: Citations
-          type: array
-        reasoning:
-          description: Reasoning for the output field.
-          title: Reasoning
-          type: string
-        confidence:
+        title:
           anyOf:
           - type: string
           - type: 'null'
           default: null
-          description: Confidence level for the output field. Only certain processors provide confidence levels.
-          examples:
-          - low
-          - medium
-          - high
-          title: Confidence
-      required:
-      - field
-      - reasoning
-      title: FieldBasis
-      type: object
-    Webhook:
-      properties:
+          description: Title of the citation.
+          title: Title
         url:
-          type: string
+          description: URL of the citation.
           title: Url
-          description: URL for the webhook.
-        event_types:
-          items:
-            type: string
-            enum:
-            - task_run.status
-          type: array
-          title: Event Types
-          description: Event types to send the webhook notifications for.
-          default: []
-      type: object
+          type: string
+        excerpts:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          default: null
+          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
+          title: Excerpts
       required:
       - url
-      title: Webhook
-      description: Webhooks for Task Runs.
-    FindAllExtendInput:
-      properties:
-        additional_match_limit:
-          type: integer
-          title: Additional Match Limit
-          description: Additional number of matches to find for this FindAll run. This value will be added to the current match limit to determine the new total match limit. Must be greater than 0.
+      title: Citation
       type: object
-      required:
-      - additional_match_limit
-      title: FindAllExtendInput
-      description: Input model for FindAll extend.
-    JsonSchema:
-      properties:
-        json_schema:
-          additionalProperties: true
-          type: object
-          title: Json Schema
-          description: A JSON Schema object. Only a subset of JSON Schema is supported.
-          examples:
-          - additionalProperties: false
-            properties:
-              gdp:
-                description: GDP in USD for the year, formatted like '$3.1 trillion (2023)'
-                type: string
-            required:
-            - gdp
-            type: object
-        type:
-          type: string
-          const: json
-          title: Type
-          description: The type of schema being defined. Always `json`.
-          default: json
-      type: object
-      required:
-      - json_schema
-      title: JsonSchema
-      description: JSON schema for a task input or output.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    FindAllEntitySearchRequest:
-      properties:
-        entity_type:
-          type: string
-          enum:
-          - people
-          - companies
-          title: Entity Type
-          description: Type of entity to search for.
-        objective:
-          type: string
-          title: Objective
-          description: Natural language description of target entities.
-        match_limit:
-          type: integer
-          maximum: 1000.0
-          minimum: 5.0
-          title: Match Limit
-          description: Maximum number of entities to return. Must be between 5 and 1000 (inclusive). May return fewer results. Defaults to 100.
-          default: 100
-      type: object
-      required:
-      - entity_type
-      - objective
-      title: FindAllEntitySearchRequest
-    ErrorResponse:
-      properties:
-        type:
-          type: string
-          const: error
-          title: Type
-          description: Always 'error'.
-        error:
-          $ref: '#/components/schemas/Error'
-          description: Error.
-      type: object
-      required:
-      - type
-      - error
-      title: ErrorResponse
-      description: Response object used for non-200 status codes.
-    FindAllRunStatus:
-      properties:
-        status:
-          type: string
-          enum:
-          - queued
-          - action_required
-          - running
-          - completed
-          - failed
-          - cancelling
-          - cancelled
-          title: Status
-          description: Status of the FindAll run.
-        is_active:
-          type: boolean
-          title: Is Active
-          description: Whether the FindAll run is active
-        metrics:
-          $ref: '#/components/schemas/FindAllCandidateMetrics'
-          description: Candidate metrics for the FindAll run.
-        termination_reason:
-          anyOf:
-          - type: string
-            enum:
-            - low_match_rate
-            - match_limit_met
-            - candidates_exhausted
-            - user_cancelled
-            - error_occurred
-            - timeout
-            - insufficient_funds
-          - type: 'null'
-          title: Termination Reason
-          description: Reason for termination when FindAll run is in terminal status.
-      type: object
-      required:
-      - status
-      - is_active
-      - metrics
-      title: FindAllRunStatus
-      description: Status object for FindAll run.
     FindAllCandidate:
       properties:
         candidate_id:
@@ -1202,35 +1194,21 @@ components:
         Contains all the candidate''s metadata and the output of the match conditions.
 
         A candidate is a match if all match conditions are satisfied.'
-    FindAllSchemaUpdatedEvent:
+    FindAllCandidateMetrics:
       properties:
-        type:
-          type: string
-          enum:
-          - findall.schema.updated
-          const: findall.schema.updated
-          title: Type
-          description: Event type; always 'findall.schema.updated'.
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-          description: Timestamp of the event.
-        event_id:
-          type: string
-          title: Event Id
-          description: Unique event identifier for the event.
-        data:
-          $ref: '#/components/schemas/FindAllSchema'
-          description: Updated FindAll schema.
+        generated_candidates_count:
+          type: integer
+          title: Generated Candidates Count
+          description: Number of candidates that were selected.
+          default: 0
+        matched_candidates_count:
+          type: integer
+          title: Matched Candidates Count
+          description: Number of candidates that evaluated to matched.
+          default: 0
       type: object
-      required:
-      - type
-      - timestamp
-      - event_id
-      - data
-      title: FindAllSchemaUpdatedEvent
-      description: Event containing full snapshot of FindAll run state.
+      title: FindAllCandidateMetrics
+      description: Metrics object for FindAll run.
     ErrorEvent:
       properties:
         type:
@@ -1247,50 +1225,170 @@ components:
       - error
       title: ErrorEvent
       description: Event indicating an error.
-    FindAllEntitySearchResponse:
+    FindAllEnrichInput:
       properties:
-        entity_set_id:
+        processor:
           type: string
-          title: Entity Set Id
-          description: 'Entity set request ID. Example: `entity_set_cad0a6d2dec046bd95ae900527d880e7`'
-        entities:
-          items:
-            $ref: '#/components/schemas/EntityItem'
-          type: array
-          title: Entities
-          description: Ranked list of entities.
+          title: Processor
+          description: Processor to use for the task.
+          default: core
+        output_schema:
+          $ref: '#/components/schemas/JsonSchema'
+          description: JSON schema for the enrichment output schema for the FindAll run.
+        mcp_servers:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/McpServer'
+            type: array
+          - type: 'null'
+          title: Mcp Servers
+          description: List of MCP servers to use for the task.
       type: object
       required:
-      - entity_set_id
-      - entities
-      title: FindAllEntitySearchResponse
-    Citation:
-      description: A citation for a task output.
+      - output_schema
+      title: FindAllEnrichInput
+      description: Input model for FindAll enrich.
+    HTTPValidationError:
       properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          default: null
-          description: Title of the citation.
-          title: Title
-        url:
-          description: URL of the citation.
-          title: Url
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ParallelBeta:
+      anyOf:
+      - enum:
+        - mcp-server-2025-07-17
+        - events-sse-2025-07-24
+        - webhook-2025-08-12
+        - findall-2025-09-15
+        - search-extract-2025-10-10
+        - field-basis-2025-11-25
+        type: string
+      - type: string
+      description: Model for the parallel-beta header.
+      title: ParallelBeta
+    FindAllExtendInput:
+      properties:
+        additional_match_limit:
+          type: integer
+          title: Additional Match Limit
+          description: Additional number of matches to find for this FindAll run. This value will be added to the current match limit to determine the new total match limit. Must be greater than 0.
+      type: object
+      required:
+      - additional_match_limit
+      title: FindAllExtendInput
+      description: Input model for FindAll extend.
+    MatchCondition:
+      properties:
+        name:
           type: string
-        excerpts:
+          title: Name
+          description: Name of the match condition.
+        description:
+          type: string
+          title: Description
+          description: Detailed description of the match condition. Include as much specific information as possible to help improve the quality and accuracy of Find All run results.
+          examples:
+          - 'Company must have SOC2 Type II certification (not Type I). Look for evidence in: trust centers, security/compliance pages, audit reports, or press releases specifically mentioning ''SOC2 Type II''. If no explicit SOC2 Type II mention is found, consider requirement not satisfied.'
+      type: object
+      required:
+      - name
+      - description
+      title: MatchCondition
+      description: Match condition model for FindAll ingest.
+    McpServer:
+      properties:
+        type:
+          type: string
+          const: url
+          title: Type
+          description: Type of MCP server being configured. Always `url`.
+          default: url
+        url:
+          type: string
+          title: Url
+          description: URL of the MCP server.
+        headers:
+          anyOf:
+          - additionalProperties:
+              type: string
+              format: password
+              writeOnly: true
+            type: object
+          - type: 'null'
+          title: Headers
+          description: Headers for the MCP server.
+        name:
+          type: string
+          title: Name
+          description: Name of the MCP server.
+        allowed_tools:
           anyOf:
           - items:
               type: string
             type: array
           - type: 'null'
-          default: null
-          description: Excerpts from the citation supporting the output. Only certain processors provide excerpts.
-          title: Excerpts
+          title: Allowed Tools
+          description: List of allowed tools for the MCP server.
+      type: object
       required:
       - url
-      title: Citation
+      - name
+      title: McpServer
+      description: MCP server configuration.
+    FindAllRunStatusEvent:
+      properties:
+        type:
+          type: string
+          enum:
+          - findall.status
+          const: findall.status
+          title: Type
+          description: Event type; always 'findall.status'.
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+          description: Timestamp of the event.
+        event_id:
+          type: string
+          title: Event Id
+          description: Unique event identifier for the event.
+        data:
+          $ref: '#/components/schemas/FindAllRun'
+          description: Updated FindAll run information.
       type: object
+      required:
+      - type
+      - timestamp
+      - event_id
+      - data
+      title: FindAllRunStatusEvent
+      description: Event containing status update for FindAll run.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     FindAllRunInput:
       properties:
         objective:
@@ -1364,35 +1462,43 @@ components:
       - match_limit
       title: FindAllRunInput
       description: Input model for FindAll run.
-    EntityItem:
+    FindAllEntitySearchRequest:
       properties:
-        name:
+        entity_type:
           type: string
-          title: Name
-          description: Entity name.
-        url:
+          enum:
+          - people
+          - companies
+          title: Entity Type
+          description: Type of entity to search for.
+        objective:
           type: string
-          title: Url
-          description: Canonical URL for the entity.
-        description:
-          type: string
-          title: Description
-          description: Descriptive text about the entity.
+          title: Objective
+          description: Natural language description of target entities.
+        match_limit:
+          type: integer
+          maximum: 1000.0
+          minimum: 5.0
+          title: Match Limit
+          description: Maximum number of entities to return. Must be between 5 and 1000 (inclusive). May return fewer results. Defaults to 100.
+          default: 100
       type: object
       required:
-      - name
-      - url
-      - description
-      title: EntityItem
-    FindAllRunStatusEvent:
+      - entity_type
+      - objective
+      title: FindAllEntitySearchRequest
+    FindAllCandidateMatchStatusEvent:
       properties:
         type:
           type: string
           enum:
-          - findall.status
-          const: findall.status
+          - findall.candidate.generated
+          - findall.candidate.matched
+          - findall.candidate.unmatched
+          - findall.candidate.discarded
+          - findall.candidate.enriched
           title: Type
-          description: Event type; always 'findall.status'.
+          description: Event type; one of findall.candidate.generated, findall.candidate.matched, findall.candidate.unmatched, findall.candidate.discarded, findall.candidate.enriched.
         timestamp:
           type: string
           format: date-time
@@ -1403,16 +1509,16 @@ components:
           title: Event Id
           description: Unique event identifier for the event.
         data:
-          $ref: '#/components/schemas/FindAllRun'
-          description: Updated FindAll run information.
+          $ref: '#/components/schemas/FindAllCandidate'
+          description: The candidate whose match status has been updated.
       type: object
       required:
       - type
       - timestamp
       - event_id
       - data
-      title: FindAllRunStatusEvent
-      description: Event containing status update for FindAll run.
+      title: FindAllCandidateMatchStatusEvent
+      description: Event containing a candidate whose match status has changed.
     IngestInput:
       properties:
         objective:
@@ -1426,6 +1532,48 @@ components:
       - objective
       title: IngestInput
       description: Input model for FindAll ingest.
+    FindAllRunStatus:
+      properties:
+        status:
+          type: string
+          enum:
+          - queued
+          - action_required
+          - running
+          - completed
+          - failed
+          - cancelling
+          - cancelled
+          title: Status
+          description: Status of the FindAll run.
+        is_active:
+          type: boolean
+          title: Is Active
+          description: Whether the FindAll run is active
+        metrics:
+          $ref: '#/components/schemas/FindAllCandidateMetrics'
+          description: Candidate metrics for the FindAll run.
+        termination_reason:
+          anyOf:
+          - type: string
+            enum:
+            - low_match_rate
+            - match_limit_met
+            - candidates_exhausted
+            - user_cancelled
+            - error_occurred
+            - timeout
+            - insufficient_funds
+          - type: 'null'
+          title: Termination Reason
+          description: Reason for termination when FindAll run is in terminal status.
+      type: object
+      required:
+      - status
+      - is_active
+      - metrics
+      title: FindAllRunStatus
+      description: Status object for FindAll run.
     FindAllSchema:
       properties:
         objective:
@@ -1475,154 +1623,6 @@ components:
       - match_conditions
       title: FindAllSchema
       description: Response model for FindAll ingest.
-    FindAllRunResult:
-      properties:
-        run:
-          $ref: '#/components/schemas/FindAllRun'
-          description: FindAll run object.
-        candidates:
-          items:
-            $ref: '#/components/schemas/FindAllCandidate'
-          type: array
-          title: Candidates
-          description: All evaluated candidates at the time of the snapshot.
-        last_event_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Event Id
-          description: ID of the last event of the run at the time of the request. This can be used to resume streaming from the last event.
-      type: object
-      required:
-      - run
-      - candidates
-      title: FindAllRunResult
-      description: 'Complete FindAll search results.
-
-
-        Represents a snapshot of a FindAll run, including run metadata and a list of
-
-        candidate entities with their match status and details at the time the snapshot was
-
-        taken.'
-    FindAllCandidateMetrics:
-      properties:
-        generated_candidates_count:
-          type: integer
-          title: Generated Candidates Count
-          description: Number of candidates that were selected.
-          default: 0
-        matched_candidates_count:
-          type: integer
-          title: Matched Candidates Count
-          description: Number of candidates that evaluated to matched.
-          default: 0
-      type: object
-      title: FindAllCandidateMetrics
-      description: Metrics object for FindAll run.
-    FindAllCandidateMatchStatusEvent:
-      properties:
-        type:
-          type: string
-          enum:
-          - findall.candidate.generated
-          - findall.candidate.matched
-          - findall.candidate.unmatched
-          - findall.candidate.discarded
-          - findall.candidate.enriched
-          title: Type
-          description: Event type; one of findall.candidate.generated, findall.candidate.matched, findall.candidate.unmatched, findall.candidate.discarded, findall.candidate.enriched.
-        timestamp:
-          type: string
-          format: date-time
-          title: Timestamp
-          description: Timestamp of the event.
-        event_id:
-          type: string
-          title: Event Id
-          description: Unique event identifier for the event.
-        data:
-          $ref: '#/components/schemas/FindAllCandidate'
-          description: The candidate whose match status has been updated.
-      type: object
-      required:
-      - type
-      - timestamp
-      - event_id
-      - data
-      title: FindAllCandidateMatchStatusEvent
-      description: Event containing a candidate whose match status has changed.
-    ParallelBeta:
-      anyOf:
-      - enum:
-        - mcp-server-2025-07-17
-        - events-sse-2025-07-24
-        - webhook-2025-08-12
-        - findall-2025-09-15
-        - search-extract-2025-10-10
-        - field-basis-2025-11-25
-        type: string
-      - type: string
-      description: Model for the parallel-beta header.
-      title: ParallelBeta
-    MatchCondition:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Name of the match condition.
-        description:
-          type: string
-          title: Description
-          description: Detailed description of the match condition. Include as much specific information as possible to help improve the quality and accuracy of Find All run results.
-          examples:
-          - 'Company must have SOC2 Type II certification (not Type I). Look for evidence in: trust centers, security/compliance pages, audit reports, or press releases specifically mentioning ''SOC2 Type II''. If no explicit SOC2 Type II mention is found, consider requirement not satisfied.'
-      type: object
-      required:
-      - name
-      - description
-      title: MatchCondition
-      description: Match condition model for FindAll ingest.
-    McpServer:
-      properties:
-        type:
-          type: string
-          const: url
-          title: Type
-          description: Type of MCP server being configured. Always `url`.
-          default: url
-        url:
-          type: string
-          title: Url
-          description: URL of the MCP server.
-        headers:
-          anyOf:
-          - additionalProperties:
-              type: string
-              format: password
-              writeOnly: true
-            type: object
-          - type: 'null'
-          title: Headers
-          description: Headers for the MCP server.
-        name:
-          type: string
-          title: Name
-          description: Name of the MCP server.
-        allowed_tools:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Allowed Tools
-          description: List of allowed tools for the MCP server.
-      type: object
-      required:
-      - url
-      - name
-      title: McpServer
-      description: MCP server configuration.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

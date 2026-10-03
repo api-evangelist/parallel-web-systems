@@ -75,65 +75,6 @@ paths:
         source: "curl --request POST \\\n    --url https://api.parallel.ai/v1/search \\\n    --header 'Content-Type: application/json' \\\n    --header 'x-api-key: <api-key>' \\\n    --data '{\n    \"objective\": \"Find latest information about Parallel Web Systems. Focus on new product releases, benchmarks, or company announcements.\",\n    \"search_queries\": [\"Parallel Web Systems products\", \"Parallel Web Systems announcements\"]\n}'"
 components:
   schemas:
-    V1ExcerptSettings:
-      properties:
-        max_chars_per_result:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Max Chars Per Result
-          description: Optional upper bound on the total number of characters to include per url. Excerpts may contain fewer characters than this limit to maximize relevance and token efficiency.
-      additionalProperties: false
-      type: object
-      title: V1ExcerptSettings
-      description: Optional settings for returning relevant excerpts.
-    UsageItem:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Name of the SKU.
-          examples:
-          - sku_search_additional_results
-          - sku_extract_excerpts
-        count:
-          type: integer
-          title: Count
-          description: Count of the SKU.
-          examples:
-          - 1
-      type: object
-      required:
-      - name
-      - count
-      title: UsageItem
-      description: Usage item for a single operation.
-    FetchPolicy:
-      properties:
-        max_age_seconds:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Max Age Seconds
-          description: Maximum age of cached content in seconds to trigger a live fetch. Minimum value 600 seconds (10 minutes).
-          examples:
-          - 86400
-        timeout_seconds:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Timeout Seconds
-          description: Timeout in seconds for fetching live content if unavailable in cache.
-          examples:
-          - 60.0
-        disable_cache_fallback:
-          type: boolean
-          title: Disable Cache Fallback
-          description: If false, fallback to cached content older than max-age if live fetch fails or times out. If true, returns an error instead.
-          default: false
-      type: object
-      title: FetchPolicy
-      description: Policy for live fetching web results.
     V1WebSearchResult:
       properties:
         url:
@@ -164,166 +105,6 @@ components:
       - excerpts
       title: V1WebSearchResult
       description: A single search result from the web search API.
-    SourcePolicy:
-      properties:
-        include_domains:
-          items:
-            type: string
-          type: array
-          title: Include Domains
-          description: List of domains to restrict the results to. If specified, only sources from these domains will be included. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
-          examples:
-          - - wikipedia.org
-            - usa.gov
-            - .edu
-        exclude_domains:
-          items:
-            type: string
-          type: array
-          title: Exclude Domains
-          description: List of domains to exclude from results. If specified, sources from these domains will be excluded. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
-          examples:
-          - - reddit.com
-            - x.com
-            - .ai
-        after_date:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          title: After Date
-          description: Optional start date for filtering search results. Results will be limited to content published on or after this date. Provided as an RFC 3339 date string (YYYY-MM-DD).
-          examples:
-          - '2024-01-01'
-      type: object
-      title: SourcePolicy
-      description: 'Source policy for web search results.
-
-
-        This policy governs which sources are allowed/disallowed in results.'
-    ErrorResponse:
-      properties:
-        type:
-          type: string
-          const: error
-          title: Type
-          description: Always 'error'.
-        error:
-          $ref: '#/components/schemas/Error'
-          description: Error.
-      type: object
-      required:
-      - type
-      - error
-      title: ErrorResponse
-      description: Response object used for non-200 status codes.
-    V1SearchResponse:
-      properties:
-        search_id:
-          type: string
-          title: Search Id
-          description: 'Search ID. Example: `search_cad0a6d2dec046bd95ae900527d880e7`'
-        results:
-          items:
-            $ref: '#/components/schemas/V1WebSearchResult'
-          type: array
-          title: Results
-          description: A list of search results, ordered by decreasing relevance.
-        warnings:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/Warning'
-            type: array
-          - type: 'null'
-          title: Warnings
-          description: Warnings for the search request, if any.
-        usage:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/UsageItem'
-            type: array
-          - type: 'null'
-          title: Usage
-          description: Usage metrics for the search request.
-        session_id:
-          type: string
-          title: Session Id
-          description: Session identifier, echoed back from the request if provided, otherwise generated by the server. Should be passed to future search and extract calls made by the agent as part of the same larger task.
-          examples:
-          - session_8a911eb27c7a4afaa20d0d9dc98d07c0
-      type: object
-      required:
-      - search_id
-      - results
-      - session_id
-      title: V1SearchResponse
-      description: Search response.
-    Error:
-      properties:
-        ref_id:
-          type: string
-          title: Reference ID
-          description: Reference ID for the error.
-        message:
-          type: string
-          title: Message
-          description: Human-readable message.
-        detail:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Detail
-          description: Optional detail supporting the error.
-      type: object
-      required:
-      - ref_id
-      - message
-      title: Error
-      description: An error message.
-    AdvancedSearchSettings:
-      properties:
-        source_policy:
-          anyOf:
-          - $ref: '#/components/schemas/SourcePolicy'
-          - type: 'null'
-          description: Domain and date filtering preferences for search results.
-        fetch_policy:
-          anyOf:
-          - $ref: '#/components/schemas/FetchPolicy'
-          - type: 'null'
-          description: 'Fetch policy: determines when to return cached content from the index (faster) vs fetching live content (fresher). Default is to disable live fetch and return cached content from the index. Note: enabling live fetch significantly increases search latency because it requires fetching content from source websites.'
-        excerpt_settings:
-          anyOf:
-          - $ref: '#/components/schemas/V1ExcerptSettings'
-          - type: 'null'
-          description: Controls excerpt sizes. Provide excerpt settings for fine-grained control, or omit to use defaults.
-        location:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Location
-          description: ISO 3166-1 alpha-2 country code for geo-targeted search results.
-          examples:
-          - us
-          - gb
-          - de
-          - jp
-        max_results:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Max Results
-          description: Upper bound on the number of results to return. Defaults to 10 if not provided.
-      additionalProperties: false
-      type: object
-      title: AdvancedSearchSettings
-      description: 'Advanced search configuration.
-
-
-        These settings may impact result quality and latency unless used carefully.
-
-        See https://docs.parallel.ai/search/advanced-search-settings for more info.'
     V1SearchRequest:
       properties:
         objective:
@@ -383,6 +164,167 @@ components:
       - search_queries
       title: V1SearchRequest
       description: Search request.
+    AdvancedSearchSettings:
+      properties:
+        source_policy:
+          anyOf:
+          - $ref: '#/components/schemas/SourcePolicy'
+          - type: 'null'
+          description: Domain and date filtering preferences for search results.
+        fetch_policy:
+          anyOf:
+          - $ref: '#/components/schemas/FetchPolicy'
+          - type: 'null'
+          description: 'Fetch policy: determines when to return cached content from the index (faster) vs fetching live content (fresher). Default is to disable live fetch and return cached content from the index. Note: enabling live fetch significantly increases search latency because it requires fetching content from source websites.'
+        excerpt_settings:
+          anyOf:
+          - $ref: '#/components/schemas/V1ExcerptSettings'
+          - type: 'null'
+          description: Controls excerpt sizes. Provide excerpt settings for fine-grained control, or omit to use defaults.
+        location:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location
+          description: ISO 3166-1 alpha-2 country code for geo-targeted search results.
+          examples:
+          - us
+          - gb
+          - de
+          - jp
+        max_results:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Results
+          description: Upper bound on the number of results to return. Defaults to 10 if not provided.
+      additionalProperties: false
+      type: object
+      title: AdvancedSearchSettings
+      description: 'Advanced search configuration.
+
+
+        These settings may impact result quality and latency unless used carefully.
+
+        See https://docs.parallel.ai/search/advanced-search-settings for more info.'
+    FetchPolicy:
+      properties:
+        max_age_seconds:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Age Seconds
+          description: Maximum age of cached content in seconds to trigger a live fetch. Minimum value 600 seconds (10 minutes).
+          examples:
+          - 86400
+        timeout_seconds:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Timeout Seconds
+          description: Timeout in seconds for fetching live content if unavailable in cache.
+          examples:
+          - 60.0
+        disable_cache_fallback:
+          type: boolean
+          title: Disable Cache Fallback
+          description: If false, fallback to cached content older than max-age if live fetch fails or times out. If true, returns an error instead.
+          default: false
+      type: object
+      title: FetchPolicy
+      description: Policy for live fetching web results.
+    V1ExcerptSettings:
+      properties:
+        max_chars_per_result:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Chars Per Result
+          description: Optional upper bound on the total number of characters to include per url. Excerpts may contain fewer characters than this limit to maximize relevance and token efficiency.
+      additionalProperties: false
+      type: object
+      title: V1ExcerptSettings
+      description: Optional settings for returning relevant excerpts.
+    Error:
+      properties:
+        ref_id:
+          type: string
+          title: Reference ID
+          description: Reference ID for the error.
+        message:
+          type: string
+          title: Message
+          description: Human-readable message.
+        detail:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Detail
+          description: Optional detail supporting the error.
+      type: object
+      required:
+      - ref_id
+      - message
+      title: Error
+      description: An error message.
+    ErrorResponse:
+      properties:
+        type:
+          type: string
+          const: error
+          title: Type
+          description: Always 'error'.
+        error:
+          $ref: '#/components/schemas/Error'
+          description: Error.
+      type: object
+      required:
+      - type
+      - error
+      title: ErrorResponse
+      description: Response object used for non-200 status codes.
+    V1SearchResponse:
+      properties:
+        search_id:
+          type: string
+          title: Search Id
+          description: 'Search ID. Example: `search_cad0a6d2dec046bd95ae900527d880e7`'
+        results:
+          items:
+            $ref: '#/components/schemas/V1WebSearchResult'
+          type: array
+          title: Results
+          description: A list of search results, ordered by decreasing relevance.
+        warnings:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Warning'
+            type: array
+          - type: 'null'
+          title: Warnings
+          description: Warnings for the search request, if any.
+        usage:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/UsageItem'
+            type: array
+          - type: 'null'
+          title: Usage
+          description: Usage metrics for the search request.
+        session_id:
+          type: string
+          title: Session Id
+          description: Session identifier, echoed back from the request if provided, otherwise generated by the server. Should be passed to future search and extract calls made by the agent as part of the same larger task.
+          examples:
+          - session_8a911eb27c7a4afaa20d0d9dc98d07c0
+      type: object
+      required:
+      - search_id
+      - results
+      - session_id
+      title: V1SearchResponse
+      description: Search response.
     Warning:
       properties:
         type:
@@ -413,6 +355,64 @@ components:
       - message
       title: Warning
       description: Human-readable message for a task.
+    UsageItem:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Name of the SKU.
+          examples:
+          - sku_search_additional_results
+          - sku_extract_excerpts
+        count:
+          type: integer
+          title: Count
+          description: Count of the SKU.
+          examples:
+          - 1
+      type: object
+      required:
+      - name
+      - count
+      title: UsageItem
+      description: Usage item for a single operation.
+    SourcePolicy:
+      properties:
+        include_domains:
+          items:
+            type: string
+          type: array
+          title: Include Domains
+          description: List of domains to restrict the results to. If specified, only sources from these domains will be included. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
+          examples:
+          - - wikipedia.org
+            - usa.gov
+            - .edu
+        exclude_domains:
+          items:
+            type: string
+          type: array
+          title: Exclude Domains
+          description: List of domains to exclude from results. If specified, sources from these domains will be excluded. Accepts plain domains (e.g., example.com, subdomain.example.gov) or bare domain extension starting with a period (e.g., .gov, .edu, .co.uk). The combined number of domains in include_domains and exclude_domains cannot exceed 200.
+          examples:
+          - - reddit.com
+            - x.com
+            - .ai
+        after_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: After Date
+          description: Optional start date for filtering search results. Results will be limited to content published on or after this date. Provided as an RFC 3339 date string (YYYY-MM-DD).
+          examples:
+          - '2024-01-01'
+      type: object
+      title: SourcePolicy
+      description: 'Source policy for web search results.
+
+
+        This policy governs which sources are allowed/disallowed in results.'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
