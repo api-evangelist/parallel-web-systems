@@ -88,59 +88,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    MemoryClearRequest:
-      properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-      type: object
-      title: MemoryClearRequest
-    MemoryEvictRequest:
-      properties:
-        memory_scope_key:
-          anyOf:
-          - type: string
-            maxLength: 128
-            minLength: 1
-            pattern: ^[a-zA-Z0-9_-]+$
-          - type: 'null'
-          title: Memory Scope Key
-          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
-        kind:
-          type: string
-          enum:
-          - task
-          - monitor
-          - findall
-          title: Kind
-          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
-        id:
-          type: string
-          maxLength: 128
-          minLength: 1
-          pattern: ^[a-zA-Z0-9_-]+$
-          title: Id
-          description: ID of the task run, monitor, or FindAll run to evict.
-      type: object
-      required:
-      - kind
-      - id
-      title: MemoryEvictRequest
     MemoryRetrieveRequest:
       properties:
         query:
@@ -187,32 +134,6 @@ components:
           description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
       type: object
       title: MemoryRetrieveRequest
-    MonitorMemoryEvent:
-      properties:
-        event_id:
-          type: string
-          title: Event Id
-          description: ID of the monitor event.
-        event_group_id:
-          type: string
-          title: Event Group Id
-          description: ID of the execution that produced this event.
-        detected_at:
-          type: string
-          format: date-time
-          title: Detected At
-          description: When the event was detected, as an RFC 3339 timestamp.
-        excerpt:
-          type: string
-          title: Excerpt
-          description: Excerpt of the monitor event. May be truncated.
-      type: object
-      required:
-      - event_id
-      - event_group_id
-      - detected_at
-      - excerpt
-      title: MonitorMemoryEvent
     MonitorMemoryResult:
       properties:
         kind:
@@ -253,58 +174,6 @@ components:
       - input_excerpt
       - status
       title: MonitorMemoryResult
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    TaskMemoryResult:
-      properties:
-        kind:
-          type: string
-          const: task
-          title: Kind
-          default: task
-        id:
-          type: string
-          title: Id
-          description: ID of the task run.
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-          description: When the run completed, as an RFC 3339 timestamp.
-        input_excerpt:
-          type: string
-          title: Input Excerpt
-          description: Preview of the run's input. May be truncated.
-        output_excerpt:
-          type: string
-          title: Output Excerpt
-          description: Preview of the run's output. May be truncated.
-      type: object
-      required:
-      - id
-      - updated_at
-      - input_excerpt
-      - output_excerpt
-      title: TaskMemoryResult
     FindAllMemoryResult:
       properties:
         kind:
@@ -336,6 +205,128 @@ components:
       - input_excerpt
       - matched_count
       title: FindAllMemoryResult
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    MemoryEvictRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+        kind:
+          type: string
+          enum:
+          - task
+          - monitor
+          - findall
+          title: Kind
+          description: 'Kind of source to evict: `task`, `monitor`, or `findall`.'
+        id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_-]+$
+          title: Id
+          description: ID of the task run, monitor, or FindAll run to evict.
+      type: object
+      required:
+      - kind
+      - id
+      title: MemoryEvictRequest
+    MemoryClearRequest:
+      properties:
+        memory_scope_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: ^[a-zA-Z0-9_-]+$
+          - type: 'null'
+          title: Memory Scope Key
+          description: User-provided key identifying the memory scope to use. Omit to use personal memory, if available.
+      type: object
+      title: MemoryClearRequest
+    TaskMemoryResult:
+      properties:
+        kind:
+          type: string
+          const: task
+          title: Kind
+          default: task
+        id:
+          type: string
+          title: Id
+          description: ID of the task run.
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: When the run completed, as an RFC 3339 timestamp.
+        input_excerpt:
+          type: string
+          title: Input Excerpt
+          description: Preview of the run's input. May be truncated.
+        output_excerpt:
+          type: string
+          title: Output Excerpt
+          description: Preview of the run's output. May be truncated.
+      type: object
+      required:
+      - id
+      - updated_at
+      - input_excerpt
+      - output_excerpt
+      title: TaskMemoryResult
+    MonitorMemoryEvent:
+      properties:
+        event_id:
+          type: string
+          title: Event Id
+          description: ID of the monitor event.
+        event_group_id:
+          type: string
+          title: Event Group Id
+          description: ID of the execution that produced this event.
+        detected_at:
+          type: string
+          format: date-time
+          title: Detected At
+          description: When the event was detected, as an RFC 3339 timestamp.
+        excerpt:
+          type: string
+          title: Excerpt
+          description: Excerpt of the monitor event. May be truncated.
+      type: object
+      required:
+      - event_id
+      - event_group_id
+      - detected_at
+      - excerpt
+      title: MonitorMemoryEvent
     MemoryRetrieveResponse:
       properties:
         results:
@@ -356,6 +347,15 @@ components:
       required:
       - results
       title: MemoryRetrieveResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
