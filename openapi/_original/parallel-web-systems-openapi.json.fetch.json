@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.parallel.ai/public-openapi.json",
+ "requested_url": "https://docs.parallel.ai/public-openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 408324,
+ "sha256": "fc4858951ccf1e5fd44103e31a96d522a11bc92d33c8d4934c180288588b14a9",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.921), but the bytes differ, so the archive is an earlier or reformatted copy."
+}

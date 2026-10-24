@@ -123,3 +123,16 @@ notes: >-
   plan_count is 1 because there is exactly one self-serve commercial arrangement
   (pay-as-you-go), not because tiers were not found. All figures are the provider's own
   published rates at the date above.
+x-canonical:
+  generated: '2026-10-18'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  units: []
+  plans:
+  - name: Pay as you go
+    access: other
+    model: metered
+    model_how: derived
+    units: []
+    periods: []
